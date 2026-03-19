@@ -56,3 +56,5 @@ old_materials/
 *.rmd
 
 !.gitignore
+
+/.quarto/
