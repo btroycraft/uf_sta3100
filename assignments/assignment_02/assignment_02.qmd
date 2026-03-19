@@ -32,9 +32,9 @@ execute:
     f) Plot a smooth estimator of the density based on **U**, then add the true population density to the plot.
     
 4. Let *X* be a Binomial(20, 0.3) random variable. Use built-in R functions (not a math formula) to find the exact numerical values of the following quantities:
-    a) $P(X\leq 5)$
-    b) $P(X=5)$
-    c) $P(4\leq X\leq 7)$
+    a) P(X≤5)
+    b) P(X=5)
+    c) P(4≤X≤7)
     d) The 90^th^ quantile of *X*
     
 5. Generate 30 Binomial(20, 0.3) random variables. (You can use any random seed.)
