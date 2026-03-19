@@ -8,6 +8,9 @@ format:
 lang: en
 geometry:
   - margin = 1in
+execute:
+  eval: false
+  echo: true
 ---
 
 ## Reading Assignment:
