@@ -1,0 +1,260 @@
+---
+title: "Lists"
+subtitle: "Lecture 8"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+\newpage  
+
+# A List Can Contain Any Combination of R Objects
+  
+## Creating a Named List
+```{r}
+  big_sleep <- list(title = "The Big Sleep",
+                    release_date = as.Date("1946-08-23"),
+                    boxoffice = 4.9e6,
+                    rottentomatoes = c(tomatometer = 97, audience = 91),
+                    cast = c("Humphrey Bogart", "Lauren Bacall"))
+  str(big_sleep)
+```
+
+\newpage
+
+# A Great Film Noir
+```{r}
+  big_sleep
+```
+
+\newpage
+
+# A List of Lists
+```{r}
+  big_lebowski <-
+    list(title = "The Big Lebowski",
+      release_date = as.Date("1998-01-18"),
+      boxoffice = 46.7e6,
+      rottentomatoes = c(tomatometer = 82, audience = 94),
+      cast = c("Jeff Bridges", "John Goodman", "Julianne Moore",
+               "Steve Buscemi", "David Huddleston", "John Turturro"))
+  movies <- list("big_sleep" = big_sleep, "big_lebowski" = big_lebowski)
+```
+
+```{r}
+  str(movies)
+```
+
+\newpage
+
+# Combining Lists  
+
+* `list()` makes a list with the arguments as its elements
+* `c()` concatenates (as usual)
+
+```{r}
+  l1 <- list(a = "Hello", b = 1:3)    # A list of length 2
+  l2 <- list("World", 4:6)            # A list of length 2
+  v <- 7:9                            # A vector of length 3
+```
+
+\newpage
+
+### Combining Lists With `list()`
+```{r}
+  l.l1l2 <- list(l1, l2)
+  str(l.l1l2)
+```
+```{r}
+  l.l1l2
+```
+
+\newpage
+
+### Combining Lists With `c()`
+```{r}
+  c.l1l2 <- c(l1, l2)
+  str(c.l1l2)
+```
+```{r}
+  c.l1l2
+```
+
+\newpage
+
+### `list()` with 2 lists and a vector
+```{r}
+  l.l1l2v <- list(l1, l2, v)
+  str(l.l1l2v)
+```
+* List of length 3
+```{r}
+  l.l1l2v
+```
+
+### `c()` with 2 lists and a vector
+```{r}
+  c.l1l2v <- c(l1, l2, v)
+  str(c.l1l2v)
+```
+
+* List of length 7
+
+### `c()` with 3 lists
+```{r}
+  c.l1l2lv <- c(l1, l2, list(v))
+  str(c.l1l2lv)
+```
+
+* List of length 5
+
+\newpage
+
+# One Way to Add a Director Element
+```{r}
+  big_sleep <- list(title = "The Big Sleep",
+                    release_date = as.Date("1946-08-23"),
+                    boxoffice = 4.9e6,
+                    rottentomatoes = c(tomatometer = 97, audience = 91),
+                    cast = c("Humphrey Bogart", "Lauren Bacall"))
+  big_sleep <- c(big_sleep, list(director = "Howard Hawks"))
+  str(big_sleep)
+```
+
+\newpage
+
+# Indexing Lists: `[`, `[[`, and `$`  
+Lists are sometimes indexed using the familiar `[` and other times using `[[` or `$`.  
+
+* `[` applied to a list returns a sublist of the original list.
+* `[[` is used to return the contents of a single element of the list.  
+  - The index can be a single number or character string (if a named list).
+* `$string` is an alias for `[["string"]]`.  
+
+It may be helpful to think of a list as a train made up of train cars, with each car having its own contents. In this analogy:
+
+* `[` is used to select cars from the train and return a new (shorter) train;
+* `[[` applied to a list returns the contents of a car (as does `$`).  
+
+Personally, I think of a list as a vector of pointers to other R objects.
+
+```{r}
+  names(big_sleep)
+  big_sleep[4]       # Or big_sleep["rottentomatoes"].   Returns a list of length 1.
+  big_sleep[[4]]     # Or big_sleep[["rottentomatoes"]]. Returns a vector of length 2.
+```
+
+```{r, error = TRUE}
+  big_sleep$rottentomatoes
+  # Shorthand for big_sleep[["rottentomatoes"]].
+  big_sleep[c(1, 4)]
+  # Or big_sleep[c("title", "rottentomatoes")]. List of length 2.
+  big_sleep[[c(1, 4)]]
+  # What is this trying to do? <!-- Return 4th elt of 1st elt of the list. -->
+```
+
+\newpage
+
+# The Usual Way to Add a Director Element
+```{r}
+  big_lebowski$director <- c("Ethan Coen", "Joel Coen")
+```
+or
+```{r}
+  big_lebowski[["director"]] <- c("Ethan Coen", "Joel Coen")
+```
+```{r}
+  big_lebowski$director
+```
+
+\newpage
+
+# R Functions Often Return Lists as Output
+```{r}
+  mpg.lm <- lm(mpg ~ wt, data = mtcars) # Fit a linear (regression) model
+  mpg.lm                                # Printed representation [ print(mpg.lm) ]
+```
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Regression of Miles/(US) Gallon on Weight (1000 lbs)"
+
+  opar <- par(mar = c(5.1, 4.1, 1.1, 1.1))
+  
+  plot(mpg ~ wt, data = mtcars)
+  abline(mpg.lm)
+  
+  par(opar)
+```
+
+```{r}
+  str(mpg.lm, max.level = 1)
+```
+
+```{r}
+  class(mpg.lm)
+  typeof(mpg.lm)
+  length(mpg.lm)
+  names(mpg.lm)
+```
+
+```{r}
+  mpg.lm["coefficients"]
+  # Or mpg.lm[1].  List of length 1.
+  mpg.lm[["coefficients"]]
+  # Or mpg.lm[[1]] or mpg.lm$coefficients. Vector of length 2.
+  mpg.lm$coefficients
+```
+
+```{r}
+  mpg.lm[c("call", "coefficients")]
+  # Or mpg.lm[c(10, 1)]
+  mpg.lm[[c("call", "coefficients")]]
+  # Nope. Cannot index two list elts at once with `[[`.
+```
+
+\newpage
+
+# Brief Primer on S3 Classes and Generic Functions
+* `print()` is a generic function
+* An S3 generic function uses `UseMethod()` to dispatch to a specific method.
+```{r}
+  print
+  # Printing print().
+```
+* `print()` methods are defined for many R object classes.
+```{r}
+  length(methods(print))
+  # This number will depend on what packages are loaded.
+```
+
+```{r}
+  methods(print)[1:17]
+  # The first few (again, will depend on what packages are loaded).
+```
+
+There is a `print()` method for `lm` objects:
+```{r}
+  methods(class = "lm")
+  # Results may depend on what packages are loaded.
+```
+
+```{r}
+  getS3method("print", "lm")
+```
+
+* If `getS3method()` doesn’t work, try `getAnywhere(print.lm)`.

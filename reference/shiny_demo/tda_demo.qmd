@@ -1,0 +1,118 @@
+---
+title: "TDA demo"
+author: "Benjamin Roycraft"
+format: 
+  html:
+    page-layout: custom
+server: shiny
+---
+
+## Topological Data Analysis and Persistent Homolgy
+
+This document demonstrates a little bit the behavior of topological statistics from persistent homology.
+
+The first plot shows an example 2-D data set, both with some underlying shape and with additive Gaussian noise.
+
+The second plot shows the persistence diagram for each, considering only 1-D homology (loops) for the Vietoris-Rips complex. 0-D homology gives the connected components which merge over time, and isn't shown.
+
+2-D homology can be useful, but is more computationally expensive and only really provides interesting signals for 3-D data or higher.
+
+```{r}
+#| panel: sidebar
+
+sliderInput("shape_x", "x Shape", 1, min = 1, max = 9)
+sliderInput("shape_y", "y Shape", 1, min = 1, max = 9)
+sliderInput("n", "Sample Size", 10^2, min = 1, max = 10^3)
+sliderInput("sd", "Noise Level", 0, min = 0, max = .3, step = 10^-3)
+actionButton("regen", "Regenerate")
+sliderInput("thresh", "Diameter Threshold (Lower = Faster)", 2, min = 0, max = 2, step = 10^-3)
+```
+
+```{r}
+#| panel: fill
+
+plotOutput('plot1')
+```
+
+```{r}
+#| panel: fill
+
+plotOutput('plot2')
+```
+
+```{r}
+#| context: server
+
+X <- reactive({
+  t <- seq(0, 2*pi, length.out=input$n)
+  cbind(
+    sin(input$shape_x*t),
+    cos(input$shape_y*t)
+  )
+})
+
+Z <- reactive({
+  input$regen
+  out <- rnorm(2*input$n)
+  dim(out) <- c(input$n, 2)
+  return(out)
+})
+
+Y <- reactive( X()+input$sd*Z() )
+
+diag_X <- reactive({
+  ripserr::vietoris_rips(X(), max_dim=2, threshold=input$thresh)
+})
+
+# diag0_X <- reactive({
+#   as.matrix(subset(diag_X(), dimension == 0, select = c(birth, death)))
+# })
+
+diag1_X <- reactive({
+  as.matrix(subset(diag_X(), dimension == 1, select = c(birth, death)))
+})
+
+diag_Y <- reactive({
+  ripserr::vietoris_rips(Y(), dim=2, threshold=input$thresh)
+})
+
+# diag0_Y <- reactive({
+#   as.matrix(subset(diag_Y(), dimension == 0, select = c(birth, death)))
+# })
+
+diag1_Y <- reactive({
+  as.matrix(subset(diag_Y(), dimension == 1, select = c(birth, death)))
+})
+
+output$plot1 <- renderPlot({
+    plot(Y(),
+         xlim=c(-1.5,1.5),
+         ylim=c(-1.5,1.5),
+         asp=1,
+         pch=19,
+         col="blue")
+    points(X(),
+           pch=19,
+           col="red")
+})
+
+output$plot2 <- renderPlot({
+    
+    d_max <- max(diag_X()$death, diag_Y()$death)
+  
+    plot(c(),
+         xlim=c(0, d_max),
+         ylim=c(0, d_max),
+         asp=1,
+         xlab="Birth",
+         ylab="Death",
+         main="1-D Persistent Homology"
+    )
+    segments(0,0,0,d_max)
+    segments(0,0,d_max,d_max)
+    # points(diag0_X(), pch=1, col="red")
+    points(diag1_X(), pch=2, col="red")
+    # points(diag0_Y(), pch=1, col="blue")
+    points(diag1_Y(), pch=2, col="blue")
+})
+```

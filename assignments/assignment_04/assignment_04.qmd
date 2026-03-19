@@ -1,0 +1,47 @@
+---
+title: "Assignment 4"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [rp4ds](https://bookdown.org/rdpeng/rprogdatascience): 4.13-15
+* (Optional) [advr](https://adv-r.hadley.nz): 3.6.1-7, 4.2.4-5
+
+## Problems:
+
+1. Consider the built-in `USArrests` data frame.
+    a) Determine the number of rows and columns.
+    b) Show the row corresponding to Florida. **Access the row by *name*, not *number*.**
+    c) Show the last three rows.
+    d) Find the name of the states in rows 20, 30, and 40.
+    e) Create two new data frames (keeping the same row names as `USArrests`):
+        1) **USArrests2** containing columns `Murder`, `Assault`, and `Rape`.
+        2) **Urban** that only contains column `UrbanPop`.
+    f) In **Urban**, rename the column `UrbanPop` to "UrbanPercent".
+    g) Find the median of each column in **USArrests2**.
+    h) In **USArrests2**, add a column called "Total", which gives the total sum of `Murder`, `Assault`, and `Rape`.
+    i) Using the `order()` function, list the states in **USArrests2** according to `Murder` in decreasing order.
+    j) Show the subset of the data frame **USArrests2** containing all states having `Murder` < 10, `Assault` < 100, and `Rape` < 10.
+    k) Using data frame `USArrests`, find the across-state average murder rate (`Murder`) in regions where the percentage of the population living in urban areas (`UrbanPop`) exceeds 77%. Compare this with the average murder rate where urban area population is less than 50%.
+    l) Use the `plot()` function to show `Murder` vs `Assault`. Identify and explain any relationships you see.
+
+2. Install the package `COUNT`. Then run the following:
+```{r}
+#| eval: false
+  library(COUNT)
+  data(fishing)
+  pois.glm <- glm(totabund ~ meandepth, data = fishing, family = poisson)
+```  
+  a) Verify that the object `pois.glm` is a list.
+  b) Find the number of components in `pois.glm` and display their names.
+  c) Among all the components of `pois.glm`, is there any component which is a list itself?
+  d) Find out the number of elements contained in the component `residuals`, as well as the maximum and minimum values.
+  e) Add a new component named "extra" to `pois.glm`, containing 10 random numbers following a Poisson(2) distribution.

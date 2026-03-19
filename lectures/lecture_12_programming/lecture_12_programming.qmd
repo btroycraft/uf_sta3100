@@ -1,0 +1,262 @@
+---
+title: "Programming"
+subtitle: "Lecture 12"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# Define a function
+
+```{r}
+annuityAmt <- function(n, R, i) {
+	R * ((1 + i) ^ n - 1)      # Only return one value
+}
+annuityAmt(4, 1000, 0.0528)
+```
+Functions with default values are defined as follows.   
+```{r}
+#| error: true
+annuityAmt2 <- function(n, R = 1000, i = 0.0528) {
+	R * ((1 + i) ^ n - 1) 
+}
+annuityAmt2(4)
+annuityAmt(4)
+```
+
+You can also change default values.
+```{r}
+#| error: true
+annuityAmt2(4, R = 1000, i = 0.0528)
+```
+***
+
+* With multiple output values, the outputs are returned as a list.
+
+```{r}
+annuityAmt3 <- function(n, R = 1000, i = 0.0528) {
+	a <- R * ((1 + i) ^ n - 1) 
+	b <- a + R
+	return(list(total = b, interest = a))
+}
+```
+
+```{r}
+annuity <- annuityAmt3(4, R = 1000, i = 0.0528)
+is.list(annuity)
+str(annuity)
+```
+
+***
+
+# Scope of variables
+```{r}
+k <- 200
+annuityAmt <- function(n, R, i) {
+	R * ((1 + i) ^ n - 1) + k    # if not defined in the function, R will use the variable in the global environment
+}
+annuityAmt(4, 1000, 0.0528)
+```
+```{r}
+k <- 200
+annuityAmt <- function(n, R, i) {
+	R * ((1 + i) ^ n - 1) + k
+	k <- 300     # Change the value of k locally
+}
+annuityAmt(4, 1000, 0.0528)
+k
+```
+```{r}
+k <- 200
+annuityAmt <- function(n, R, i) {
+	R * ((1 + i) ^ n - 1) + k
+	k <<- 300  # Change the value of k globally
+}
+annuityAmt(4, 1000, 0.0528)
+k
+```
+
+***
+
+# The `if` statement
+```{r}
+x <- 3
+if (x > 2) {
+	y <- 5 * x
+} else if (x < -2)  {
+	y <- 3 * x
+} else {
+  y <- x
+}
+y
+```
+
+***
+
+## The `for` loop
+Example: Compute the factorial $100!$.
+```{r}
+n <- 100
+result <- 1
+for (i in 1:n) {
+  result <- result * i
+}
+result
+```
+
+Example: Fibonacci sequence
+```{r}
+Fibonacci <- numeric(100)
+Fibonacci[1] <- 1
+Fibonacci[2] <- 1
+for (i in 3:100) Fibonacci[i] <- Fibonacci[i - 2] + Fibonacci[i - 1]
+Fibonacci
+```
+
+
+# The `while` loop
+
+Example: Fibonacci sequence
+```{r}
+# Fib1 <- 1
+# Fib2 <- 1
+# Fibonacci <- c(Fib1, Fib2)
+# while (Fib1 + Fib2 < 300) {
+# 	newFib <- Fib1 + Fib2
+# 	Fibonacci <- c(Fibonacci, newFib)
+# 	Fib1 <- Fib2
+# 	Fib2 <- newFib
+# }
+# Fibonacci
+
+Fibonacci <- c(1, 1)
+while (Fibonacci[length(Fibonacci)] < 300) {
+  Fibonacci <- c(Fibonacci, sum(Fibonacci[length(Fibonacci)-(0:1)]))
+}
+Fibonacci <- Fibonacci[-length(Fibonacci)]
+```
+    
+***
+Another example: Newton’s method for root finding
+
+Newton's method is a popular numerical method to find a root of an algebraic equation:
+$$
+f(x)= 0.
+$$
+If $f(x)$ has derivative $f'(x)$, then the following iteration should converge to a root of the above equation if started close enough to the root.
+$$
+x_0 = \text{initial guess},
+$$
+$$
+x_n = x_{n-1} - \frac{f(x_{n-1})}{f'(x_{n-1})}.
+$$
+The idea is based on the Taylor approximation
+$$
+f(x_n)\approx f(x_{n-1})+(x_n-x_{n-1})f'(x_{n-1}).
+$$
+Newton's method is equivalent to setting $f(x_n)=0$ and solving for $x_n$ in the approximation above.  We hope that the solution $x_n$ should give a close approximation to the root.  Be careful: there are many examples where $x_n$ will fail to converge to a root unless $x_{n-1}$ is already sufficiently close, and some where it will fail regardless of the starting value.   Now suppose $f(x)=x^3+2x^2-7$, find the root of $f(x)$.
+```{r}
+x0 <- 1
+x <- x0
+f <- x ^ 3 + 2 * x ^ 2 - 7
+tolerance <- 0.000001
+while (abs(f) > tolerance) {
+	f.prime <- 3 * x ^ 2 + 4 * x
+	x <- x - f / f.prime
+	f <- x ^ 3 + 2 * x ^ 2 -7
+	print(x)
+}
+x
+```  
+
+***
+
+# The `repeat` loop, and the `break` and `next` statements
+We use a `repeat` loop if we do not want a fixed number of repetitions of a loop, and we do not want to put the test at the top of the loop as in `while`.
+```{r}
+x0 <- 1
+x <- x0
+tolerance <- 10^-6
+repeat {
+	f <- x ^ 3 + 2 * x ^ 2 - 7
+	if (abs(f) < tolerance){
+	  break
+	}
+	f.prime <- 3 * x ^ 2 + 4 * x
+	x <- x - f / f.prime
+	print(x)
+}
+x
+
+x0 <- 1
+x <- x0
+tolerance <- 10^-19
+max_iter <- 10^3
+for(i in 1:max_iter) {
+	f <- x ^ 3 + 2 * x ^ 2 - 7
+	if (abs(f) < tolerance){
+	  break
+	}
+	f.prime <- 3 * x ^ 2 + 4 * x
+	x <- x - f / f.prime
+	print(x)
+}
+```
+
+*** 
+
+Example on `break` and `next`
+```{r}
+x <- 0
+a <- rep(0, 10)
+repeat {
+	x <- x + 1
+	if (x == 8) break
+	a[x] <- x
+}
+a
+```
+
+```{r}
+x <- 0
+a <- rep(0, 10)
+repeat {
+	x <- x + 1
+	if (x == 8) break
+	if (x == 3) next
+	a[x] <- x
+}
+a
+```
+
+# Efficient programming
+Loops in R can be slow, so it is fast working with vectors.
+```{r}
+X <- rnorm(100000)
+Y <- rnorm(100000)
+Z <- c()
+
+system.time({
+	for (i in 1:100000)  Z <- c(Z, X[i] + Y[i])
+})
+
+system.time({
+	for (i in 1:100000)  Z[i] <- X[i] + Y[i]
+})
+
+system.time(Z <- X + Y)
+```
+

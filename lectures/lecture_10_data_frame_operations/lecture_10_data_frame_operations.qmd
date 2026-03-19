@@ -1,0 +1,406 @@
+---
+title: "Data Frame Operations"
+subtitle: "Lecture 10"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# Guitars Again
+```{r}
+  mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+  model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+             "J-100 Xtra", "M-21")
+  serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+  type <- rep(c("electric", "acoustic"), times = c(5, 2))
+  body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+  w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+  case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+  
+  guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+```
+
+***
+
+* Deleting column of serial numbers to declutter slides.
+```{r}
+#| echo: true
+guitars$serial <- NULL
+
+guitars
+```
+```{r}
+#| echo: true
+
+M <- matrix(runif(100), 10, 10)
+M
+```
+
+
+# OPERATING ON COLUMNS
+# Transform Variables (Columns)
+* Add columns for weights of the guitars in kg and lb
+```{r}
+guitars$kg <- guitars$w_case_kg - guitars$case_kg
+guitars$lb <- 2.2 * guitars$kg
+guitars
+```
+* This is often how it’s done, but that’s a lot of `guitars$`'s to type.
+
+***
+* Base R provides `transform()` to make this a little easier.
+* `transform()` lets us work within the data frame, treating columns like vectors. 
+* `transform()` returns a data frame including any new or modified columns.
+```{r}
+guitars <- transform(guitars, kg = w_case_kg - case_kg)
+guitars <- transform(guitars, lb = 2.2 * kg)
+guitars
+```
+* Note that naming inside `transform()` uses `=` and not `<-`.
+
+***
+
+* Note: when using `transform()`
+  - You **can** do several transformations with a single call to transform, ...
+  - But **not** if one transformation depends another, i.e., transformations can only use pre-existing columns.
+  
+So this would have worked:
+```{r}
+guitars <- transform(guitars,
+                     kg = w_case_kg - case_kg,
+                     lb = 2.2 * (w_case_kg - case_kg))
+```
+
+But this would **not** have worked, because `lb` is defined using `kg`.
+```{r}
+guitars <- transform(guitars,
+                     kg = w_case_kg - case_kg,
+                     lb = 2.2 * kg)
+```
+
+# Rename Columns
+Rename `lb` column to `weight`
+```{r}
+names(guitars)[8] <- "weight"    # names(guitars)[names(guitars) == "lb"] <- "weight" 
+guitars
+```
+
+* When might this process be mistake-prone or otherwise problematic?
+  - Hint: What if we had 40 columns and wanted to rename several of them?
+
+# Select Columns
+* Select all the columns except for `w_case_kg`, `case_kg`, and `kg`
+```{r}
+guitars <- guitars[, -c(5:7)]
+## Or guitars <- guitars[, c(1:4, 8)]
+## Or guitars <- guitars[, c("mfr", "model", "type", "body", "weight")]
+## Or guitars <- guitars[, !(colnames(guitars) %in c("w_case_kg", "case_kg", "kg"))]
+guitars
+```
+* When might this process be difficult and/or mistake-prone?
+
+# Relocate Columns
+Suppose we want to make `type` the first column.
+```{r}
+guitars
+```
+
+***
+
+```{r}
+guitars <- guitars[, c(3, 1:2, 4:5)]
+## Or guitars <- guitars[, c("type", "mfr", "model", "body", "weight")]
+
+guitars
+```
+Now suppose we want to move `type` back to the 3rd column.
+
+***
+
+
+```{r}
+guitars <- guitars[, c(2:3, 1, 4:5)]
+## Or guitars <- guitars[, c("mfr", "model", "type", "body", "weight")]
+
+guitars
+```
+* When might this process be difficult and mistake-prone?
+  - What if we had 40 columns and wanted to relocate several of them?
+  
+# OPERATING ON ROWS
+# Subsetting (Filtering) the Observations  
+* View only guitars under 8 lb
+```{r}
+guitars[guitars$weight < 8, ]
+```    
+    
+***
+
+* View only electric guitars under 8 lb
+```{r}
+guitars[(guitars$type == "electric") & (guitars$weight < 8), ]
+```  
+* Seems like overkill to type `guitars` 3 times.
+
+***
+
+* Base R provides the `subset()` function to make this easier.
+```{r}
+subset(guitars, weight < 8)
+subset(guitars, (type == "electric") & (weight < 8))
+```
+
+***
+
+* Note that `subset()` can also select columns with its `select` argument.
+  - Do **not** have to quote column names
+  - Can use "-" with column numbers and **with names!**
+  
+
+```{r}
+subset(guitars, select = c(model, weight))
+```
+
+***
+
+```{r}
+subset(guitars, (type == "electric") & (weight < 8), select = -c(type, weight))
+```
+
+
+# Ordering Observations
+Arrange the guitars by weight (lightest to heaviest):
+
+```{r}
+guitars[order(guitars$weight), ]    # How does this work?
+```
+
+* `order(guitars$weight)` returns an index vector that could be used to put the column of weights in increasing order.
+* We use that index vector to order the rows of the data frame.
+
+***
+
+Look over the following:
+```{r}
+guitars$weight
+order(guitars$weight)    # Returns an index vector ...
+guitars$weight[order(guitars$weight)]    # ... that puts the weights in increasing order.
+sort(guitars$weight)    # Note: Do this if you just want the sorted weights.
+```
+
+***
+**Decreasing Order**  
+Arrange the guitars from heaviest to lightest:
+```{r}
+guitars[order(guitars$weight, decreasing = TRUE), ]
+```
+
+***
+
+**Using Multiple Sort Keys**  
+Arrange the guitars alphabetically by mfr and by weight within mfr:
+```{r}
+guitars[order(guitars$mfr, guitars$weight), ]
+```
+* We could have used `with()` here, like this:
+```{r}
+guitars[with(guitars, order(mfr, weight)), ]
+```
+
+***
+
+**A Complication**  
+What if we wish to arrange the guitars alphabetically by type and from heaviest to lightest within type?  
+
+* Because the `type` column is character and the `weight` column is numeric, we have to add `method = "radix"` in the call to `order()`.
+```{r}
+guitars[order(guitars$type, guitars$weight, decreasing = c(FALSE, TRUE),
+              method = "radix"), ]
+```
+
+# Getting the First or Last Few Rows
+**First Few Rows**
+```{r}
+head(mtcars)    # Same as  head(mtcars, n = 6)
+```
+* `head(mtcars, n = 4)` is the same as `mtcars[1:4, ]`
+
+***
+
+**Last Few Rows**
+```{r}
+tail(mtcars)   # Same as tail(mtcars, n = 6)
+```
+
+* Much easier than `mtcars[(nrow(mtcars) - 5):nrow(mtcars), ]`
+
+# GROUPED CALCULATIONS
+# Using `tapply()`
+**Calculate the Mean Weight by Type of Guitar**
+
+* Grouping variable (`type` in this example) is usually a factor (qualitative).
+* `tapply()` returns a named numeric vector in this example.
+```{r}
+tapply(guitars$weight, guitars$type, mean)
+with(guitars, tapply(weight, type, mean))    # Same thing using with().
+```
+
+***
+
+**Calculate the Mean Weight by Mfr and Type of Guitar**  
+
+* Again, grouping variables are usually factors (qualitative).
+```{r}
+with(guitars, tapply(weight, list(mfr, type), mean))
+```
+
+* `tapply()` returns a numeric matrix in this example.
+```{r}
+is.matrix(with(guitars, tapply(weight, list(mfr, type), mean)))
+```
+* A matrix is fine for displaying these results in table form, but...
+
+***
+
+**What if we wanted a data frame containing the group means?**
+```{r}
+avg_wts <- with(guitars, tapply(weight, list(mfr, type), mean))
+avg_wts <- data.frame(avg_wts)
+avg_wts     # Printed looks the same as the matrix.
+```
+* Is this what we want as a data frame?
+* No!
+  - Column headers are values (of the variable `type`), not variable names.
+  - Mfr values used as rownames. Should be a column.
+  - Should be a data frame with 4 (or 6?) rows and 3 cols (mfr, type, avg_wt).
+  
+# Using `aggregate()`
+* `aggregate()` will return a data frame.
+* `aggregate()` has an S3 method for data frames, but it can be difficult to use.
+```{r}
+aggregate(guitars["weight"], by = guitars["type"], FUN = "mean")
+```
+***
+* I prefer the formula method for `aggregate()`
+```{r}
+aggregate(weight ~ type, data = guitars, FUN = "mean")
+aggregate(weight ~  mfr + type, data = guitars, FUN = "mean")
+```
+***
+* What if we wanted the counts of the types as well? Could try something like:
+```{r}
+aggregate(weight ~ mfr + type, data = guitars,
+          FUN = function(x) c(n = length(x), avg = mean(x)))
+```
+  - Note that the counts have been coerced to dbl and the column names need repair, so this isn’t a great result.
+
+# Refresh **Guitars** Again
+```{r}
+mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+           "J-100 Xtra", "M-21")
+serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+type <- rep(c("electric", "acoustic"), times = c(5, 2))
+body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+
+guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+guitars <- transform(guitars, weight = w_case_kg - case_kg)
+guitars <- subset(guitars, select = -c(serial, w_case_kg, case_kg))
+```
+***
+
+# Using `tapply()` and `expand.grid()`
+```{r}
+avg_wts <- with(guitars, tapply(weight, list(mfr, type), mean))  # Matrix 
+guitar_smry <-
+    with(guitars, expand.grid(mfr = unique(mfr), type = unique(type)))  # 2-col data frame
+guitar_smry <- transform(guitar_smry, mfr = as.character(mfr), type = as.character(type))
+
+# To reverse the reordering:
+# temp_order <- with(guitar_smry, order(type, mfr))
+
+guitar_smry <- guitar_smry[temp_order, ]
+guitar_smry$avg_wt <- as.vector(avg_wts)  # Add column of avg_wts 
+guitar_smry
+
+# To reverse the reordering:
+# temp_order <- cbind(1:length(temp_order), temp_order)
+# temp_order <- temp_order[order(temp_order[, 2]), ]
+# guitar_smry <- guitar_smry[temp_order[, 1],]
+
+```
+***
+
+Let’s add a column giving the number of guitars in each category (tricky?).
+```{r}
+#| error: true
+
+n <- with(guitars, tapply(weight, list(mfr, type), length))   # Matrix of counts
+guitar_smry$n <- as.vector(n)    # Add column of counts 
+guitar_smry
+```
+***
+
+* The NA values occur because there were no Fender acoustic guitars and no Martin electric guitars in the sample. I would probably remove these rows.
+* I would probably move the `n` column before the `avg_wt` column too.
+
+```{r}
+guitar_smry <- guitar_smry[!is.na(guitar_smry$avg_wt), c("mfr", "type", "n", "avg_wt")] 
+
+## Equivalent
+## guitar_smry <- subset(guitar_smry, !is.na(avg_wt), select = c(mfr, type, n, avg_wt))
+
+guitar_smry
+```
+    
+# Using `tapply()` and `do.call("rbind", ...)` 
+Here’s another way to use `tapply()` with an anonymous function to get a list of 1-row data frames, which is then passed `to do.call("rbind", ...)` to bind all the rows together into a single data frame.
+
+
+```{r}
+#| error: true
+
+do.call("rbind",
+        tapply(guitars$weight, guitars$type,
+               function(x) data.frame(n = length(x), avg_wt = mean(x))))
+```
+
+* Unfortunately the types are used as row labels, not a separate column.
+
+
+***
+
+How does this approach work if we are grouping by multiple variables? Not well — we lose the grouping information altogether.
+
+```{r}
+#| error: true
+with(guitars,
+     do.call("rbind",
+             tapply(weight, list(mfr, type),
+                    function(x) data.frame(n = length(x), avg_wt = mean(x)))))
+```
+
+More:
+
+```{r}
+#| error: true
+temp_guitars <- split(guitars, list(mfr, type))
+do.call(rbind, lapply(temp_guitars, function(x){
+  data.frame(avg_wgt = mean(x$weight), n_mfr_type = nrow(x))
+}))
+```

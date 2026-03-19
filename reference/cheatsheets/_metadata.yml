@@ -1,0 +1,4 @@
+post-render: |
+  Rscript -e "
+    file.remove(Sys.getenv('QUARTO_PROJECT_OUTPUT_FILES'))
+  "

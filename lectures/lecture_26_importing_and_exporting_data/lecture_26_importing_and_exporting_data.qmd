@@ -1,0 +1,392 @@
+---
+title: "Importing and Exporting Data"
+subtitle: "Lecture 26"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# Initial Reading of the Data
+
+The file `schedule_b-2023-10-27T01_16_01.csv` was downloaded from the
+Federal Election Commission’s [\textcolor{blue}{website}](https://www.fec.gov/data/disbursements/?data_type=processed&two_year_transaction_period=2024&min_date=01%2F01%2F2023&max_date=12%2F31%2F2024). This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period.
+
+* A warning occurs when the file is read using `readr::read_csv()`.
+
+```{r}
+#| message: false
+
+library(tidyverse)
+santos_file <- "schedule_b-2023-10-27T01_16_01.csv" 
+santos <- read_csv(santos_file)
+```
+
+* The warning is suggesting that we run `problems(santos)`. BTW, `vroom()`?
+
+```{r}
+problems(santos)
+```
+
+* On row 1148 it appears that a logical (or binary) value was expected in column 50 but the character string "J." was actually found.
+* Similarly on row 1193, logical (or binary) values were expected in columns 11, 12, 17 and 18, but character strings were found.
+* In all cases, the actual values observed suggest that the columns should have been character, not logical.
+
+```{r}
+santos |> select(17, 18, 50)    # Looking at the columns where problems occurred.
+```
+
+* Again, character seems like the most likely type for columns named disbursement_type, disbursement_type_description, and payee_middle_name.
+
+***
+
+So what happened?
+
+* By default, readr examines 1000 equally spaced rows (all if less than 1000) to determine the column types: logical?, numeric?, date or date-time?, character (default).
+* What if all the values examined (up to 1000) in a column are missing? In this case the column type defaults to logical!
+  - Why? In general, logical takes the least memory, character the most.
+* We can read all the columns as character and perhaps figure out what happened.
+
+```{r}
+santos <- read_csv(santos_file, col_types = cols(.default = col_character()))
+table(is.na(santos[[17]]))               # Base R seems easier here.
+santos |> summarize(n = n(), .by = 17)   # dplyr is easy enough here.
+```
+
+* disbursement_type should be character (or maybe factor), but readr guessed incorrectly because it saw 1000 missing values.
+
+*** 
+
+```{r}
+santos |> group_by(is.na(pick(18))) |> summarize(n = n())    # A dplyr version.
+santos |> summarize(n = n(), .by = 18)
+```
+
+* disbursement_type_description should be character, but readr guessed incorrectly because it saw 1000 missing values.
+
+***
+
+```{r}
+table(is.na(santos[[50]]))
+table(santos[[50]], useNA = "ifany")                         # A base R version.
+```
+
+* payee_middle_name should be character, but readr guessed incorrectly because it saw 1000 missing values.
+
+* `useNA` controls if an `NA` is a level in the resulting table.
+  - If "`no`", ignores `NA` values in the table inputs.
+  - If "`ifany`", includes `NA` values in the table.
+  - If "`always`", adds an extra `NA` value added to each factor level if the `NA` does not already exist.
+
+***
+
+* In this case we could fix these problems by simply letting read_csv() use all 1558 rows to guess the column types.
+
+```{r}
+santos <- read_csv(santos_file, guess_max = 2000)
+```
+
+This eliminates the warning, but may not solve all problems.
+
+* Some columns still have all missing values (NA). They default to logical type.
+
+```{r}
+summary(spec(santos))
+```
+
+# Taking Control of the Column Types
+
+According to the R help for `readr::read_csv()`, there are three ways that we can specify the column types when reading a delimited file with readr.
+
+`col_types: One of 'NULL', a 'cols()' specification, or a string. See `
+            `'vignette("readr")' for more details.`
+            
+            If 'NULL', all column types will be inferred from 'guess_max' 
+            rows of the input, interspersed throughout the file. This is 
+            convenient (and fast), but not robust. If the guessed types 
+            are wrong, you'll need to increase 'guess_max' or supply the 
+            correct types yourself.
+            
+            Column specifications created by 'list()' or 'cols()' must 
+            contain one column specification for each column. If you only 
+            want to read a subset of the columns, use 'cols_only()'.
+            
+            Alternatively, you can use a compact string representation 
+            where each character represents one column:
+            
+* I think this documentation is out of date, because there is actually a fourth way that the column types can be specified.
+  - Here I am counting the default "let readr guess" as a method.
+* `readr` now uses the package `vroom` to read delimited (e.g., csv) files. `vroom` is
+much faster than the old `readr` code.
+* Looking at `?vroom::cols` (instead of `?readr::cols`) shows an additional way
+to specify the column types.
+* The fourth way is similar to the way that column types are specified in base R using the `colClasses` argument of `read.csv()`.   
+
+# From `?readr::cols`
+
+`Description:`
+
+      'cols()' includes all columns in the input data, guessing the column 
+      types as the default. 'cols_only()' includes only the columns you 
+      explicitly specify, skipping the rest. In general you can substitute 
+      'list()' for 'cols()' without changing the behavior.
+      
+`Usage:`
+
+      cols(..., .default = col_guess()) 
+      
+      cols_only(...)
+      
+# From `?vroom::cols`
+
+| function                    | long name            |short name |
+|:----------------------------|:---------------------|:----------|  
+|`col_logical()`              |"logical"             |"l"        |
+|`col_integer()`              |"integer"             |"i"        |
+|` col_big_integer()`         |"big_integer"         |"l"        |
+|`col_double()`               |"double", "numeric"   |"d"        |
+|`col_character()`            |"character"           |"c"        |
+|`col_factor(levels, ordered)`|"factor"              |"f"        |
+|`col_date(format = "")`      |"date"                |"D"        |
+|`col_time(format = "")`      |"time"                |"t"        |
+|`col_datetime(format = "")`  |"datetime", "POSIXct" |"T"        |
+|`col_number()`               |"number"              |"n"        |
+|`col_skip()`                 |"skip", "NULL"        |"_", "-"   |
+|`col_guess()`                |"guess", "NA"         |"?"        |
+
+# Reading Only a Few Columns
+
+What if we just want to read only the columns
+
+* "disbursement_date", "recipient_name", "recipient_zip", and "disbursement_amount";
+* and rename them to "date", "recipient", "zip", and "amount", respectively. 
+
+There are several ways to do this, but note first that:
+
+* zip codes are not really numeric (and they may begin with 0);
+* "disbursement_date" is entered in the spreadsheet as date-time, although all the times are `00:00:00` (see next slide).
+* Aside: Using lubridate functions and `summarize()` to verify that all times in `disbursement_date` are `00:00:00`.
+
+```{r}
+santos |>
+  mutate(hr = hour(disbursement_date),
+         min = minute(disbursement_date),
+         sec = second(disbursement_date)) |>
+  summarize(n = n(), .by = c(hr, min, sec))
+```
+
+Now we demonstrate the 3 ways of specifying the column types.
+
+* With `col_*()` functions. (Here we have piped to `rename()` for renaming.)
+* With long type names. (Here we have used the `col_select` arg for renaming.)
+* With abbreviated types. (Again we have used `col_select` arg for renaming.)
+
+```{r}
+santos <- 
+  read_csv(santos_file,
+           col_types = cols_only(disbursement_date = col_datetime(),
+                                 recipient_name = col_character(),
+                                 recipient_zip = col_character(),
+                                 disbursement_amount = col_double())
+           ) |>
+  rename(date = disbursement_date,
+         recipient = recipient_name, 
+         zip = recipient_zip,
+         amount = disbursement_amount)
+santos |> slice_head(n = 4)
+```
+
+***
+
+```{r}
+santos <- 
+  read_csv(santos_file,
+           col_types = cols_only(disbursement_date = "datetime", 
+                                 recipient_name = "character",
+                                 recipient_zip = "character",
+                                 disbursement_amount = "double"), 
+           col_select = c(date = disbursement_date, 
+                          recipient = recipient_name, 
+                          zip = recipient_zip,
+                          amount = disbursement_amount))
+santos |> slice_head(n = 5)
+```
+
+***
+
+```{r}
+santos <- 
+  read_csv(santos_file,
+           col_select = c(date = disbursement_date, 
+                          recipient = recipient_name,
+                          zip = recipient_zip,
+                          amount = disbursement_amount), 
+           col_types = "Tccd")
+santos |> slice_head(n = 7)
+```
+
+# Coping With All 78 Columns
+
+Three readr Functions
+
+**`spec()`**
+`‘spec()’` extracts the full column specification from a tibble created by `readr`.
+
+**`spec_csv()`**
+`spec_csv()` generates a column specification. It used internally by `read_csv()` and other readr functions.
+
+* You can run `read_csv()` and then use `spec()` to extract the column spec; 
+* Or you can just run `spec_csv()`. Faster if you have a really big file.
+
+**`cols_condense()`**
+`'cols_condense()'` takes a spec object and condenses its definition by setting the default column type to the most frequent type and only listing columns with a different type.
+
+
+***
+
+Working with readr’s Guesses
+
+```{r}
+## santos_cols <- spec_csv(santos_file, guess_max = 2000)
+
+santos <- read_csv(santos_file, guess_max = 2000) 
+santos_cols <- spec(santos)
+summary(santos_cols)
+```
+***
+
+* The column spec is a named list with class "col_spec".
+
+```{r}
+typeof(santos_cols)
+attributes(santos_cols)
+```
+
+* `santos_cols$delim` seems simple enough.
+
+```{r}
+santos_cols$delim
+```
+
+* `santos_cols$default` is a `<collector>`.
+
+```{r}
+santos_cols$default
+```
+
+* `santos_cols$cols` is a named list.
+* Its names are column names.
+
+```{r}
+typeof(santos_cols$cols)
+santos_cols$cols[c(17,18,50)]
+santos_cols
+```
+
+***
+
+* This can be copied and pasted into a file for editing.
+* Instead of copying and pasting, you could do this, but be careful:
+
+```{r}
+#| results: hide
+
+sink("santos_cols.txt")
+print(santos_cols)
+sink()
+```
+
+* This would be safer (don’t overwrite an existing file):
+
+```{r}
+#| results: hide
+
+file_name <- "santos_cols.txt" 
+if (!file.exists(file_name)) { 
+  sink(file_name) 
+  print(santos_cols)
+  sink() 
+  }
+```
+
+* Or this (include a time stamp in the file name):
+
+```{r}
+#| results: hide
+
+file_name <- paste0("santos_cols-", now(), ".txt") 
+sink(file_name)
+print(santos_cols)
+sink()
+```
+
+***
+
+* Using `cols_condense()` shortens the list from 78 to 31.
+  - The most common column type is identified and all column specifications
+of that type are removed.
+  - Uses `$default` to represent the type of columns whose type is not explicitly specified, i.e., those removed.
+  - In this example, the most common type guessed is character, which is pretty safe as a default type (no information will be lost).
+  
+```{r}
+santos_cols <- cols_condense(santos_cols) 
+santos_cols$default
+summary(santos_cols)
+santos_cols
+```
+
+* Note: `cols_condense()` might not do what you want, especially if there are more empty columns (set to logical) than any other type.
+
+<!-- Dr. Presnell have [\textcolor{blue}{proposed}](https://github.com/tidyverse/readr/issues/1478) to the `readr` developers a new version of `cols_condense` that allows the user to specify the `.default` column type which should be "condensed out". By default, the most common column type is still used. -->
+
+<!-- ```{r} -->
+<!-- my_cols_condense <- function (x, .default = NULL) { -->
+<!--   types <- vapply(x$cols, function(xx) class(xx)[[1]], character(1))  -->
+<!--   if (is.null(.default)) { -->
+<!--     counts <- table(types) -->
+<!--     most_common <- names(counts)[counts == max(counts)][[1]]  -->
+<!--     x$default <- x$cols[types == most_common][[1]] -->
+<!--     x$cols <- x$cols[types != most_common] -->
+<!--     }else{ -->
+<!--       x$default <- .default  -->
+<!--       x$cols <- x$cols[types != class(.default)[[1]]] -->
+<!--       } -->
+<!--   x  -->
+<!-- } -->
+<!-- ``` -->
+
+# Final Result
+
+After examining the column names and doing some other checking, I decided on the following column specification:
+
+```{r}
+santos <- read_csv(santos_file,
+                   col_types = cols(.default = col_character(),
+                                    report_year = col_integer(),
+                                    line_number = col_integer(),
+                                    file_number = col_integer(), 
+                                    disbursement_date = col_datetime(format = ""),
+                                    disbursement_amount = col_double(), 
+                                    fec_election_year = col_integer(),
+                                    load_date = col_datetime(format = ""),
+                                    semi_annual_bundled_refund = col_double(),
+                                    two_year_transaction_period = col_integer()))
+summary(spec(santos))
+```
+
+* This is not necessarily "the best" choice, e.g.:
+  - We could just change all the integer types to double.
+  - We might want to make some of the character columns into factors.
+* Of course we can always change the column types after the data have been read into R. This is fine as long as no important information has been lost.

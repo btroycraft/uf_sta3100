@@ -1,0 +1,58 @@
+# Hidden files
+.*
+.*/
+_*
+_*/
+!_quarto.yml
+!_metadata.yml
+
+# Example code in package build process
+*-Ex.R
+
+# Output files from R CMD build
+*.tar.gz
+
+# Output files from R CMD check
+*.Rcheck/
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# knitr and R markdown default cache directories
+*_cache/
+cache/
+*_files/
+files/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# pkgdown site
+docs/
+
+# translation temp files
+po/*~
+
+*.pdf
+*.html
+
+# RStudio Connect folder
+rsconnect/
+
+**/*.quarto_ipynb
+
+# Latex build files
+*.synctex.gz
+*.out
+*.log
+*.aux
+
+# Old files
+old_materials/
+
+# R Markdown files
+*.rmd
+
+!.gitignore

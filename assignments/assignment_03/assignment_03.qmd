@@ -1,0 +1,32 @@
+---
+title: "Assignment 3"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [rp4ds](https://bookdown.org/rdpeng/rprogdatascience): 4.9, 9.2-5, 16.7–9
+* (Optional) [advr](https://adv-r.hadley.nz): 3.3.3, 3.5, 4.2.2-3, 4.3–4
+
+## Problems:
+
+1. Obtain 100 exponential random variables (with rate 1) and arrange them by column in a matrix called **M** with 10 rows and 10 columns. Use seed 3100.
+    a) Find **M**^T^, i.e. the transpose of **M**.
+    b) Find **M**^T^**M** using matrix multiplication.
+    c) Find 2.5M + 5.2**I10**, where **I10** is an identity matrix (1 on the diagonal, 0 otherwise) that has 10 rows and 10 columns.
+    d) Find the inverse matrix of **M**.
+    e) Find the overall mean of the elements in **M**.
+    f) Using `which.max()`, find the row of **M** with the largest sum.
+    g) For each column in **M**, find the percentage of elements greater than 1.
+    h) Using string functions, give the names "n1", "n2", ..., "n10" to the rows of **M**, and "v1", "v2", ..., "v10" to the columns of **M**. **Do not type out the name vectors**.
+    i) Extract a sub matrix of **M** consisting of rows "n3", "n4", and "n5" and all columns except "v2" and "v4".
+    j) Create a diagonal matrix **L** that has the same diagonal elements as **M**.
+    k) Add to **L** an additional row of all zeros after the last row.
+    l) Extract the last column of **M** as a 1-column matrix and the last row of **M** as a 1-row matrix. Form a new matrix **H** by multiplying the last column of **M** by the last row using matrix multiplication.

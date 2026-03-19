@@ -1,0 +1,13 @@
+# ================================
+# This yaml file controls general settings for the entire STA3100 project
+# ================================
+
+project:
+  render:
+    - "*.qmd"
+    - "!old_materials/"
+
+execute:
+    error: false
+    freeze: auto
+    cache: true

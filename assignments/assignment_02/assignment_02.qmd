@@ -1,0 +1,40 @@
+---
+title: "Assignment 2"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [r4ds](https://r4ds.had.co.nz/): 27
+
+## Problems:
+
+1. Construct histograms for the `islands` vector (it is a built-in vector in R, simply type "islands") using breaks based on Sturges's and Scott's rules. Which one looks more informative to you?
+
+2. Construct a Q-Q plot for both `islands` and its log against a normal distribution. Which follows a normal distribution more closely?
+
+3. Generate 1000 Uniform(0, 1) pseudorandom variables using the `runif()` function, assigning them to a vector called **U**. Use the seed 09062024.
+    a) Compute the sample average, variance, and standard deviation of **U**.
+    b) Compare your results with the theoretical mean, variance, and standard deviation for a Uniform(0, 1) random variable.
+    c) Compute the proportion of **U** that is less than 0.6, and compare with the probability that a Uniform(0, 1) random variable is less than 0.6.
+    d) Estimate the expected value of 1/(Uniform(0, 1) + 1) using **U**.
+    e) Construct histograms of **U** and 1/(**U** + 1).
+    f) Plot a smooth estimator of the density based on **U**, then add the true population density to the plot.
+    
+4. Let *X* be a Binomial(20, 0.3) random variable. Use built-in R functions (not a math formula) to find the exact numerical values of the following quantities:
+    a) $P(X\leq 5)$
+    b) $P(X=5)$
+    c) $P(4\leq X\leq 7)$
+    d) The 90^th^ quantile of *X*
+    
+5. Generate 30 Binomial(20, 0.3) random variables. (You can use any random seed.)
+    a) Find the 90^th^ quantile of the generated data, and compare it with the theoretical value from (4d).
+    b) Find the proportion of the generated data that are less than or equal to 5, and compare it with the theoretical value from (4a).
+    c) Plot the empirical CDF of the generated data, and show the data as a rug on the x-axis.

@@ -1,0 +1,97 @@
+---
+title: "Logical Operators"
+subtitle: "Lecture 5"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+## Relational operators: <, >, <=, >=, ==, and !=
+
+```{r xy}
+
+  set.seed(32139)
+  x <- runif(5) ; y <- runif(5)
+  x
+  y
+```
+
+```{r vw}
+
+  v <- x < y
+  w <- x >= 1/2
+  v
+  w
+```
+
+\newpage
+
+## Logical Operators
+### Negation
+```{r negation}
+  v
+  !v
+```  
+
+\newpage
+
+### And, Or, and All That
+```{r aoa}
+  v
+  w
+  v | w         # "or"
+  v & w         # "and"
+  xor(v, w)     # "exclusive or"
+  (v | w) & !(v & w)   # Do you see why this is the same as xor(v, w)?
+``` 
+
+\newpage
+
+## Summarizing a Logical Vector
+* We have seen that, when applied to a logical vector `x`:  
+  + `sum(x)` gives the number TRUE and `sum(!x)` gives the number FALSE.
+  + `mean(x)` gives proportion TRUE and `mean(!x)` gives proportion FALSE.  
+* `table(x)` gives the counts of both TRUE and FALSE entries:  
+  + `summary(x)` displays a similar table when `x` is logical.  
+```{r table}
+  x <- (rnorm(10) > 0)
+  x
+  table(x)
+```
+
+\newpage
+
+* Two very important logical functions are `all()` and `any()`:
+  + `all(x)` : TRUE if and only if all the entries of `x` are TRUE.
+  + `any(x)` : TRUE if any of the entries of `x` are TRUE.
+```{r all}
+  x <- c(TRUE, TRUE)  ;  y <- c(TRUE, FALSE)  ;  z <- c(FALSE, FALSE)
+  all(x)
+  all(y)
+  any(y)
+  any(z)
+```
+
+### DeMorgan’s Laws in R Syntax  
+A little thought should convince you that for any logical vector `x`:  
+
+* `!any(x)` and `all(!x)` are equivalent, and
+* `!all(x)` and `any(!x)` are equivalent. 
+
+Similarly, for any logical vectors `x` and `y`:  
+
+* `!(x | y)` and `(!x) & (!y)` are equivalent, and
+* `!(x & y)` and `(!x) | (!y)` are equivalent.

@@ -1,0 +1,45 @@
+---
+title: "Assignment 5"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [rp4ds](https://bookdown.org/rdpeng/rprogdatascience): 4.9, 9.2-5, 16.7-9, 11, 13-14
+* [r4ds2e](https://r4ds.hadley.nz): 19
+* [advr](https://adv-r.hadley.nz): 3.3.3, 3.5, 4.2.2-3, 4.3-4, (Optional) 5-6
+
+## Problems:
+
+1. Store and print the current time using `Sys.time()`.
+
+2. `UCBAdmissions` is a built-in R dataset stored as a 3-dimensional array.
+
+   For the year 1973, applicants to the graduate programs of the six largest academic departments at the University of California Berkeley are cross-classified by admission status, gender, and the department to which they applied. 
+
+   Consider instead the data frame **UCBAdmissions_df** produced by the following code which "flattens" the initial array:
+
+   ```{r}
+   #| eval: false
+   
+   UCBAdmissions_df <- transform(UCBAdmissions)
+   ```
+
+   a) Calculate and display a data frame counting admissions and rejections by gender (ignoring department).
+   b) Compute the proportions admitted and rejected by gender (ignoring department). Then display your results as percentages, rounded to one decimal place. For whom is the admission rate higher overall, males or females?
+   c) Compute a data frame giving the proportions admitted and rejected for each gender and department. Display your results as percentages, rounded to one decimal place. How do these results compare to what you found in (2b)?
+   d) Construct a named matrix giving the total counts for each combination of gender and department, ignoring admission status, where each column corresponds to either "Male" or "Female", and each row corresponds to one of "A", "B", ..., or "F".
+   e) Using the matrix constructed in (2d), perform a Chi-squared test of independence using the built-in function `chisq.test()`. Optionally discuss the output.
+
+3. Convert the date "02/07/11" (year/month/day) to ISO format.
+
+4. Find the duration between the dates "08/09/91" (day/month/year) and "02/05/11" (year/month/day), measured in weeks.
+
+5. Find the duration between the current time and that of (1), measured in seconds.

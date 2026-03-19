@@ -1,0 +1,183 @@
+---
+title: "Pipes"
+subtitle: "Lecture 16"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: false
+---
+
+# The Pipe Operator(s)
+* Pipes allow us to string together function calls without  
+  – nesting, or  
+  – saving intermediate results. (Examples to follow).
+* Pipes can improve readability by emphasizing a sequence of actions rather than the object on which the actions are being performed.
+* The idea originated (?) with the UNIX operating system, which has had pipes since its development in the 1970s.
+  - In UNIX/Linux command shells, the character "`|`" is the pipe operator.
+* [\textcolor{blue}{Since the release of R 4.1}](https://developer.r-project.org/blosxom.cgi/R-4-1-branch/NEWS/2021/05/17#n2021-05-17), base R provides an official/native pipe syntax, "`|>`".  
+  - You can look up the R help `?pipeOp` to read more about it.
+
+***
+
+* Importantly, whatever is on the LHS of the pipe is used as the **first argument** of the function on the RHS of the pipe. Thus:  
+  – `x |> f()` is interpreted as `f(x)`  
+  – `x |> f(y)` is interpreted as `f(x, y)`  
+  – `x |> f(y, z)` is interpreted as `f(x, y, z)`  
+  and so forth.
+* You can pass the lhs into an argument other than the first by using the "\_" placeholder with a _named_ argument. Thus,     
+  – `x |> f(y, z = _)` is interpreted as `f(y, z = x)`.  
+  You can also use an _anonymous function_ to work around the first argument rule for pipes (more on this later).
+
+***
+
+* We will see that many tidyverse functions
+  - take a data frame (tibble) as their first argument, and
+  - return a data frame (tibble) as their output.  
+This makes them especially pipe-friendly.
+* The tidyverse also includes the magrittr pipe "`%>%`", **but** the tidyverse developers now encourage users to employ the base R pipe `|>`.
+  - There is a [\textcolor{blue}{new edition of r4ds}](https://r4ds.hadley.nz/) on the way and [\textcolor{blue}{it uses |>}](https://r4ds.hadley.nz/workflow-style).
+  - We will use `|>` in this class.
+  - But you will see a lot of `%>%` in the wild (and in the 1st edition of r4ds).
+  - `|>` and `%>%` are _usually_ interchangeable, but they do not always work identically.
+
+# Which do you prefer?
+
+**Saving intermediate results**
+```{r}
+evens <- seq(from = 2, to = 100, by = 2)
+log_evens <- log(evens)
+mean_log_evens <- mean(log_evens)
+gmean_evens <- exp(mean_log_evens)
+gmean_evens
+```
+
+* Tends to clutter up the workspace.
+```{r}
+ls()
+```
+
+***
+
+**Nested function calls**
+```{r}
+gmean_evens <- exp(mean(log(seq(from = 2, to = 100, by = 2))))
+gmean_evens
+```
+
+* Have to read the function calls from inside out.
+
+***
+
+**Or pipes**
+
+* Follow the sequence of actions.
+```{r}
+gmean_evens <-
+  seq(from = 2, to = 100, by = 2) |>
+    log() |>
+    mean() |>
+    exp()
+gmean_evens
+```
+
+* [\textcolor{blue}{The tidyverse style}](https://style.tidyverse.org/) guide recommends that a pipe should always have a space before it and should [\textcolor{blue}{usually be followed by a new line}](https://style.tidyverse.org/pipes.html), as demonstrated above.
+
+***
+
+* Of course if we needed to compute geometric means repeatedly, we might want to write a simple function.
+
+```{r}
+geom_mean <- function(x) exp(mean(log(x)))
+gmean_evens <- geom_mean(seq(from = 2, to = 100, by = 2))
+gmean_evens
+```
+
+# Which do you prefer?
+
+**Saving intermediate results**
+```{r}
+#| include: false
+
+mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+           "J-100 Xtra", "M-21")
+serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+type <- rep(c("electric", "acoustic"), times = c(5, 2))
+body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+```
+```{r}
+guitars2 <- transform(guitars, kg = w_case_kg - case_kg)
+guitars2 <- transform(guitars2, lb = 2.2 * kg)
+guitars2 <- subset(guitars2, select = -c(w_case_kg, case_kg, kg))
+guitars2
+```
+
+***         
+
+**Nested function calls**
+
+```{r}
+guitars2 <- subset(transform(transform(guitars, kg = w_case_kg - case_kg),
+                             lb = 2.2 * kg),
+                   select = -c(w_case_kg, case_kg, kg))
+guitars2
+```
+***
+
+**Or pipes?**
+```{r}
+#| include: false
+
+library(dplyr)
+```
+
+```{r}
+guitars2 <-
+  guitars |>
+    transform(kg = w_case_kg - case_kg) |>
+    transform(lb = 2.2 * kg) |>
+    subset(select = -c(w_case_kg, case_kg, kg))
+guitars2
+```
+
+
+# Send LHS to Not-the-First Argument of RHS
+
+How can we do these two calls to `log()` with pipes?
+```{r}
+x <- 2^(1:4) 
+x
+log(x, 4)        # Same as log(x, base = 4)
+log(4, x)        # Same as log(4, base = x)
+```
+
+***
+
+* The first one is easy because we are using `x` as the first argument.
+```{r}
+x |> log(4)    # Same as  x |> log(base = 4)
+```
+* For the second one, we can use the “_” placeholder with a named argument.
+```{r}
+x |> log(4, base = _)
+```
+* Or use an anonymous function (which must be enclosed in parentheses and followed by a pair of parentheses).
+```{r}
+# Same as x |> (\(b) log(4, b))()
+x |> (function(b) log(4, b))()    
+```

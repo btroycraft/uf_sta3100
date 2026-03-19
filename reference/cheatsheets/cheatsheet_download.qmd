@@ -1,0 +1,28 @@
+---
+format: html
+---
+
+```{r}
+#| error: false
+    
+    file_names <- c(
+        "data-import",
+        "data-transformation",
+        "data-visualization",
+        "factors",
+        "lubridate",
+        "positron",
+        "purrr",
+        "quarto",
+        "rmarkdown",
+        "rstudio-ide",
+        "shiny",
+        "strings",
+        "tidyr"
+    ) |>
+        paste0(".pdf")
+    
+    for(file in file_names){
+        download.file(paste0("https://rstudio.github.io/cheatsheets/", file), file)
+    }
+```

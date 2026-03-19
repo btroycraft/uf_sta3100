@@ -1,0 +1,298 @@
+---
+title: "Arrays"
+subtitle: "Lecture 7"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# Arrays and `apply()`
+
+* Arrays are like matrices but the dimension may be more than 2 
+  - i.e., matrices are 2-dimensional arrays.
+* The `apply()` function _applies_ a function to one or more dimensions of an array.
+* Matrices and arrays are often used to store multi-way _contingency tables_, although this is not their only use.
+
+# Constructing an Array
+```{r}
+  array(1:24, dim = c(3, 4, 2))
+```
+
+## `?iris`  
+`Description:`   
+
+\setlength{\leftskip}{0.6cm}
+
+`This famous (Fisher's or Anderson's) iris data set gives the`     
+`measurements in centimeters of the variables sepal length and width and`   
+`petal length and width, respectively, for 50 flowers from each of 3`    
+`species of iris.  The species are _Iris setosa_, _versicolor_, and`  
+`_virginica_.`
+
+\setlength{\leftskip}{0cm}
+
+`Format:`  
+
+\setlength{\leftskip}{0.6cm}
+
+`‘iris3’ gives the same data arranged as a 3-dimensional array of size`  
+`50 by 4 by 3, as represented by S-PLUS.  The first dimension gives the`  
+`case number within the species subsample, the second the measurements`  
+`with names ‘Sepal L.’, ‘Sepal W.’, ‘Petal L.’, and ‘Petal W.’, and the`  
+`third the species.`   
+
+\setlength{\leftskip}{0cm}
+
+\newpage
+
+```{r}
+  dim(iris3)
+  dimnames(iris3)
+```
+    
+\newpage
+
+```{r}
+  iris3[1,,"Setosa"]     # Measurements from the first iris setosa
+  iris3[2,,"Setosa"]     # Measurements from the second iris setosa
+  iris3[1,,"Versicolor"] # Measurements from the first iris versicolor
+```
+
+\newpage
+
+```{r}
+  iris3[,"Petal L.","Virginica"]     # Petal lengths of all 50 iris virginica observed
+  iris3[1:2,,"Versicolor"]           # All measurements from 1st two iris versicolor observed
+```
+
+# Aside
+Compare to a data frame containing the same data (more on this later):
+```{r}
+  iris[1:3,]
+  dim(iris)
+  c( prod(dim(iris3)), prod(dim(iris)) )
+```
+
+\newpage
+
+# `apply()` for Arrays
+```{r}
+  ## Means for each comb. of measurement (dim 2) and species (dim 3)
+  apply(iris3, c(2,3), mean)
+```
+```{r}
+  ## Means for each measurement type (dim 2) (ignoring species)
+  apply(iris3, 2, mean)
+```
+
+\newpage
+
+```{r}
+  # Std devs for each combination of measurement and species
+  apply(iris3, c(2,3), sd)  
+```
+
+# `sweep()` 
+`Description:`  
+
+\setlength{\leftskip}{0.6cm} 
+
+`Return an array obtained from an input array by sweeping out a summary`      
+`statistic.`   
+
+\setlength{\leftskip}{0cm}
+
+
+`Usage :` 
+
+\setlength{\leftskip}{0.6cm}
+
+`sweep(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...)`    
+
+\setlength{\leftskip}{0cm}
+
+\newpage
+
+* In this example we center the species means by subtracting the overall mean for each measurement type (refer to earlier slide).  
+```{r, echo = TRUE}
+## Means for each comb. of measurement (dim 2) and species (dim 3)
+species_means <- apply(iris3, c(2,3), mean)
+
+## Means for each measurement type (dim 2) (ignoring species)
+overall_means <- apply(iris3, 2, mean)
+
+sweep(species_means, 1, overall_means, "-")
+```
+
+\newpage
+
+# Death and Survival on the Titanic
+```{r}
+  dim(Titanic)
+  dimnames(Titanic)
+```
+
+\newpage
+
+```{r}
+  Titanic["3rd", "Female", "Adult", "Yes"]
+  Titanic["3rd", "Female", "Adult", ]
+  Titanic[, "Female", "Adult", ]
+```
+
+\newpage
+
+```{r}
+  Titanic[, , "Child", ]
+  Titanic[, , "Adult", ]
+```
+
+\newpage
+
+# Flattening a Multiway Contingency Table
+```{r}
+  is.table(Titanic)
+  ftable(Titanic, row.vars = "Class", col.vars = c("Age", "Sex", "Survived"))
+```
+
+\newpage
+
+# Using `apply()`
+```{r}
+  # Total number of passengers
+  sum(Titanic)
+  ## Marginal table for survival: overall died and survived. Could use `marginSums()`.
+  apply(Titanic, "Survived", sum)
+  ## Marginal percentages died and survived (ignoring class, sex, age)
+  100 * apply(Titanic, "Survived", sum) / sum(Titanic)
+```
+
+\newpage
+
+```{r}
+  apply(Titanic, c("Survived", "Class"), sum)    # Number died and survived by class
+```
+The following calculation shows that of the 2201 passengers, 5.5% were first class passengers who died, 9.2% were first class passengers who survived, etc.
+```{r}
+  100 * apply(Titanic, c(4, 1), sum) / sum(Titanic)
+```
+
+\newpage
+What would we really like to know?
+
+* We suspect that passenger class may be predictive of survival.
+* Thus, we would like to know the proportion of passengers who survived _within each class_.
+* These proportions can be computed using `apply()` and `sweep()` but it isn’t much fun to do it this way.
+  - The process is illustrated in the next few slides, but we will not spend much class time on them because fortunately...
+* R provides some convenience functions to make this sort of calculation with tables much easier.
+
+\newpage
+
+```{r}
+  ## Marginal table for survival and class (ignoring sex and age).
+  surv_class_tot <- apply(Titanic, c("Survived", "Class"), sum)
+  surv_class_tot
+```
+
+```{r}
+  ## Marginal table for class.
+  class_tot <- apply(Titanic, "Class", sum)
+  class_tot
+```
+
+Now we want to divide (`FUN = "/"`) the columns (`MARGIN = 2`) of the first table by values in the second (`STAT = class_tot`). We can use `sweep()` to do this.
+
+\newpage
+
+```{r}
+  sweep(surv_class_tot, 2, class_tot, "/")
+```
+Can replace `2` by the name of the column dimension, which is “Class” in this case:
+```{r}
+  round( 100 * sweep(surv_class_tot, "Class", class_tot, "/"), 1 )
+```
+Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passengers survived.
+
+\newpage
+
+```{r}
+  surv_class_age_tot <- apply(Titanic, c("Survived", "Class", "Age"), sum)
+  
+  class_age_tot <- apply(Titanic, c("Class", "Age"), sum)
+  
+  round(100 * sweep(surv_class_age_tot, c("Class", "Age"), class_age_tot, "/"), 1)
+```
+
+\newpage
+
+# Three Convenience Functions for Tables
+
+* The `apply()` and `sweep()` functions are for general matrices and arrays.
+* The Titanic dataset is a (contingency) “table”.
+```{r}
+  class(Titanic)
+```
+* There are several convenience functions which apply a combination of `apply()` and `sweep()` to multi-way contingency tables to carry out some common tasks with tables:  
+  - `marginSums()`
+  - `proportions()`
+  - `addmargins()`
+  
+  \newpage
+  
+```{r}
+  ## We did this before with apply().  Here we use `marginSums()`.
+  surv_class_tot <- marginSums(Titanic, c("Survived", "Class"))
+  
+  surv_class_tot 
+```
+
+```{r}
+  addmargins(surv_class_tot)    # Glues on row and column totals
+```
+
+\newpage
+
+* Only the first of the following two sets of proportions is really useful or interesting, so make sure you know how to calculate the right one.
+```{r}
+  ## Proportion dying and surviving within each class:
+  proportions(surv_class_tot, "Class")
+```
+
+```{r}
+  ## Class proportions among those who died and among those who survived:
+  proportions(surv_class_tot, "Survived")
+```
+
+\newpage
+
+`proportions(Titanic, c("Class", "Sex", "Age"))`
+
+* Gives proportions dying and surviving for each comb. of class, sex, and age.
+* We convert to percentages and round to one place past the decimal point.
+* We then use `ftable()` to print a flattened version of the resulting table of percentages.
+```{r}
+  ftable(round(100 * proportions(Titanic, c("Class", "Sex", "Age")), 1),
+    row.vars = c("Sex", "Survived"), col.vars = c("Age", "Class"))
+```
+
+\newpage
+
+# Chi-Square Test of Independence
+We can use the usual chi-square test to test the null hypothesis of (marginal) independence of passenger class and survival (ignoring sex and age).
+```{r}
+  surv_class_tot
+  chisq.test(surv_class_tot)
+```

@@ -1,0 +1,163 @@
+../lecture_19/lecture_19.Rmd:151:     tv |> mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "))) |> pull(dt)
+../lecture_19/lecture_19.Rmd:153:       - Note: `stringr::str_c()` is very similar to `paste0()`.
+../lecture_19/lecture_19.Rmd:162:    mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
+../lecture_19/lecture_19.Rmd:213:* Use `stringr::str_replace()` to replace “p.m.” with “PM”.
+../lecture_19/lecture_19.Rmd:217:tv <- tv |> mutate(`Time (ET)` = str_replace(`Time (ET)`, "p.m.", "PM"))
+../lecture_19/lecture_19.Rmd:225:    mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c(a.m. = "AM", p.m. = "PM")))
+../lecture_19/lecture_19.Rmd:232:    mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+../lecture_20/lecture_20.Rmd:31:    mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c("a.m." = "AM", "p.m." = "PM"))) |>
+../lecture_20/lecture_20.Rmd:32:    mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+../lecture_27/lecture_27.Rmd:143:    ~ str_replace_all(.,
+../lecture_28/lecture_28.Rmd:117:1. All stringr functions start with `str_` prefix; base R string functions have no consistent naming scheme.
+../lecture_28/lecture_28.Rmd:127:|Length of a string                  |`str_length(x)`         |`nchar(x)`               |
+../lecture_28/lecture_28.Rmd:128:|Combining strings                   |`str_c(...)`            |`paste(...), paste0(...)`|
+../lecture_28/lecture_28.Rmd:129:|Extract substring by position       |`str_sub(x, start, end)`|`substr(x, start, stop)` |
+../lecture_28/lecture_28.Rmd:130:|Convert case of string              |`str_to_lower(x)`       |`tolower(x)`             |
+../lecture_28/lecture_28.Rmd:131:|                                    |`str_to_upper(x)`       |`toupper(x)`             |
+../lecture_28/lecture_28.Rmd:132:|                                    |`str_to_title(x)`       |`tools::toTitleCase(x)`  |
+../lecture_28/lecture_28.Rmd:133:|                                    |`str_to_sentence(x)`    |                         |
+../lecture_28/lecture_28.Rmd:134:|Collapse/flatten a character vector |`str_flatten(x, "")`    |`paste(x, collapse = "")`|
+../lecture_28/lecture_28.Rmd:142:str_length(x)
+../lecture_28/lecture_28.Rmd:149:str_c("Hello", people, ".")    # "Hello" and "." are recycled to match length of people.
+../lecture_28/lecture_28.Rmd:150:str_c("Hello", people, ".", sep = " ")
+../lecture_28/lecture_28.Rmd:151:str_c("Hello ", people, ".")
+../lecture_28/lecture_28.Rmd:153:str_c(str_c(salut, people, sep = " "), ".")
+../lecture_28/lecture_28.Rmd:159:y <- str_c(salut, people, sep = " ") 
+../lecture_28/lecture_28.Rmd:161:str_c(y, ".")
+../lecture_28/lecture_28.Rmd:166:str_c(salut, people, sep = " ") |> str_c(".")
+../lecture_28/lecture_28.Rmd:172:str_c(letters[24:26], collapse = " * ")   # Old way, same as base R's paste() function
+../lecture_28/lecture_28.Rmd:173:str_flatten(letters[24:26], " * ")                  # New way with str_flatten()
+../lecture_28/lecture_28.Rmd:174:str_c(c(7, 2, 6), letters[24:26], sep = "*", collapse = " + ")         # Old way
+../lecture_28/lecture_28.Rmd:175:str_c(c(7, 2, 6), letters[24:26], sep = "*") |> str_flatten(" + ")     # New way
+../lecture_28/lecture_28.Rmd:178:  str_c(rev(people), ": ", "Hello ", people, ".") |> 
+../lecture_28/lecture_28.Rmd:179:  str_flatten("\n") 
+../lecture_28/lecture_28.Rmd:186:str_sub(state.name, 4, 9)[1:5]
+../lecture_28/lecture_28.Rmd:187:str_sub(state.name, 4, -1)[1:5]
+../lecture_28/lecture_28.Rmd:188:table(str_sub(state.name, 1, 1))
+../lecture_28/lecture_28.Rmd:189:table(str_sub(state.name, -1, -1))
+../lecture_28/lecture_28.Rmd:190:x <- str_c(state.name, " (", state.abb, ")") 
+../lecture_28/lecture_28.Rmd:192:st.nm <- str_sub(x, 1, -6) 
+../lecture_28/lecture_28.Rmd:194:st.ab <- str_sub(x, -3, -2) 
+../lecture_28/lecture_28.Rmd:197:str_sub(x, -4, -4) <- "[" 
+../lecture_28/lecture_28.Rmd:198:str_sub(x, -1, -1) <- "]" 
+../lecture_29/lecture_29.Rmd:21:The function `str_view()` is used _only_ to display regex matches.
+../lecture_29/lecture_29.Rmd:29:str_view(x, "an")
+../lecture_29/lecture_29.Rmd:40:str_view(x, ".a.")
+../lecture_29/lecture_29.Rmd:47:str_view("banana", ".a.")
+../lecture_29/lecture_29.Rmd:48:str_view("bananas", ".a.")
+../lecture_29/lecture_29.Rmd:60:str_view(c("abc", "a.c", "bef"), "a\\.c")
+../lecture_29/lecture_29.Rmd:70:str_view(x, "\\\\")
+../lecture_29/lecture_29.Rmd:88:str_view(x, "^a")
+../lecture_29/lecture_29.Rmd:89:str_view(x, "a$")
+../lecture_29/lecture_29.Rmd:91:str_view(x, "apple")
+../lecture_29/lecture_29.Rmd:92:str_view(x, "^apple$")
+../lecture_29/lecture_29.Rmd:103:str_view("Even a toucan can.", "\\bcan\\b")
+../lecture_29/lecture_29.Rmd:104:str_view("Even a toucan can.", "can\\b")
+../lecture_29/lecture_29.Rmd:115:str_view(c("abc", "ab3", "a23"), "[0-9]")
+../lecture_29/lecture_29.Rmd:116:str_view(c("123", "1-c", "1b-"), "[^0-9]")
+../lecture_29/lecture_29.Rmd:117:str_view(c("Bob", "Carol", "Ted", "Alice"), "^[A-M][n-z]")
+../lecture_29/lecture_29.Rmd:133:str_view("abc.45", ".[.].")       # Same as str_view("abc.45", ".\\..")
+../lecture_29/lecture_29.Rmd:162:str_view(c("1 to 100", "can't"), "\\d\\d")
+../lecture_29/lecture_29.Rmd:163:str_view(c("1 to 100", "can't"), "\\W")   # So blank is not actually a word character.
+../lecture_29/lecture_29.Rmd:164:str_view(c("a  b \tc", "a b\tc", "a \\\n\tb"), "\\s\\s")
+../lecture_29/lecture_29.Rmd:174:str_view_all('Is it "summarise" or "summarize"?', "summari(s|z)e")
+../lecture_29/lecture_29.Rmd:175:str_view(c("He has 8 guitars?", "He has eight guitars?"), "(eight|8)")
+../lecture_29/lecture_29.Rmd:176:str_view("I think he has four banjos.", "(three|3|four|4)\\s(guitars|banjos)")
+../lecture_29/lecture_29.Rmd:191:str_view(c("I", "II", "III"), "II?")
+../lecture_29/lecture_29.Rmd:192:str_view(c("I", "II", "III", "IIII", "IIIII", "IIIII", "IIIIII"), "I{2,3}")
+../lecture_29/lecture_29.Rmd:193:str_view(c("I", "II", "III", "IIII"), "II+")
+../lecture_29/lecture_29.Rmd:194:str_view(c("I", "II", "III", "IIII"), "II*")            # Same as "I+"
+../lecture_29/lecture_29.Rmd:201:str_view(c("I", "II", "III"), "II+?")
+../lecture_29/lecture_29.Rmd:202:str_view(c("I", "II", "III"), "II*?")
+../lecture_29/lecture_29.Rmd:226:ted_and_alice <- rphone(area_code = str_sub(bob_and_carol, 1, 3))
+../lecture_29/lecture_29.Rmd:234:str_view(c(bob_and_carol, ted_and_alice), str_c(country_re, area_re, exchange_station_re))
+../lecture_29/lecture_29.Rmd:236:str_sub(bob_and_carol, 5, 5) <- 1     # Changing first digit of exchange code to 1.
+../lecture_29/lecture_29.Rmd:237:ted_and_alice <- str_c("+101 ", ted_and_alice)    # Adding international code for U.S.A.
+../lecture_29/lecture_29.Rmd:238:str_sub(ted_and_alice, 5, 5) <- " ("
+../lecture_29/lecture_29.Rmd:239:str_sub(ted_and_alice, 10, 10) <- ") "
+../lecture_29/lecture_29.Rmd:242:str_view(c(bob_and_carol, ted_and_alice), PH)
+../lecture_29/lecture_29.Rmd:253:str_view(fruit, "(..)\\1")
+../lecture_29/lecture_29.Rmd:254:str_view(fruit, "([aeiou]).\\1.\\1")
+../lecture_29/lecture_29.Rmd:255:str_view(fruit, "([aeiou]).([aeiou]).(\\1|\\2)")
+../lecture_29/lecture_29.Rmd:256:str_view(fruit, "([aeiou]).*\\1.*\\1")
+../lecture_30/lecture_30.Rmd:27:|View regex match                    |`str_view(x, pattern)`                    |                                      |
+../lecture_30/lecture_30.Rmd:28:|Find positions matching pattern     |`str_which(x, pattern)`                   |`grep(pattern, x)`                    |
+../lecture_30/lecture_30.Rmd:29:|Detect presence/absence of pattern  |`str_detect(x, pattern)`                  |`grepl(pattern, x)`                   |
+../lecture_30/lecture_30.Rmd:30:|Keep strings matching pattern       |`str_subset(x, pattern)`                  |`grep(pattern, x, value = TRUE)`      |
+../lecture_30/lecture_30.Rmd:31:|Count number of matches             |`str_count(x, pattern)`                   |`sapply(gregexpr(pattern, x), length)`|
+../lecture_30/lecture_30.Rmd:32:|Extract matching patterns           |`str_extract(x, pattern)`                 |`regexpr(pattern, x) + regmatches()`  |
+../lecture_30/lecture_30.Rmd:33:|                                    |`str_extract_all(x, pattern)`             |                                      |
+../lecture_30/lecture_30.Rmd:34:|Extract matched components          |`str_match(x, pattern)`                   |`regexpr(pattern, x) + regmatches()`  |
+../lecture_30/lecture_30.Rmd:35:|                                    |`str_match_all(x, pattern)`               |                                      |
+../lecture_30/lecture_30.Rmd:36:|Replace matched patterns            |`str_replace(x, pattern, replacement)`    |`sub(pattern, replacement, x)`        |
+../lecture_30/lecture_30.Rmd:37:|                                    |`str_replace_all(x, pattern, replacement)`|`gsub(pattern, replacement, x)`       |
+../lecture_30/lecture_30.Rmd:38:|Split string into pieces            |`str_split(x, pattern)`                   |`strsplit(x, pattern)`                |
+../lecture_30/lecture_30.Rmd:39:|                                    |`str_split_fixed()`                       |                                      |
+../lecture_30/lecture_30.Rmd:45:str_detect(c("Bob", "Carol", "Ted", "Alice"), "A|a")    # Contain "A" (or "a") or not?
+../lecture_30/lecture_30.Rmd:51:!str_detect(c("Bob", "Carol", "Ted", "Alice"), "A|a")
+../lecture_30/lecture_30.Rmd:52:str_detect(c("Bob", "Carol", "Ted", "Alice"), "A|a", negate = TRUE)
+../lecture_30/lecture_30.Rmd:58:sum(str_detect(words, "e$"))     # Number of stringr::words ending in "e".
+../lecture_30/lecture_30.Rmd:59:mean(str_detect(words, "e$"))    # Proportion of stringr::words ending in "e".
+../lecture_30/lecture_30.Rmd:64:* `str_detect()` could be used in a filter to select rows of data frame based on the entries in a column of character strings.
+../lecture_30/lecture_30.Rmd:68:guitars |> filter(str_detect(Model, "[0-9]"))   # Only rows with a digit in Model
+../lecture_30/lecture_30.Rmd:69:sum(str_detect(words, "z"))                     # How many contain "z"?
+../lecture_30/lecture_30.Rmd:71:str_which(words, "z")                           # Same as which(str_detect(words, "z"))
+../lecture_30/lecture_30.Rmd:73:str_subset(words, "z")                          # Same as words[str_detect(words, "z")]
+../lecture_30/lecture_30.Rmd:84:str_subset(nba.abb, "[AEIOU]", negate = TRUE)          # Which do not contain a vowel?
+../lecture_30/lecture_30.Rmd:89:str_subset(nba.abb, "^[^AEIOU]*$")
+../lecture_30/lecture_30.Rmd:94:* `str_count()` counts the number of matches in a string.
+../lecture_30/lecture_30.Rmd:98:str_count(c("banana", "papaya", "pomegranate"), ".a.")
+../lecture_30/lecture_30.Rmd:99:str_count(c("bananas", "papayas", "pomegranates"), ".a.")
+../lecture_30/lecture_30.Rmd:100:mean(str_count(words, "[aeiou]")) # Average number of vowels (lower case) per word.
+../lecture_30/lecture_30.Rmd:102:  mutate(vowels = str_count(word, "[AEIOUaeiou]"),
+../lecture_30/lecture_30.Rmd:103:         consonants = str_count(word, "[^AEIOUaeiou]")) 
+../lecture_30/lecture_30.Rmd:123:fruit_pattern <- str_c(fruit, collapse = "|")
+../lecture_30/lecture_30.Rmd:124:str_sub(fruit_pattern, 1, 70) # Show the 1st 70 characters of the pattern.
+../lecture_30/lecture_30.Rmd:130:fruit_sentences <- str_subset(sentences, fruit_pattern)
+../lecture_30/lecture_30.Rmd:136:matches <- str_extract(fruit_sentences, fruit_pattern) 
+../lecture_30/lecture_30.Rmd:147:fruit_sentences <- str_subset(sentences, regex(fruit_pattern, ignore_case = TRUE)) 
+../lecture_30/lecture_30.Rmd:148:matches <- str_extract(fruit_sentences, regex(fruit_pattern, ignore_case = TRUE)) 
+../lecture_30/lecture_30.Rmd:150:str_subset(sentences, "Grape")
+../lecture_30/lecture_30.Rmd:162:str_detect(fruit, "[^a-zA-Z0-9 ]") |> any()    # Looks like we're ok here.
+../lecture_30/lecture_30.Rmd:170:str_extract(c("fight", "pearl"), regex(fruit_pattern, ignore_case = TRUE))
+../lecture_30/lecture_30.Rmd:183:fruit_pattern <- str_c("\\b(", fruit_pattern, ")s?\\b") 
+../lecture_30/lecture_30.Rmd:184:str_sub(fruit_pattern, 1, 50) # Start of the regex
+../lecture_30/lecture_30.Rmd:185:str_sub(fruit_pattern, -50, -1) # End of the regex
+../lecture_30/lecture_30.Rmd:186:fruit_sentences <- str_subset(sentences, regex(fruit_pattern, ignore_case = TRUE))
+../lecture_30/lecture_30.Rmd:187:matches <- str_extract(fruit_sentences, regex(fruit_pattern, ignore_case = TRUE)) 
+../lecture_30/lecture_30.Rmd:212:has_fruit <- str_detect(sentences, regex(fruit_pattern, ignore_case = TRUE)) 
+../lecture_30/lecture_30.Rmd:213:has_fruit_old <- str_detect(sentences, regex(fruit_pattern_old, ignore_case = TRUE)) 
+../lecture_30/lecture_30.Rmd:223:  str_view(regex(fruit_pattern_old, ignore_case = TRUE))
+../lecture_30/lecture_30.Rmd:232:  (str_count(sentences, regex(fruit_pattern, ignore_case = TRUE)) > 1)
+../lecture_30/lecture_30.Rmd:240:* To extract all the matches, use `str_extract_all()`.
+../lecture_30/lecture_30.Rmd:243:str_extract_all(multi_fruit_sentences, regex(fruit_pattern, ignore_case = TRUE))
+../lecture_30/lecture_30.Rmd:246:* Unlike `str_extract()`, the function `str_extract_all()` returns a list.
+../lecture_30/lecture_30.Rmd:250:str_extract_all(fruit_sentences, regex(fruit_pattern, ignore_case = TRUE))[1:6]
+../lecture_30/lecture_30.Rmd:256:str_extract_all(fruit_sentences, regex(fruit_pattern, ignore_case = TRUE), 
+../lecture_30/lecture_30.Rmd:268:  str_subset(noun) |>
+../lecture_30/lecture_30.Rmd:272:* `str_extract()` gives just the matches.
+../lecture_30/lecture_30.Rmd:276:  str_extract(noun)
+../lecture_30/lecture_30.Rmd:279:* `str_match()` also gives the components of the match
+../lecture_30/lecture_30.Rmd:283:  str_match(noun)
+../lecture_30/lecture_30.Rmd:304:ted_and_alice <- rphone(area_code = str_sub(bob_and_carol, 1, 3)) 
+../lecture_30/lecture_30.Rmd:306:  str_c("Ted: Their number is ", bob_and_carol, "."),
+../lecture_30/lecture_30.Rmd:307:  str_c("Carol: Just dial ", ted_and_alice, " and ask for Alice.")) 
+../lecture_30/lecture_30.Rmd:311:str_match(dialogue, PH)
+../lecture_30/lecture_30.Rmd:314:* `str_match_all()` returns a list of matrices with rows giving all matches.
+../lecture_30/lecture_30.Rmd:318:              str_c("Horst: Bob and Carol's number is ", bob_and_carol, ";",
+../lecture_30/lecture_30.Rmd:320:str_match_all(dialogue, PH)
+../lecture_30/lecture_30.Rmd:325:* `str_replace()` and `str_replace_all()` replace matches with new strings.
+../lecture_30/lecture_30.Rmd:328:str_replace(fruit, "[aeiou]", "-")[1:5]
+../lecture_30/lecture_30.Rmd:329:str_replace_all(fruit, "[aeiou]", "-")[1:5]
+../lecture_30/lecture_30.Rmd:345:  mutate(new_number = str_replace(number, PH, "(\\1) \\2 \\3"))
+../lecture_30/lecture_30.Rmd:353:  str_split(" ")
+../lecture_30/lecture_30.Rmd:356:* `str_split()` returns a list because each element of a character vector might contain a different number of pieces.
+../lecture_30/lecture_30.Rmd:362:  str_split(" ", simplify = TRUE)
+../lecture_30/lecture_30.Rmd:372:  str_split(" ", n = 3, simplify = TRUE)
+../lecture_30/lecture_30.Rmd:381:str_split(x, " ")
+../lecture_30/lecture_30.Rmd:382:str_split(x, boundary("word"))
+../lecture_30/lecture_30.Rmd:383:str_split(x, boundary("sentence"))
+../lecture_30/lecture_30.Rmd:389:words |> sample(size = 3) |> str_split("")
+../lecture_30/lecture_30.Rmd:392:* The tidyverse package `purrr` provides the function `flatten_chr()`, which we can use to convert the list of character vectors returned by `str_split()` into a single _long_ character vector.
+../lecture_30/lecture_30.Rmd:396:  str_to_lower() |> 
+../lecture_30/lecture_30.Rmd:397:  str_split("") |> 

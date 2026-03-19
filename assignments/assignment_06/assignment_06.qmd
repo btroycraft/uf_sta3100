@@ -1,0 +1,54 @@
+---
+title: "Assignment 6"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [r4ds](https://r4ds.had.co.nz/): 5, 12.1-9
+* [r4ds2e](https://r4ds.hadley.nz/): 4, 21
+
+**General Instructions:** This assignment stresses the use of `tidyverse` commands, so you should use `tidyverse` commands where appropriate (most and maybe all of the exercises are explicit about this). You may find it convenient to use the base R pipe `|>` in some of the exercises, but this is optional.
+
+In November 2022 George Santos was elected to represent New York's 3rd district in Congress. On December 29, 2022, the New York Times reported on alleged irregularities in campaign expenditures reported to the Federal Elections Commission (FEC) by Santos's campaign. These allegations later formed part of a complaint filed with the FEC against the Santos campaign. The irregularities noted included:
+
+* Nearly $11,000 was disbursed to a cleaning company for rents and a deposit on a home in which Santos is alleged to have resided. (Federal law prohibits conversion of campaign funds to personal use.)
+
+We will not consider any of these specific allegations in this assignment. Instead we will use the FEC data on the the Santos campaign's disbursements to practice using `dplyr` functions. The file **schedule_b-2023-10-13T16_13_49.csv** was obtained from the FEC's website. This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period. The following code uses the base R command `read.csv()` to read these data into R (put the file in your working directory - to find the working directory - type `getwd()`):
+```{r}
+#| eval: false
+  santos <- read.csv("schedule_b-2023-10-13T16_13_49.csv")
+```
+
+## Problems:
+
+1. Using a `dplyr` function or functions. Replace the **santos** data frame (convert it to tibble) with one containing only the columns `recipient_name`, `category_code_full`, and `disbursement_amount`; and rename those columns to "recipient", "category", and "amount", respectively.
+
+2.  Use a `dplyr` function with "slice" in its name to show a random sample of 6 rows of the tibble.
+
+3.  Use a `dplyr` function with "slice" in its name to show the rows of the data frame corresponding to the 10 largest disbursement amounts.
+
+4.  Use a `dplyr` function to find out how many of the reported disbursements were for exactly $199.99?
+
+5.  Use a `dplyr` function to find out what percentage of the reported disbursements were for less than $200.00?
+
+6.  Rent payments to a cleaning company were questioned in news reports. Use a `dplyr` function to
+print the rows of the **santos** tibble that describe disbursements to "CLEANER 123 INC".
+
+7.  Use a dplyr function to create a tibble named **santos_categories** with:
+    * a row for each disbursement category, and
+    * three columns:
+         - "category": the full disbursement category code,
+         - "n": the number of disbursements in each category, and
+         - "amount": the total amount disbursed in each category.
+    
+8.  Use a `dplyr` function to arrange the rows of **santos_categories** in ascending order of the number of disbursements counted.
+
+9.  Use a `dplyr` function to arrange the rows of **santos_categories** in descending order of the total amount disbursed from the Santos campaign.

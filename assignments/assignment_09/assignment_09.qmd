@@ -1,0 +1,42 @@
+---
+title: "Assignment 9"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [r4ds2e](https://r4ds.hadley.nz/): 15
+
+1. The file "guitars2.csv" contains information about a small collection of guitars.
+    a) Use the `read_csv()` function to read this file into R as a data frame (tibble) named **guitars**, using the `col_select` argument along with the `starts_with()` function to omit any columns with names beginning with "Weight". The entries in the columns "Purchase Price" and "Insured Value" should be read as numbers and the entries in the column "Purchase Date" should be read as dates; the remaining columns will be of character type. The resulting tibble should have 8 rows and 11 columns. When you have done this part correctly, you will still receive a warning about "parsing issues". State in words the cause of the problem.  
+    *Note: Because of a bug in* `readr`*,* `problems(guitars)` *may not help you here, in spite of the instructions in the warning.*
+  b) Use `janitor::clean_names()` to convert the names to snake case (lower-case with "_" separators).
+  c) For the guitar with serial number 616619, set the purchase date to July 2, 1977.
+  d) Use the `lubridate` functions `year()` and `month()` to create columns purchase year and purchase month containing the year of purchase (numeric) and the month of purchase (a factor with abbreviated month names), respectively.
+
+2. Given the corpus of common words in `stringr::words`, create regular expressions that find all words that:
+    a) Start with "y"
+    b) Don't start with "y"
+    c) End with "x"
+    d) Start or end with "x"
+    e) Start with a vowel and end with a consonant
+    f) Are exactly three letters long (Use a regular expression, not `str_length()`)
+    g) Have seven letters or more
+    h) Contain a vowel-consonant pair
+    i) Contain at least two vowel-consonant pairs in a row
+    j) Only consist of repeated vowel-consonant pairs
+
+3. Switch the first and last letter for each string in `stringr::words`. Which of those strings are still in `stringr::words`?
+
+4. Are there any words in `stringr::words` that contain at least one of each diﬀerent vowel?
+
+5. Replace all forward slashes ("/") in "a/b/c/d/e" with backslashes ("\\").
+
+6. Install the R package `babynames`, and refer to the dataset `babynames`. What baby name has the most vowels? What name has the highest proportion of vowels?

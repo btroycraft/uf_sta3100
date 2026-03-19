@@ -1,0 +1,284 @@
+---
+title: "Probability Distributions"
+subtitle: "Lecture 4"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# An Overview of Probability Distributions in R
+
+R has a number of built-in functions related to common families of probability distributions.\
+If `fam` is the (abbreviated) name of the distribution, then the following functions are provided:
+
+-   `dfam()` : the `d`ensity of `fam` (usually how the distribution is visualized)\
+    – a probability mass function if `fam` is a discrete distribution
+-   `pfam()` : the cumulative distribution function (CDF) of `fam`\
+    – used to calculate `p`robabilities
+-   `qfam()` : the `q`uantile function of `fam`
+-   `rfam()` : generates `r`andom observations from `fam`
+
+Function arguments specify the parameters of the distribution.
+
+------------------------------------------------------------------------
+
+**From `help(Distributions)`:**
+
+-   `For the beta distribution see 'dbeta'.`
+-   `For the binomial (including Bernoulli) distribution see 'dbinom'.`
+-   `For the Cauchy distribution see 'dcauchy'.`
+-   `For the chi-squared distribution see 'dchisq'.`
+-   `For the exponential distribution see 'dexp'.`
+-   `For the F distribution see 'df'.`
+-   `For the gamma distribution see 'dgamma'.`
+-   `For the geometric distribution see 'dgeom'. (This is also a specialcase of the negative binomial.)`
+-   `For the hypergeometric distribution see 'dhyper'.`
+-   `For the log-normal distribution see 'dlnorm'.`
+
+------------------------------------------------------------------------
+
+-   `For the multinomial distribution see 'dmultinom'.`
+-   `For the negative binomial distribution see 'dnbinom'.`
+-   `For the normal distribution see 'dnorm'.`
+-   `For the Poisson distribution see 'dpois'.`
+-   `For the Student's t distribution see 'dt'.`
+-   `For the uniform distribution see 'dunif'.`
+-   `For the Weibull distribution see 'dweibull'.`
+
+We will use several of these in this course.
+
+# Example: The Normal Family
+
+**From `help(dnorm)`:**
+
+```{r norm}
+#| eval: false
+  dnorm(x, mean = 0, sd = 1, log = FALSE)
+  pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+  qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+  rnorm(n, mean = 0, sd = 1)
+```
+
+-   Default is a *standard normal* distribution: `mean = 0, sd = 1`.
+-   Can change this by specifying other values for `mean` and `sd` arguments.
+
+# Plotting a Normal Density
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Normal density with mean 100 and standard deviation 15."
+#| fig-alt: "Plot of Normal density with mean 100 and standard deviation 15."
+  
+  # Saving pop mean and std dev for reuse
+  mu <- 100 ; sigma <- 15
+  
+  # Changing margins of plot in graphical params
+  opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
+  
+  curve(dnorm(x, mean = mu, sd = sigma),
+        xlim = qnorm(c(0.001, 0.999), mean = mu, sd = sigma),
+        ylab = "Density")
+  
+  # Resetting to previous graphical parameters
+  par(opar)
+```
+
+\newpage
+
+# Normal Quantiles
+
+```{r}
+
+  # Given an upper tail probability, find the z-value.
+  qnorm(0.025, lower.tail = FALSE) 
+
+  # First and third quartiles
+  qnorm(c(0.25, 0.75), mean = mu, sd = sigma)
+
+  # First and third quartiles from z-values
+  mu + sigma * qnorm(c(0.25, 0.75))    
+```
+
+\newpage
+
+# Normal Probabilities
+
+```{r}
+
+  # Lower tail probability (area)
+  pnorm(125, mean = mu, sd = sigma)   
+  # Same after converting to z-score
+  pnorm((125 - mu)/sigma)             
+  # Upper tail probability
+  pnorm(125, mean = mu, sd = sigma, lower.tail = FALSE)    
+  # Total probability is one, so ...
+  1 - pnorm(125, mean = mu, sd = sigma) 
+```
+
+\newpage
+
+# Simulated Sampling from a Normal Distribution
+
+```{r}
+  
+  # Saving sample size for reuse.
+  n <- 30
+  # Generate a vector of n = 30 observations.
+  x <- rnorm(n, mean = mu, sd = sigma)
+  # Sample mean
+  mean(x)
+  # Sample standard deviation
+  sd(x)
+  # Sample quantiles
+  quantile(x, probs = c(0.25, 0.75))
+```
+
+\newpage
+
+### Histogram
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Frequency histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15."
+
+  hist(x)                 
+```
+
+\newpage
+
+## t-test and Confidence Interval
+
+-   Setting the argument `mu = 100` in `t.test()` causes it to test the null hypothesis $H_0: \mu = 100$ against the two-sided alternative $H_1: \mu \neq 100$.
+
+```{r}
+  t.test(x, mu = 100)
+```
+
+# Empirical Distribution vs Population Distribution
+
+### Histogram Density Estimator (`freq = FALSE`)
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
+
+  opar <- par(mar = c(5.1, 4.1, 1.1, 0.1))
+  hist(x, freq = FALSE, main = "")
+  curve(dnorm(x, mean = mu, sd = sigma), ylab = "Density",  add = TRUE)
+  par(opar)                
+```
+
+-   `freq = FALSE` in `hist()` scales heights of bars to make total area equal to 1.
+-   `main = ""` makes the main plot title empty. <!-- * Notice that the y-axis on this plot is set up by `hist()` and isn’t high enough to accomodate the graph of the true density which we have added --> to the plot.
+
+\newpage
+
+In this version:
+
+-   we set the y-axis limits to accomodate the heights of both the density curve and the histogram bars.
+-   we set the x-axis limits to accomodate all the bars of the histogram and almost all of the density.
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
+
+  opar <- par(mar = c(5.1, 4.1, 1.1, 0.1))
+  
+  dx <- hist(x, plot = FALSE)
+  ylim <- c(0, max(c(dnorm(x, mean = mu, sd = sigma), dx$density)))
+  xlim <- range(c(qnorm(c(0.001, 0.999), mean = mu, sd = sigma), dx$breaks))
+  plot(dx, freq = FALSE, xlim = xlim, ylim = ylim, main = NULL, col = 'grey80')
+  curve(dnorm(x, mean = mu, sd = sigma), ylab = "Density",  add = TRUE)
+  par(opar)              
+```
+
+\newpage
+
+# Kernel Density Estimator
+
+-   The `density()` function computes a smooth estimator of the density.
+-   For comparison, we also show the true population density and a fitted normal density, which uses the sample mean and sample standard deviation.
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Kernel density estimator from a sample of 30 normal random variables with mean 100 and standard deviation 15. The true (dashed) and fitted (dotted) normal densities are superimposed for comparison."
+
+  opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
+  dx <- density(x)
+  muhat <- mean(x); sigmahat <- sd(x)
+  ylim <- c(0, max(c(dnorm(x, mean = mu, sd = sigma),
+                     dnorm(x, mean = muhat, sd = sigmahat),
+                     dx$y)))
+  plot(dx, ylim = ylim, main = "")
+  curve(dnorm(x, mean = mu, sd = sigma), lty = 2, add = TRUE)
+  curve(dnorm(x, mean = muhat, sd = sigmahat), lty = 3, add = TRUE)
+  
+  # Shows the data as a rug on the x-axis
+  rug(x)     
+  
+  par(opar)             
+```
+
+\newpage
+
+# Q-Q Plots
+
+Plot the quantiles of the empirical distribution (i.e., the order statistics) against the quantiles of the (fitted) theoretical distribution.
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Normal QQ plot from a sample of 30 normal random variables with mean 100 and standard deviation 15."
+
+  opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
+  qqnorm(x, main = NULL)
+  qqline(x)
+  par(opar)             
+```
+
+\newpage
+
+# Empirical CDF
+
+```{r}
+
+  px <- ecdf(x)
+  px
+```
+
+```{r}
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+#| fig-cap: "Empirical CDF from a sample of 30 normal random variables with mean 100 and standard deviation 15. True CDR superimposed."
+
+  opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
+  plot(px, main = NULL, verticals = TRUE, cex = 0.75,
+       col.points = "blue", col.hor = "red", col.vert = "bisque")
+  curve(pnorm(x, mean = mu, sd = sigma), lty = 2, add = TRUE)
+  par(opar)          
+```

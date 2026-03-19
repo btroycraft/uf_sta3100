@@ -1,0 +1,159 @@
+---
+title: "`tidyr`: Tidy Data"
+subtitle: "Lecture 27"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+# Principles of Tidy Data
+
+1. Each variable is a column; each column is a variable. 
+2. Each observation is a row; each row is an observation. 
+3. Each value is a cell; each cell is a single value.
+
+These principles are commonly violated in a variety of ways.
+
+# Border Crossings Data
+The file `Annual Table.tsv` was obtained from the U.S. Department of Transportation's [\textcolor{blue}{Bureau of Transportation Statistics}](https://www.bts.gov/).
+```{r}
+#| message: false
+
+border_tsv <- "Annual Table.csv"
+```
+
+The file was downloaded from [\textcolor{blue}{https://explore.dot.gov/views/BorderCrossingData/Annual}](https://explore.dot.gov/views/BorderCrossingData/Annual) by
+
+* clicking on the download icon at the bottom right of the page, 
+* choosing “Crosstab”, and then
+* choosing a format.
+
+Strangely, choosing format CSV downloads a tab-separated-values (TSV) file named `Annual Table.csv`.
+
+* I only noticed this after trying to read the file with `read_csv()`.
+
+```{r}
+library(tidyverse)
+border <- read_csv(border_tsv, locale = locale(encoding = "UTF-16")) 
+slice_head(border, n = 6)
+```
+
+* Those `\t`’s are tab characters.
+* More about the UTF-16 encoding in a moment.
+
+```{r}
+border <- read_tsv(border_tsv)
+```
+
+* Apparently this error is due to an unexpected text encoding / character set.
+* I found the encoding of this file by typing `file -I filename` in a Terminal (on a Macbook), but there are many other ways to get this information (google it).
+* My system expects UTF-8 by default.
+
+```{r}
+locale()
+locale(encoding = "UTF-16")
+border <- read_tsv(border_tsv, locale = locale(encoding = "UTF-16")) 
+border |> print(n = 8)
+```
+
+**Data in Column Names**
+
+Looking at these data, we see that:
+
+* The _values_ of the _variable_ year are recorded in column names.
+* The numeric values recorded in the year columns are counts (number of crossings).
+
+We can fix this problem with `tidyr::pivot_longer()`.
+
+* Aside: Interestingly, the xlsx version of the dataset also exhibits the _empty- cells-make-reading-easier_ problem, but we know how to fix that with `tidyr::file()`.
+
+# Pivoting Longer
+
+
+```{r}
+border <- border |>
+  pivot_longer(cols = -(1:2), names_to = "Year", values_to = "count")
+border |> print(n = 8)
+```
+
+* As we saw in the original dataset, there are some missing counts:
+
+```{r}
+border |> group_by(is.na(count)) |> summarize(n = n())
+```
+
+* The missing counts could possibly be taken to be zeros, but it is not clear at this stage whether they are
+  - structural (e.g., a port of entry hadn’t opened in the earlier years), or
+  - actual zero counts, or
+  - data that simply weren’t available/recorded for some other reason,
+  - or some combination of these three possibilities.
+
+# Pivoting Wider
+
+It seems natural to consider the _observational units_ to be the port-by-year combinations. In this case:
+
+* the values (levels) in the `Measure` column are _variables_.
+
+As we show next, the levels of `Measure` won’t make great variable names, but we can change them later.
+
+```{r}
+border |> distinct(Measure)
+border <- border |> pivot_wider(
+  names_from = Measure,
+  values_from = count 
+  )
+border |> print(n = 5)
+``` 
+
+* In some cases you might need to specify identifying columns.
+* In this example, the columns `Port Name` and `Year` identify the observation
+units, so we could have typed:
+```{r}
+#| eval: false
+
+border <- border |>
+  pivot_wider(names_from = Measure, values_from = count,
+              id_cols = c(`Port Name`, Year))
+```
+
+However, removing the columns `Measure` and `count` used in `names_from` and `values_from` leaves only the two columns that specify the observation units, `Port Name` and `Year`, so there was no need to specify the identifying columns in this example.
+
+* The column names are not great. 
+
+```{r}
+glimpse(border)
+```
+
+* Could use `janitor::clean_names()` to get consistent, syntactic names:
+
+```{r}
+border <- border |>
+  rename(Port = `Port Name`) |> 
+  janitor::clean_names()
+names(border)
+```
+
+* If desired(??), we could abbreviate some of these too.
+
+```{r}
+border <- border |> 
+  rename_with(
+    ~ str_replace_all(.,
+                      c("passengers" = "psngrs",
+                        "containers" = "cntnrs"))
+    ) 
+names(border)
+```

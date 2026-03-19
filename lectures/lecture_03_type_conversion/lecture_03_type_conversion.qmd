@@ -1,0 +1,144 @@
+---
+title: "Type Conversion"
+subtitle: "Lecture 3"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+  - paperwidth = 11in
+  - paperheight = 6.875in
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{sectsty}
+  - \allsectionsfont{\centering}
+  - \pagenumbering{gobble}
+execute: 
+  error: true
+---
+
+\newpage
+
+# Numeric Data Types
+
+As we have seen, R usually stores numeric data as double precision by default.
+```{r}
+x <- c(1,2,3)
+x
+typeof(x)   # Returns the R internal type or storage mode of x.
+```
+But you can enter integers explicitly with the L suffix:
+```{r}
+x <- c(1L, 2L, 3L) 
+x
+typeof(x)
+```
+
+\newpage
+
+And some functions return integer values:
+```{r}
+x <- 1:3
+x
+typeof(x)
+```
+
+\newpage
+
+# Casting (Explicit Type Conversion)
+You can _cast_ between types (explicitly convert from one type to another):
+```{r}
+x
+typeof(x)
+
+y <- as.double(x) 
+y
+typeof(y)
+
+y <- as.character(y) 
+y
+typeof(y)
+```
+
+\newpage
+
+* numerical to logical: 0 $\mapsto$ `FALSE` ; nonzero $\mapsto$ `TRUE`
+* logical to numeric: `FALSE` $\mapsto$ 0 ; `TRUE`$\mapsto$  1
+
+```{r}
+x <- 0:3
+x
+
+y <- as.logical(x)
+y
+
+as.integer(y) 
+as.double(y) 
+as.character(y)
+```
+
+\newpage
+
+# Implicit Type Conversion
+
+* R often _implicitly_ coerces values to an (hopefully) appropriate type.
+* Here are two **very useful** tricks that take advantage of this.
+```{r}
+y
+
+sum(y)   # Number true : equal to sum(as.integer(y)) 
+
+mean(y)  # Proportion true : equal to sum(as.integer(y))
+```
+
+```{r}
+iq <- round(rnorm(18, mean = 100, sd = 15))
+iq
+sum(iq > 105)
+```
+    
+\newpage
+
+* If using integers and doubles together in arithmetic, R implicitly coerces the integers to double in order to do the calculation.
+```{r}
+typeof(1:3)
+
+4L + (1:3)            # All the numbers involved are integers
+typeof(4L + (1:3)) 
+
+4.0 + (1:3)           # 4.0 is double ; 1:3 is integer
+typeof(4.0 + (1:3))
+```  
+
+\newpage
+
+* Similar implicit rules are applied in many other situations.
+* E.g., all the elements of a vector have to be of the same type, so if forming a vector from elements of different types, R coerces them to the same type when it can do so without losing (much) information or precision.
+
+```{r}
+c(1:3, 4L)                # 1:3 = c(1L, 2L, 3L) and 4L all integers
+typeof(c(1:3, 4L)) 
+
+c(1:3, 4.0)               # 1:3 = c(1L, 2L, 3L) integer ; 4.0 double
+typeof(c(1:3, 4.0)) 
+
+c(1:3, "4")               # 1:3 = c(1L, 2L, 3L) integer ; "4" character
+typeof(c(1:3, "4"))
+```
+
+\newpage
+
+* Implicit type conversion happens in many other situations.
+
+```{r}
+x <- as.character(1:3) 
+x
+
+paste("q", x, sep = "_")      # Pasting together character vectors ("q" is recycled)
+
+paste("q", 1:3, sep = "_")    # 1:3 is integer ; converted to character inside paste().
+
+paste("That's ", c(TRUE, FALSE), "!", sep = "")   # logical converted to character.
+```

@@ -1,0 +1,183 @@
+---
+title: "Quarto Demonstration"
+description: This file demonstrates many of the most relevant options for a Quarto document for use with assignments. Please use this as a jumping-off point for your own work.
+
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+
+execute:
+  error: false
+  warning: false
+  fig-width: 6
+  fig-height: 6
+---
+
+# Section
+
+## Sub-section
+
+### Sub-sub-section
+
+Hello, this is new text
+
+```{r}
+#| label: block1
+#| eval: true
+
+  # Block 1
+  # "eval: true" means block code will be run
+  
+  print("This sentence is output from Block 1.")
+  x <- 1:5
+```
+
+```{r}
+print(x)
+cat(x)
+```
+
+`{r} print(x)`
+
+`{r} x`
+
+`{r} cat(x)`
+
+`{r} print(x)`
+
+`{r} x^2`
+
+```{r}
+x^2
+```
+
+```{r}
+(1:1000)^2
+
+sum(1:100)
+mean(1:100)
+sd(1:100)
+```
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4 
+#| fig-alt: "Plot of vector containing values 1:100"
+plot(1:100)
+```
+
+
+
+```{r}
+#| label: block2
+#| eval: false
+
+  # Block 2
+  # "eval: false" means block code will not be run
+  
+  print("This sentence is output from Block 2.")
+  
+  quit()
+```
+
+No ending spaces/tabs:
+
+New Paragraph
+
+Ending 1 tab/2 spaces:\
+New Line
+
+| No Indent
+|  Indent 1 Space
+|   Indent 2 Spaces
+
+*Italics* **Bold** ***Bold+Italics***
+
+*Italics* **Bold** ***Bold+Italics***
+
+Script ^Superscript^ ~Subscript~
+
+Latex-style math formulas: $\sum_{i=1}^{4} i^3 = 1+8+27+64 = 100$
+
+$$\sin(\frac{\pi}{2})=1$$
+
+```{r}
+#| label: block3
+#| echo: true
+  
+  # Block 3
+  # "echo: true" means code will be shown
+  
+  print("This sentence is output from Block 3.")
+```
+
+```{r}
+#| label: block4
+#| echo: false
+ 
+  # Block 4
+  # "echo: false" means block code will not be shown
+  
+  print("This sentence is output from Block 4.")
+```
+
+In the following, note that *tabs are important*
+
+1.  Numbered
+2.  List
+    a.  Lettered (4 spaces/2 tabs)
+    b.  Sublist
+        a)  Different (8 spaces/4 tabs)
+        b)  Format
+
+-   Unnumbered
+-   List
+
+```{r}
+#| label: block5
+#| include: true
+
+  # Block 5
+  # "include: true" means block output will be shown
+  
+  print("This sentence is output from Block 5.")
+```
+
+```{r}
+#| label: block6
+#| include: false
+
+  # Block 6
+  # "include: false" means block output will not be shown
+
+  print("This sentence is output from Block 6.")
+```
+
+```{r}
+  # Blocks do not need names or options
+  # Sets "x" to be 23.42892 and prints
+  
+  x <- 23.42892
+  print(x)
+```
+
+This is inline code. The variable *x* is `{r} round(x, 2)` and *x*^2^ is `{r} round(x^2, 3)`.
+
+```{r}
+  data1 <- rnorm(100)
+```
+
+1)  The mean of **data1** is `{r} mean(data1)`. The variance is `{r} var(data1)`. The range is `{r} max(data1)-min(data1)`.
+
+```{r}
+  y <- runif(20)
+  print(y)
+```
+
+```{r}
+#| results: "asis"
+  
+  cat("The formatted output is ", y)
+```

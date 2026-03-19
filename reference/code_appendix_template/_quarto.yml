@@ -1,0 +1,92 @@
+# ================================
+# This yaml file is designed to automatically alter a .qmd file on preview to
+# generate a formatted code appendix at the end of the resulting .pdf. It also
+# controls general formatting and settings
+# 
+# This _quarto.yml should be put in the same folder as the base .qmd.
+# ================================
+
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+lang: en
+execute:
+  echo: false
+  warning: false
+  fig-width: 6
+  fig-height: 6
+
+project:
+  pre-render: |
+    Rscript -e "
+    code_appendix <- '
+
+    \\\\newpage
+
+    # CODE APPENDIX
+    
+    ```{r}
+    #| label: code_appendix_get_labels
+    #| echo: false
+    #| eval: true
+    #| include: false
+    
+    block_labels <- 
+      knitr::all_labels() |>
+        setdiff(c(\'global_options\', \'code_appendix_get_labels\', \'code_appendix_print\'))
+    for(label in block_labels){
+      new_label <-
+        grepl(\'unnamed-chunk-\', label) |>
+          ifelse(\'\', paste0(\' \', label))
+      source_code <- c(\'\', paste0(\'# ----\', new_label), knitr::knit_code$get(label))
+      knitr::knit_code$set |>
+        do.call(setNames(list(source_code), label))
+    }
+    
+    ```
+    
+    ```{r}
+    #| label: code_appendix_print
+    #| echo: true
+    #| eval: false
+    #| include: true
+    #| class-output: shadebox
+    #| ref-label: !expr block_labels
+
+    ```
+    '
+    
+    dir.create('_generated', showWarnings = FALSE);
+
+    input_files <- strsplit(Sys.getenv('QUARTO_PROJECT_INPUT_FILES'), '\n')[[1]];
+    qmd_files <- input_files[grepl('\\\\.qmd$', input_files) & !grepl('^_generated/', input_files)];
+    
+    for(qmd_name in qmd_files){
+      qmd_name_temp <- file.path('_generated', basename(qmd_name));
+      file.copy(qmd_name, qmd_name_temp, overwrite = TRUE)
+      writeLines(
+        c(readLines(qmd_name, warn = FALSE), code_appendix),
+        qmd_name
+      );
+    }
+    "
+  
+  post-render: |
+    Rscript -e "
+    input_files <- list.files('_generated');
+    qmd_files <- input_files[grepl('\\\\.qmd$', input_files) & !grepl('^_generated/', input_files)];
+    
+    for(qmd_name in qmd_files){
+      qmd_name_temp <- file.path('_generated', basename(qmd_name));
+      if(!file.copy(qmd_name_temp, qmd_name, overwrite = TRUE)){
+        break
+      }
+      file.remove(qmd_name_temp)
+    }
+    if(length(list.files('_generated')) == 0){
+      unlink('_generated', recursive = TRUE)
+    }
+    "

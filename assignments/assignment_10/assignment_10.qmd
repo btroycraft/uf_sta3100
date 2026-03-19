@@ -1,0 +1,43 @@
+---
+title: "Assignment 10"
+subtitle: "STA3100"
+format:
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+lang: en
+geometry:
+  - margin = 1in
+---
+
+## Reading Assignment:
+
+* [r4ds2e](https://r4ds.hadley.nz/): 16, 25.1-2
+* [rp4ds](https://bookdown.org/rdpeng/rprogdatascience): 4.11, 13-14
+* (optional) [advr](https://adv-r.hadley.nz): 3.4.1, 5-6
+
+## Problems:
+
+1. Install the `forcats` R package. The dataset `gss_cat` is a sample of data from the General Social Survey, a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
+    a) What is the most common `relig` in this survey? What's the least common `partyid`?
+    b) Reorder the levels of `marital` in decreasing frequency.
+    c) For `rincome`, reorder the levels as "Lt $1000", "$1000 to 2999", "$3000 to 3999", ..., "$20000 - 24999", "$25000 or more". Combine the levels "No answer", "Don't know", "Refused", and "Not applicable" to one level "NA", and put "NA" at the end of the levels.
+    d) For `rincome`, change "Lt $1000" to "Lt $1k", change "$1000 to 2999" to "$1-3k", "$3000 to 3999" to "$3-4k", etc.
+    e) Make a bar chart for `rincome`, ordered by the frequency for each level.
+    f) Make a dot chart on average number of hours spent watching TV per day across religions (the horixontal axis is `relig` and the vertical axis is `tvhours`. Order the `relig` levels by `tvhours` (increasing order and decreasing order are both okay).
+    
+2. In this exercise, you will use *n* = 2500 replications to study the distribution of the longest run of heads in 100 coin tosses. Let *X*~*i*~ represent the length of the longest run of heads in the *i*^th^ replication.
+    a) Create an 100-by-2500 matrix of independent tosses of a fair coin. The 2500 columns of this matrix represent independent replications of the experiment of tossing a fair coin 100 times. You may represent heads/tails with "H"/"T", 0/1, or any other sensible choice.
+    \pagebreak
+    b) Let $\mu$ represent the (theoretical) mean length of the longest run of heads in 100 tosses of a fair coin. Let $\bar{X}=\frac{1}{n}\sum_{i=1}^n X_i$ be the sample mean of the 2500 *X*~*i*~ values. As discussed in class previously, $\mu$ can be estimated by $\bar{X}$. Use the 2500 simulations from (2a) to compute $\bar{X}$ and the standard deviation $\hat{S}=\sqrt{\frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2}$ (use built-in R functions `mean()` and `sd()`), and construct a 95% confidence interval for $\mu$ using the formula:
+    $$ \bar{X}\pm z\left(1-\frac{1-\gamma}{2}\right)\cdot\frac{\hat{S}}{\sqrt{n}} $$
+    where $\gamma$ is the confidence level and $z()$ is the quantile function of a standard normal (`qnorm()`).
+    c) Let *p* represent the probability that there is a run of heads of length 5 or more in 100 tosses of a fair coin. Let $\hat{p}_X$ be the proportion of replications of the coin tossing experiment in which *X*~*i*~ is greater than or equal to 5. As discussed previously in class, *p* can be estimated by $\hat{p}_X$. Use the 2500 simulations from (2a) to compute $\hat{p}_X$. Compute the estimated standard error of $\hat{p}_X$ using the formula:
+    $$ \sqrt{\frac{\hat{p}_{X}(1-\hat{p}_{X})}{n}} $$
+
+
+3. Now we examine how the distribution of the longest run length changes with the number of tosses. Here you are interested in the longest overall run in the sequence, ignoring whether it is a run of heads or of tails.
+    a) For each of the values *m* = 50, 100, 200, and 400, generate 2500 replications of a sequence of
+*m* tosses of a fair coin and compute the maximum run length for each of the replications. Store your results in a 2500-by-4 tibble with column names "50", "100", "200", and "400".
+    b) Using the 2500-by-4 tibble from part (3a), estimate the 5^th^, 25^th^, 50^th^, 75^th^, and 95^th^ percentiles of the distribution of the longest run length for *m* = 50, 100, 200, and 400. Your result should print as a matrix or table with 5 rows corresponding to the percentiles estimated and 4 columns corresponding to the values of *m*.
+    c) Again using the 2500-by-4 tibble from (3a), produce a box plot comparing the distributions of the longest run length when *m* = 50, 100, 200, and 400.
