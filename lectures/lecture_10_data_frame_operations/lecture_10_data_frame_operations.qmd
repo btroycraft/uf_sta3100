@@ -1,6 +1,6 @@
 ---
 title: "Data Frame Operations"
-subtitle: "Lecture 10"
+subtitle: "STA3100 Lecture 10"
 format:
   pdf:
     pdf-engine: lualatex

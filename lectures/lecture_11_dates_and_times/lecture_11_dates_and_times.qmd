@@ -1,6 +1,6 @@
 ---
 title: "Dates and Times"
-subtitle: "Lecture 11"
+subtitle: "STA3100 Lecture 11"
 format:
   pdf:
     pdf-engine: lualatex

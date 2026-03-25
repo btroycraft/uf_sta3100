@@ -1,6 +1,6 @@
 ---
 title: "Programming"
-subtitle: "Lecture 12"
+subtitle: "STA3100 Lecture 12"
 format:
   pdf:
     pdf-engine: lualatex

@@ -1,6 +1,6 @@
 ---
 title: "`forcats`: Factors"
-subtitle: "Lecture 32"
+subtitle: "STA3100 Lecture 32"
 format:
   pdf:
     pdf-engine: lualatex

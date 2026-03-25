@@ -1,6 +1,6 @@
 ---
 title: "`lubridate`: Dates and Times"
-subtitle: "Lecture 19"
+subtitle: "STA3100 Lecture 19"
 format:
   pdf:
     pdf-engine: lualatex

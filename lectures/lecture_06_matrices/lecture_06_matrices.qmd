@@ -1,6 +1,6 @@
 ---
 title: "Matrices"
-subtitle: "Lecture 6"
+subtitle: "STA3100 Lecture 6"
 format:
   pdf:
     pdf-engine: lualatex

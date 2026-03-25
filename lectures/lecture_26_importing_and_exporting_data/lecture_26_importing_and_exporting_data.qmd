@@ -1,6 +1,6 @@
 ---
 title: "Importing and Exporting Data"
-subtitle: "Lecture 26"
+subtitle: "STA3100 Lecture 26"
 format:
   pdf:
     pdf-engine: lualatex

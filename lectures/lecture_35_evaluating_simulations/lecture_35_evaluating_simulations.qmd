@@ -1,6 +1,6 @@
 ---
 title: "Evaluating Simulations"
-subtitle: "Lecture 35"
+subtitle: "STA3100 Lecture 35"
 format:
   pdf:
     pdf-engine: lualatex

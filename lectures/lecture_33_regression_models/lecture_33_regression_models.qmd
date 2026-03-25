@@ -1,6 +1,6 @@
 ---
 title: "Regression Models"
-subtitle: "Lecture 33"
+subtitle: "STA3100 Lecture 33"
 format:
   pdf:
     pdf-engine: lualatex

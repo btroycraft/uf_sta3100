@@ -1,6 +1,6 @@
 ---
 title: "Pipes"
-subtitle: "Lecture 16"
+subtitle: "STA3100 Lecture 16"
 format:
   pdf:
     pdf-engine: lualatex

@@ -1,6 +1,6 @@
 ---
 title: "`tidyr`: Tidy Data"
-subtitle: "Lecture 27"
+subtitle: "STA3100 Lecture 27"
 format:
   pdf:
     pdf-engine: lualatex

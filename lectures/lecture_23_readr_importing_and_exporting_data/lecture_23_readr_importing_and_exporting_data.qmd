@@ -1,6 +1,6 @@
 ---
 title: "`readr`: Importing and Exporting Data"
-subtitle: "Lecture 23"
+subtitle: "STA3100 Lecture 23"
 format:
   pdf:
     pdf-engine: lualatex

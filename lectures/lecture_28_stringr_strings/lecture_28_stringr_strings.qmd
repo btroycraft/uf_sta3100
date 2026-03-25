@@ -1,6 +1,6 @@
 ---
 title: "`stringr`: Strings"
-subtitle: "Lecture 28"
+subtitle: "STA3100 Lecture 28"
 format:
   pdf:
     pdf-engine: lualatex

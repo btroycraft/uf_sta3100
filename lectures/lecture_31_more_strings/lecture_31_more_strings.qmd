@@ -1,6 +1,6 @@
 ---
 title: "More Strings"
-subtitle: "Lecture 31"
+subtitle: "STA3100 Lecture 31"
 format:
   pdf:
     pdf-engine: lualatex

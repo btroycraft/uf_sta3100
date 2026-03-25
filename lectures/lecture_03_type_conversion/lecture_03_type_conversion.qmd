@@ -1,6 +1,6 @@
 ---
 title: "Type Conversion"
-subtitle: "Lecture 3"
+subtitle: "STA3100 Lecture 3"
 format:
   pdf:
     pdf-engine: lualatex

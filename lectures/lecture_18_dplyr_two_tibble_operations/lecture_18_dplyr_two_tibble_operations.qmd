@@ -1,6 +1,6 @@
 ---
 title: "`dplyr`: Two-Tibble Operations"
-subtitle: "Lecture 18"
+subtitle: "STA3100 Lecture 18"
 format:
   pdf:
     pdf-engine: lualatex

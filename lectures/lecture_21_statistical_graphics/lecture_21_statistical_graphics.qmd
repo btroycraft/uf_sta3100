@@ -1,6 +1,6 @@
 ---
 title: "Statistical Graphics"
-subtitle: "Lecture 21"
+subtitle: "STA3100 Lecture 21"
 format:
   pdf:
     pdf-engine: lualatex

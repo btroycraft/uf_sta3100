@@ -1,6 +1,6 @@
 ---
 title: "Lists"
-subtitle: "Lecture 8"
+subtitle: "STA3100 Lecture 8"
 format:
   pdf:
     pdf-engine: lualatex

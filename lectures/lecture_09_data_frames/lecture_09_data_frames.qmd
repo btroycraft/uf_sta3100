@@ -1,6 +1,6 @@
 ---
 title: "Data Frames"
-subtitle: "Lecture 9"
+subtitle: "STA3100 Lecture 9"
 format:
   pdf:
     pdf-engine: lualatex

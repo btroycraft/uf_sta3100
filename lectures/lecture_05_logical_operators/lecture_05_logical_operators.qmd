@@ -1,6 +1,6 @@
 ---
 title: "Logical Operators"
-subtitle: "Lecture 5"
+subtitle: "STA3100 Lecture 5"
 format:
   pdf:
     pdf-engine: lualatex

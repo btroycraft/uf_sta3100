@@ -1,6 +1,6 @@
 ---
 title: "Tidyverse: Tibbles"
-subtitle: "Lecture 15"
+subtitle: "STA3100 Lecture 15"
 format:
   pdf:
     pdf-engine: lualatex

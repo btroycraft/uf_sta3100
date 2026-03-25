@@ -1,10 +1,7 @@
 ---
 title: "Assignment 6"
 subtitle: "STA3100"
-format:
-  pdf:
-    pdf-engine: lualatex
-    pdf-standard: ua-2
+format: html
 lang: en
 geometry:
   - margin = 1in
@@ -24,7 +21,7 @@ In November 2022 George Santos was elected to represent New York's 3rd district 
 
 * Nearly $11,000 was disbursed to a cleaning company for rents and a deposit on a home in which Santos is alleged to have resided. (Federal law prohibits conversion of campaign funds to personal use.)
 
-We will not consider any of these specific allegations in this assignment. Instead we will use the FEC data on the the Santos campaign's disbursements to practice using `dplyr` functions. The file **schedule_b-2023-10-13T16_13_49.csv** was obtained from the FEC's website. This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period. The following code uses the base R command `read.csv()` to read these data into R (put the file in your working directory - to find the working directory - type `getwd()`):
+We will not consider any of these specific allegations in this assignment. Instead we will use the FEC data on the the Santos campaign's disbursements to practice using `dplyr` functions. The file **schedule_b-2023-10-13T16_13_49.csv** was obtained from the FEC's website. This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period. The following code uses the base R command `read.csv()` to read these data into R (put the file in your working directory - to find the working directory - type `getwd()` - this should match the location of your .qmd file):
 ```{r}
   santos <- read.csv("schedule_b-2023-10-13T16_13_49.csv")
 ```

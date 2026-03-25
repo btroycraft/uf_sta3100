@@ -1,6 +1,6 @@
 ---
 title: "Vectors"
-subtitle: "Lecture 2"
+subtitle: "STA3100 Lecture 2"
 format:
   pdf:
     pdf-engine: lualatex

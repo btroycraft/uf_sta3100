@@ -1,6 +1,6 @@
 ---
 title: "Timing and Writing Functions"
-subtitle: "Lecture 36"
+subtitle: "STA3100 Lecture 36"
 format:
   pdf:
     pdf-engine: lualatex
