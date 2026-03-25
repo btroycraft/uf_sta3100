@@ -1,6 +1,6 @@
 ---
 title: "`ggplot`: Statistical Graphics"
-subtitle: "Lecture 22"
+subtitle: "STA3100 Lecture 22"
 format:
   pdf:
     pdf-engine: lualatex
@@ -25,6 +25,7 @@ For most of our examples, we will use the child mortality rate dataset, indicato
 
 ```{r}
 #| message: false
+
 library(tidyverse)
 library(readr)
 mort <- read_csv("indicatordeadkids35.csv")
