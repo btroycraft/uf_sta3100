@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -127,7 +127,8 @@ Compare to a data frame containing the same data (more on this later):
 \newpage
 
 * In this example we center the species means by subtracting the overall mean for each measurement type (refer to earlier slide).  
-```{r, echo = TRUE}
+```{r}
+#| echo: true
 ## Means for each comb. of measurement (dim 2) and species (dim 3)
 species_means <- apply(iris3, c(2,3), mean)
 

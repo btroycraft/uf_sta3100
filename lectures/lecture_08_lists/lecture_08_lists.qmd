@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -157,7 +157,7 @@ Personally, I think of a list as a vector of pointers to other R objects.
   big_sleep[[4]]     # Or big_sleep[["rottentomatoes"]]. Returns a vector of length 2.
 ```
 
-```{r, error = TRUE}
+```{r}
   big_sleep$rottentomatoes
   # Shorthand for big_sleep[["rottentomatoes"]].
   big_sleep[c(1, 4)]

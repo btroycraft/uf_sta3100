@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -121,9 +121,7 @@ border |> print(n = 5)
 * In some cases you might need to specify identifying columns.
 * In this example, the columns `Port Name` and `Year` identify the observation
 units, so we could have typed:
-```{r}
-#| eval: false
-
+```r
 border <- border |>
   pivot_wider(names_from = Measure, values_from = count,
               id_cols = c(`Port Name`, Year))

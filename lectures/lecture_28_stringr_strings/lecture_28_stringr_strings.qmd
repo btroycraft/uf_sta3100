@@ -16,7 +16,9 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
---- 
+execute:
+  error: true
+---
 
 
 # String Basics

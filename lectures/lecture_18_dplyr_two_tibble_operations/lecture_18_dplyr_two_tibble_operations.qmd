@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -69,16 +69,12 @@ guitars_tbl <- as_tibble(guitars_df)
 
 * Removing `w_case_kg` and `case_kg` to save room in slides.
 ```{r}
-#| error: true
-
 guitars_df <- subset(guitars_df, select = -c(w_case_kg, case_kg))
 guitars_tbl <- select(guitars_tbl, -w_case_kg, -case_kg)
 ```
 
 # Suppose Color is Recorded in a Separate Data Frame
 ```{r}
-#| error: true
-
 colors_tbl <-
     tribble(~model, ~color, ~serial,
             "Firebird V", "sunburst", "616619",
@@ -94,8 +90,6 @@ colors_df <- as.data.frame(colors_tbl)
 ***
 
 ```{r}
-#| error: true
-
 guitars_tbl
 colors_tbl
 ```
@@ -112,8 +106,6 @@ colors_tbl
 
 **Base R**
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df)
 ```
 
@@ -122,8 +114,6 @@ merge(guitars_df, colors_df)
 **`dplyr::inner_join()`**
 
 ```{r}
-#| error: true
-
 inner_join(guitars_tbl, colors_tbl)
 ```
 
@@ -137,8 +127,6 @@ inner_join(guitars_tbl, colors_tbl)
 **Specify Matching on `serial` only.**  
 **Base R**
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df, by = "serial")
 ```
 
@@ -150,8 +138,6 @@ merge(guitars_df, colors_df, by = "serial")
 
 **`dplyr::inner_join()`**
 ```{r}
-#| error: true
-
 inner_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
@@ -167,8 +153,6 @@ inner_join(guitars_tbl, colors_tbl, by = "serial")
   - Useful when each item should have at least one match. (With larger data frames we might not notice otherwise.)
 
 ```{r}
-#| error: true
-
 inner_join(guitars_tbl, colors_tbl, by = "serial", unmatched = "error")
 ```
 
@@ -176,8 +160,6 @@ inner_join(guitars_tbl, colors_tbl, by = "serial", unmatched = "error")
 
 **Base R**
 ```{r}
-#| error: true
-
 guitars_df[!(guitars_df$model %in% colors_df$model),]    # In guitars, not in colors
 colors_df[!(colors_df$model %in% guitars_df$model),]     # In colors, not in guitars
 ```
@@ -186,8 +168,6 @@ colors_df[!(colors_df$model %in% guitars_df$model),]     # In colors, not in gui
 
 **`dplyr::anti_join()`**
 ```{r}
-#| error: true
-
 anti_join(guitars_tbl, colors_tbl)         # In guitars, not in colors
 anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
 ```
@@ -199,8 +179,6 @@ anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
 * This is the most basic of base R ways to do it.
 
 ```{r}
-#| error: true
-
 colors_df$model[colors_df$model == "Les Paul"] <- "Les Paul Standard"
 colors_df$model[colors_df$model == "J-100"] <- "J-100 Xtra"
 colors_df
@@ -211,8 +189,6 @@ colors_df
 * We could have fixed the mismatches with the base R `replace()` function.
 
 ```{r}
-#| error: true
-
 colors_df <- colors_df |>
     transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
     transform(model = replace(model, model == "J-100", "J-100 Xtra"))
@@ -220,16 +196,12 @@ colors_df <- colors_df |>
 
 * Or with the base R `ifelse()` function.
 ```{r}
-#| error: true
-
 colors_df <- colors_df |>
     transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
     transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
 ```
   - `ifelse()` is useful for other kinds of transformations as well, e.g.,
 ```{r}
-#| error: true
-
 x <- 1:10
 y <- ifelse((x %% 2) == 0, -x, 2*x)
 y
@@ -240,8 +212,6 @@ y
 * The `dplyr::case_match()` can fix both mismatches at once.
   - See also `dplyr::case_when()` (can do other kinds of tranformations).
 ```{r}
-#| error: true
-
 colors_tbl <- colors_tbl |>
     mutate(model = case_match(model,
                               "Les Paul" ~ "Les Paul Standard",
@@ -255,8 +225,6 @@ colors_tbl
 **Which mismatches remain?**
 
 ```{r}
-#| error: true
-
 anti_join(guitars_tbl, colors_tbl)        # In guitars, not in colors
 anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
 ```
@@ -269,8 +237,6 @@ anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
 * Default matching on all common column names.
 
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df, all = TRUE)
 ```
 
@@ -281,8 +247,6 @@ merge(guitars_df, colors_df, all = TRUE)
 * Default matching on all common column names.
 
 ```{r}
-#| error: true
-
 full_join(guitars_tbl, colors_tbl)
 ```
 
@@ -294,8 +258,6 @@ full_join(guitars_tbl, colors_tbl)
 * Matching on specified column(s).
 
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df, by = "serial", all = TRUE)
 ```
 
@@ -306,8 +268,6 @@ merge(guitars_df, colors_df, by = "serial", all = TRUE)
 * Matching on specified column(s).
 
 ```{r}
-#| error: true
-
 full_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
@@ -318,8 +278,6 @@ full_join(guitars_tbl, colors_tbl, by = "serial")
 * Default matching on all common column names.
 
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df, all.x = TRUE)
 ```
 
@@ -330,8 +288,6 @@ merge(guitars_df, colors_df, all.x = TRUE)
 * Matching on specified column(s).
 
 ```{r}
-#| error: true
-
 left_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
@@ -342,8 +298,6 @@ left_join(guitars_tbl, colors_tbl, by = "serial")
 * Matching on specified column(s).
 
 ```{r}
-#| error: true
-
 merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
 ```
 
@@ -353,7 +307,5 @@ merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
 
 * Default matching on all common column names.
 ```{r}
-#| error: true
-
 right_join(guitars_tbl, colors_tbl)
 ```

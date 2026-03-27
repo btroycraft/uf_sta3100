@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -41,8 +41,6 @@ guitars <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
 
 * Deleting column of serial numbers to declutter slides.
 ```{r}
-#| error: true
-
 guitars$serial <- NULL
 guitars
 ```
@@ -80,7 +78,6 @@ guitars
 * Add columns for weights of the guitars in kg and lb.
 * Can define `kg` and use it to define `lb` in the same call to `mutate()`.
 ```{r}
-#| error: true
 guitars <- mutate(guitars, kg = w_case_kg - case_kg, lb = 2.2 * kg)
 guitars
 ```
@@ -90,8 +87,6 @@ guitars
 * `new_name = old_name`. Not required to quote new or old column names.
 * Can rename more than one column at a time.
 ```{r}
-#| error: true
-
 guitars <- rename(guitars, weight = lb, kilos = kg)
 guitars
 ```
@@ -101,8 +96,6 @@ guitars
 * Can use "-" with column numbers **and column names**.
 * Not required to quote column names and not require to use `c()`.
 ```{r}
-#| error: true
-
 guitars <- select(guitars, -w_case_kg, -case_kg, -kilos)
 ## guitars <- select(guitars, -c(w_case_kg, case_kg, kilos))               # Also works.
 guitars
@@ -112,8 +105,6 @@ guitars
 
 * Make `type` the first column.
 ```{r}
-#| error: true
-
 guitars <- relocate(guitars, type)
 guitars
 ```
@@ -122,8 +113,6 @@ guitars
 
 What if we now wanted to move the type column back?
 ```{r}
-#| error: true
-
 guitars <- relocate(guitars, type, .after = model)
 guitars
 ```
@@ -134,8 +123,6 @@ guitars
 * View only guitars under 8 lb
 
 ```{r}
-#| error: true
-
 filter(guitars, weight < 8)
 ```
 
@@ -144,8 +131,6 @@ filter(guitars, weight < 8)
 * View only electric guitars under 8 lb
 
 ```{r}
-#| error: true
-
 filter(guitars, (type == "electric") & (weight < 8))
 ```
 
@@ -155,9 +140,6 @@ filter(guitars, (type == "electric") & (weight < 8))
   - Contrast with base R’s `subset()` with its optional argument `select`.
 
 ```{r}
-#| error: true
-
-
 guitars |>
     filter((type == "electric") & (weight < 8)) |>
     select(-type, -weight)
@@ -170,8 +152,6 @@ guitars |>
 * Arrange the guitars by `weight` (lightest to heaviest):
 
 ```{r}
-#| error: true
-
 arrange(guitars, weight)
 ```
 
@@ -182,8 +162,6 @@ arrange(guitars, weight)
 * Arrange the guitars from heaviest to lightest:
 
 ```{r}
-#| error: true
-
 arrange(guitars, desc(weight))
 ```
 
@@ -194,8 +172,6 @@ arrange(guitars, desc(weight))
 * Alphabetically by `mfr` and by `weight` within `mfr`.
 
 ```{r}
-#| error: true
-
 arrange(guitars, mfr, weight)
 ```
 
@@ -204,8 +180,6 @@ arrange(guitars, mfr, weight)
 * Alphabetically by `type` and from heaviest to lightest within `type`.
 
 ```{r}
-#| error: true
-
 arrange(guitars, type, desc(weight))
 ```
 
@@ -216,8 +190,6 @@ The main advantage of these functions over the base R analogues is that they int
 * Get the 2nd, 4th, and 5th Guitars.
 
 ```{r}
-#| error: true
-
 slice(guitars, 2, 4, 5)     # Or slice(guitars, c(2,4,5))
 ```
 
@@ -226,8 +198,6 @@ slice(guitars, 2, 4, 5)     # Or slice(guitars, c(2,4,5))
 * Get the first 3 guitars.
 
 ```{r}
-#| error: true
-
 slice_head(guitars, n = 3)     # Default is n = 1.
 ```
 
@@ -236,8 +206,6 @@ slice_head(guitars, n = 3)     # Default is n = 1.
 * Get the last 3 guitars.
 
 ```{r}
-#| error: true
-
 slice_tail(guitars, n = 3)
 ```
 
@@ -246,16 +214,12 @@ slice_tail(guitars, n = 3)
 * Get the 3 heaviest guitars.
 
 ```{r}
-#| error: true
-
 slice_max(guitars, weight, n = 3)
 ```
 
 * A base R version could be any of the following:
 
-```{r}
-#| eval: false
-
+```r
 head(guitars[order(guitars$weight, decreasing = TRUE), ], n = 3)
 guitars[order(guitars$weight, decreasing = TRUE), ][1:3,]
 guitars[order(guitars$weight, decreasing = TRUE)[1:3], ]
@@ -266,16 +230,12 @@ guitars[order(guitars$weight, decreasing = TRUE)[1:3], ]
 * Choose a random sample (without replacement) of 3 guitars.
 
 ```{r}
-#| error: true
-
 slice_sample(guitars, n = 3)
 ```
 
 * A base R version:
 
-```{r}
-#| eval: false
-
+```r
 guitars[sample(nrow(guitars), 3), ]
 ```
 
@@ -284,8 +244,6 @@ guitars[sample(nrow(guitars), 3), ]
 
 **Calculate the Mean Weight by Type**
 ```{r}
-#| error: true
-
 guitars |>
     group_by(type) |>
     summarise(avg_wt = mean(weight)) |>
@@ -298,8 +256,6 @@ guitars |>
 
 **An alternative (as of dplyr 1.1.0):**
 ```{r}
-#| error: true
-
 summarise(guitars, avg_wt = mean(weight), .by = type)
 ```
 
@@ -307,8 +263,6 @@ summarise(guitars, avg_wt = mean(weight), .by = type)
 
 **Include the Number of Observations in Each Group**
 ```{r}
-#| error: true
-
 guitars |>
     group_by(type) |>
     summarise(n = n(), avg_wt = mean(weight))
@@ -318,8 +272,6 @@ guitars |>
 
 **An alternative (as of dplyr 1.1.0):**
 ```{r}
-#| error: true
-
 summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
 ```
 
@@ -327,8 +279,6 @@ summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
 
 **Group by multiple variables.**
 ```{r}
-#| error: true
-
 guitars |>
     group_by(type, body) |>
     summarise(n = n(), avg_wt = mean(weight))
@@ -339,8 +289,6 @@ guitars |>
 * Notice that the result of the previous command was still grouped by `type`:
 
 ```{r}
-#| error: true
-
 guitars |>
     group_by(type, body) |>
     summarise(n = n(), avg_wt = mean(weight)) |>
@@ -351,8 +299,6 @@ guitars |>
 
 **We can fix it by `.groups`**
 ```{r}
-#| error: true
-
 guitars |>
      group_by(type, body) |>
      summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
@@ -362,8 +308,6 @@ guitars |>
 
 * Now check the group variables
 ```{r}
-#| error: true
-
 guitars |>
     group_by(type, body) |>
     summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
@@ -374,8 +318,6 @@ guitars |>
 
 **An alternative (as of dplyr 1.1.0):**
 ```{r}
-#| error: true
-
 guitars |>
     summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
 ```
@@ -383,8 +325,6 @@ guitars |>
 * There is a small difference though: the result is not grouped.
 
 ```{r}
-#| error: true
-
 guitars |>
     summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
     group_vars()
@@ -394,8 +334,6 @@ guitars |>
 
 **Converting a Table to a Tibble**
 ```{r}
-#| error: true
-
 is.array(Titanic)
 dim(Titanic)
 class(Titanic)
@@ -405,8 +343,6 @@ dimnames(Titanic)
 ***
 
 ```{r}
-#| error: true
-
 Titanic_tbl <- as_tibble(Titanic)
 Titanic_tbl
 ```
@@ -414,8 +350,6 @@ Titanic_tbl
 ***
 
 ```{r}
-#| error: true
-
 Titanic_tbl |> summarize(n = sum(n))
 Titanic_tbl |> group_by(Survived) |> summarize(n = sum(n))
 ```
@@ -423,8 +357,6 @@ Titanic_tbl |> group_by(Survived) |> summarize(n = sum(n))
 ***
 
 ```{r}
-#| error: true
-
 Titanic_tbl |> group_by(Survived) |>
     summarize(n = sum(n)) |>
     mutate(prop = n/sum(n))
@@ -433,8 +365,6 @@ Titanic_tbl |> group_by(Survived) |>
 * Why does this work?
   - Because `summarize()` peels off the last and only level of grouping before `mutate()` is called. Thus the `sum(n)` in `mutate()` is ungrouped.
 ```{r}
-#| error: true
-
 Titanic_tbl |> group_by(Survived) |>
     summarize(n = sum(n)) |>
     group_vars()
@@ -443,8 +373,6 @@ Titanic_tbl |> group_by(Survived) |>
 ***
 
 ```{r}
-#| error: true
-
 Titanic_tbl |>
     group_by(Class, Survived) |>
     summarize(n = sum(n))
@@ -453,8 +381,6 @@ Titanic_tbl |>
 ***
 
 ```{r}
-#| error: true
-
 Titanic_tbl |> group_by(Class, Survived) |>
     summarize(n = sum(n)) |>
     mutate(prop = n/sum(n))
@@ -467,8 +393,6 @@ Titanic_tbl |> group_by(Class, Survived) |>
 * Showing the grouping (by “Class”) still remaining after the call to `summarize()`.
 
 ```{r}
-#| error: true
-
 Titanic_tbl |> group_by(Class, Survived) |>
     summarize(n = sum(n)) |>
     group_vars()
@@ -481,8 +405,6 @@ Titanic_tbl |> group_by(Class, Survived) |>
 * This is not what we want:
 
 ```{r}
-#| error: true
-
 Titanic_tbl |>
     summarize(n = sum(n), .by = c(Class, Survived)) |>
     mutate(prop = n/sum(n))
@@ -492,8 +414,6 @@ Titanic_tbl |>
 
 * Here’s how to make the `.by` version give the `group_by()` result.
 ```{r}
-#| error: true
-
 Titanic_tbl |>
     summarize(n = sum(n), .by = c(Class, Survived)) |>
     mutate(prop = n/sum(n), .by = Class)
@@ -505,8 +425,6 @@ Titanic_tbl |>
 * And how to make the `group_by()` version give the first (unwanted) `.by` result.
   - Just use `ungroup()` to remove all grouping before the `mutate()` step.
 ```{r}
-#| error: true
-
 Titanic_tbl |> group_by(Class, Survived) |>
     summarize(n = sum(n)) |>
     ungroup() |>
@@ -516,8 +434,6 @@ Titanic_tbl |> group_by(Class, Survived) |>
 # Pivoting
 Here’s a way to make the data frame look like a table.
 ```{r}
-#| error: true
-
 Titanic_tbl |>
     group_by(Class, Survived) |>
     summarize(n = sum(n)) |>
@@ -529,8 +445,6 @@ Titanic_tbl |>
 
 And a variation, pivoting and then adding a single column of proportions.
 ```{r}
-#| error: true
-
 Titanic_tbl |>
     summarize(n = sum(n), .by = c(Class, Survived)) |>
     pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
@@ -541,8 +455,6 @@ Titanic_tbl |>
 # Example: Run Length Encoding a Sequence of Coin Tosses
   Question: Suppose we toss a fair coin 100 times. What is the probability of seeing at least one run of 6 or more consective heads or tails?
 ```{r}
-#| error: true
-
 x <- sample(c("H","T"), 100, replace = TRUE) 
 noquote(x)
 xr <- rle(x)
@@ -550,8 +462,6 @@ xr
 ```
 There is no `as_tibble()` method for class rle, but this works:
 ```{r}
-#| error: true
-
 library(tidyverse)
 xr_df <- as_tibble(unclass(xr))
 xr_df |> summarize(max_run = max(lengths)) # Length of longest run overall.
@@ -560,8 +470,6 @@ xr_df |> summarize(max_run = max(lengths), .by = values) # Longest runs of H and
 ```
 Simulation
 ```{r}
-#| error: true
-
 nsim <- 10000; ntosses <- 100
 maxrl <- vector("integer", length = nsim) 
 for (i in 1:nsim) {
@@ -577,8 +485,6 @@ for (i in 1:nsim) {
 ```
 Now we plot the maximum run length 
 ```{r}
-#| error: true
-
 df <- tibble(maxrl) |>
   count(maxrl) |>     # similar to summarize(n = n(), .by = maxrl)
   mutate(prop = n / sum(n))
@@ -588,8 +494,6 @@ slice_head(df, n = 10)
 * Using a hint from the help for `geom_segment()` to get a `type = "h"` plot with ggplot2.
 * Could use `+ theme(plot.margin = ...)` to change plot margins, but default ggplot2 margins are ok.
 ```{r}
-#| error: true
-
 ggplot(df, aes(x = maxrl, y = prop)) +
   geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 
   labs(title = "Estimated distribution of maximum run length.",

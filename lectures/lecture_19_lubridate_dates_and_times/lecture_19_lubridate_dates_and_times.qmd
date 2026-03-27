@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -64,7 +64,7 @@ class(now)
     
 # Dates from Character Strings
 
-```{r, error = TRUE}
+```{r}
 as_date("1980-12-08")         # John Lennon killed by a revolver.
 ```
 
@@ -78,8 +78,6 @@ as_date("1980-12-08")         # John Lennon killed by a revolver.
 
 **These are pretty easy with lubridate.**
 ```{r}
-#| error: true
-
 mdy("Dec 8, 1980")
 mdy("12/8/80")
 mdy("December 8 (1980)")
@@ -89,8 +87,6 @@ mdy("December 8 (1980)")
 
 **Base R requires more from the user.**
 ```{r}
-#| error: true
-
 as.Date("Dec 8, 1980", format = "%b %d, %Y")
 as.Date("12/8/80", format = "%m/%d/%y")
 as.Date("December 8 (1980)", format = "%B %d (%Y)")
@@ -115,8 +111,6 @@ as.Date("December 8 (1980)", format = "%B %d (%Y)")
 
 **But it is possible to come up with a format that `dmy()` can’t parse.**
 ```{r}
-#| error: true
-
 dmy("08121980")
 dmy("081280")
 dmy("8121980")
@@ -126,7 +120,7 @@ dmy("8 12 1980")       # Separators help a lot.
 # Dates from Pieces of Dates
 `make_date()` : useful if numeric year, month, and day stored in separate cols.
 
-```{r, error = TRUE}
+```{r}
 make_date(1980, 12, 8)
 make_date(1980, 12)
 make_date(1980)
@@ -144,8 +138,6 @@ make_date(1980)
 # Example: TV Times of NCAA Tournament Games
 
 ```{r}
-#| error: true
-
 cat(readLines("tvRndOf32-2019.csv", n = 4), sep = "\n")
 tv <- read_csv("tvRndOf32-2019.csv")
 ```
@@ -153,8 +145,6 @@ tv <- read_csv("tvRndOf32-2019.csv")
 ***
   
 ```{r}
-#| error: true
-
 tv |> slice_head(n = 8)
 ```
 
@@ -165,15 +155,11 @@ tv |> slice_head(n = 8)
 ***
 
 ```{r}
-#| error: true
-
 tv |> pull(`Time (ET)`)      # Same as tv$`Time (ET)` or tv[["Time (ET)"]]
 ```
 
 * Let’s try to construct date-times anyway.
 ```{r}
-#| error: true
-
      tv |> mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "))) |> pull(dt)
 ```
        - Note: `stringr::str_c()` is very similar to `paste0()`.
@@ -184,8 +170,6 @@ tv |> pull(`Time (ET)`)      # Same as tv$`Time (ET)` or tv[["Time (ET)"]]
 * Run `OlsonNames()` for list of time zones.
 
 ```{r}
-#| error: true
-
 tv |>
     mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
     pull(dt)
@@ -198,8 +182,6 @@ tv |>
 
 * “p.m.” is not being used.
 ```{r}
-#| error: true
-
 ymd_hm("2019-03-23 5:15 p.m.", tz = "America/New_York")
 ```
 
@@ -207,16 +189,12 @@ ymd_hm("2019-03-23 5:15 p.m.", tz = "America/New_York")
 * How would the correct time be formatted with AM/PM in our current locale?
   - Note use of `%I` for the hour with `%p` for the AM/PM indicator.
 ```{r}
-#| error: true
-
 strftime(as.POSIXct("2019-03-23 17:15:00"), "%Y-%m-%d %I:%M:%S %p")
 ```
 
 * Checking that “PM” works where “p.m.” does not.
 
 ```{r}
-#| error: true
-
 ymd_hm("2019-03-23 5:15 PM", tz = "America/New_York")
 ```
 
@@ -247,7 +225,7 @@ ymd_hm("2019-03-23 5:15 PM", tz = "America/New_York")
 * Use `stringr::str_replace()` to replace “p.m.” with “PM”.
   - Could use base R `sub()` or `gsub()` instead.
 
-```{r, error = TRUE}
+```{r}
 tv <- tv |> mutate(`Time (ET)` = str_replace(`Time (ET)`, "p.m.", "PM"))
 tv |> pull(`Time (ET)`)
 ```
@@ -255,8 +233,6 @@ tv |> pull(`Time (ET)`)
 * Note: the following code replaces all “a.m.” with “AM” and all “p.m.” with “PM”. Not required here but would have also worked.
 
 ```{r}
-#| error: true
-
 tv <- tv |>
     mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c(a.m. = "AM", p.m. = "PM")))
 ```
@@ -264,8 +240,6 @@ tv <- tv |>
 ***
 
 ```{r}
-#| error: true
-
 tv <- tv |>
     mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
 tv$dt
@@ -295,8 +269,6 @@ tv$dt
 ***
 
 ```{r}
-#| error: true
-
 year(as_date("1967-12-10"))        # Otis Redding dies in plane crash.
 month(as_date("1967-12-10"))
 day(as_date("1967-12-10"))
@@ -305,8 +277,6 @@ day(as_date("1967-12-10"))
 ***
   
 ```{r}
-#| error: true
-
 wday(as_date("1967-12-10"))
 mday(as_date("1967-12-10"))
 qday(as_date("1967-12-10"))
@@ -316,8 +286,6 @@ yday(as_date("1967-12-10"))
 ***  
 
 ```{r}
-#| error: true
-
 wday(as_date("1967-12-10"), label = TRUE)
 is.factor(wday(as_date("1967-12-10"), label = TRUE))       # More on factors ...
 is.ordered(wday(as_date("1967-12-10"), label = TRUE))      # ... and ordered factors later.
@@ -327,8 +295,6 @@ as.numeric(wday(as_date("1967-12-10"), label = TRUE))
 ***
 
 ```{r}
-#| error: true
-
 month(as_date("1967-12-10"), label = TRUE)
 as.numeric(month(as_date("1967-12-10"), label = TRUE))
 ```
@@ -357,8 +323,6 @@ as.numeric(month(as_date("1967-12-10"), label = TRUE))
 # Fun With Dates and Times
 
 ```{r}
-#| error: true
-
 dyears(1)           # A duration
 years(1)            # A period
 as_date("2019-07-01") + dyears(1)    # Adding a duration
@@ -368,8 +332,6 @@ as_date("2019-07-01") + years(1)     # Adding a period
 ***
 
 ```{r}
-#| error: true
-
 dhours(24)          # A duration
 hours(24)           # A period
 ymd_hms("2022-11-05 12:00:00", tz = "America/New_York") + dhours(24)    # Surprised?
@@ -380,8 +342,6 @@ ymd_hms("2022-11-05 12:00:00", tz = "America/New_York") + hours(24)     # What y
 
 **A trip to Brevard**
 ```{r}
-#| error: true
-
 arrive <- ymd_hm("2022-07-25 18:25", tz = "America/New_York") 
 depart <- ymd_hm("2022-08-15 11:22", tz = "America/New_York") 
 brevard <- interval(arrive, depart)                # Or arrive %--% depart 
@@ -389,8 +349,6 @@ brevard
 ```
 
 ```{r}
-#| error: true
-
 str(brevard)
 ```
 ***
@@ -398,8 +356,6 @@ str(brevard)
 **Sister Decides to Go to Brevard Too**
 
 ```{r}
-#| error: true
-
 sis_arr <- ymd_h("2022-07-28 23", tz = "America/New_York")
 sis_dep <- ymd_h("2022-08-01 13", tz = "America/New_York")
 sis <- sis_arr %--% sis_dep
@@ -411,8 +367,6 @@ sis
 * Sister decides to move her trip up by a week.
 
 ```{r}
-#| error: true
-
 sis <- int_shift(sis, -weeks(1))
 sis
 ```
@@ -420,8 +374,6 @@ sis
 * And adds 2 days to her stay.
 
 ```{r}
-#| error: true
-
 int_end(sis) <- int_end(sis) + days(2)
 sis
 ```
@@ -431,8 +383,6 @@ sis
 * Do our stays overlap?
 
 ```{r}
-#| error: true
-
 brevard
 sis
 int_overlaps(brevard, sis)

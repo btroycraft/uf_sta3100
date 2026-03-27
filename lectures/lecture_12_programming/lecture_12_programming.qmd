@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -29,7 +29,6 @@ annuityAmt(4, 1000, 0.0528)
 ```
 Functions with default values are defined as follows.   
 ```{r}
-#| error: true
 annuityAmt2 <- function(n, R = 1000, i = 0.0528) {
 	R * ((1 + i) ^ n - 1) 
 }
@@ -39,7 +38,6 @@ annuityAmt(4)
 
 You can also change default values.
 ```{r}
-#| error: true
 annuityAmt2(4, R = 1000, i = 0.0528)
 ```
 ***
@@ -259,4 +257,3 @@ system.time({
 
 system.time(Z <- X + Y)
 ```
-

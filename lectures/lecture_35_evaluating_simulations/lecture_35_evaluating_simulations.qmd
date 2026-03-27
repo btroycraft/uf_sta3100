@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -122,7 +122,7 @@ In our earlier simulation of 10,000 replications of the coin-tossing experiment
 $$
 \text{se}(\hat{p}) \leq \frac{1}{2\sqrt{10,000}}=0.005
 $$
-* We observed $\hat{p}=$ `r phat`, so
+* We observed $\hat{p}=$ `{r} phat`, so
 $$
 \text{se}(\hat{p}) = \frac{\sqrt{`r# phat`(1- `r# phat`)}}{\sqrt{10,000}}=0.004
 $$
@@ -135,7 +135,7 @@ $$
 $$
 1.96 * \text{se}(\hat{p}) = 1.96 * 0.004 = 0.0078
 $$
-of the _observed value_ `r phat` of $\hat{p}$.
+of the _observed value_ `{r} phat` of $\hat{p}$.
 * In other words, we are 95% confident that $p$ is between these values:
 $$
 \begin{aligned}

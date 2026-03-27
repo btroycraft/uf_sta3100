@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -348,8 +348,6 @@ guitar_smry
 
 Let’s add a column giving the number of guitars in each category (tricky?).
 ```{r}
-#| error: true
-
 n <- with(guitars, tapply(weight, list(mfr, type), length))   # Matrix of counts
 guitar_smry$n <- as.vector(n)    # Add column of counts 
 guitar_smry
@@ -373,8 +371,6 @@ Here’s another way to use `tapply()` with an anonymous function to get a list 
 
 
 ```{r}
-#| error: true
-
 do.call("rbind",
         tapply(guitars$weight, guitars$type,
                function(x) data.frame(n = length(x), avg_wt = mean(x))))
@@ -388,7 +384,6 @@ do.call("rbind",
 How does this approach work if we are grouping by multiple variables? Not well — we lose the grouping information altogether.
 
 ```{r}
-#| error: true
 with(guitars,
      do.call("rbind",
              tapply(weight, list(mfr, type),
@@ -398,7 +393,6 @@ with(guitars,
 More:
 
 ```{r}
-#| error: true
 temp_guitars <- split(guitars, list(mfr, type))
 do.call(rbind, lapply(temp_guitars, function(x){
   data.frame(avg_wgt = mean(x$weight), n_mfr_type = nrow(x))

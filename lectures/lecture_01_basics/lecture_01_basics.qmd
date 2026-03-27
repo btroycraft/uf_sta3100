@@ -2,8 +2,6 @@
 title: "Basics"
 subtitle: "STA3100 Lecture 1"
 format:
-  html:
-    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
@@ -17,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 

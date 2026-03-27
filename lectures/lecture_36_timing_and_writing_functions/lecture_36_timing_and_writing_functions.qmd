@@ -15,9 +15,9 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
---- 
+---
 
 # Timing Calculations and Writing Simple Functions
 # Timing

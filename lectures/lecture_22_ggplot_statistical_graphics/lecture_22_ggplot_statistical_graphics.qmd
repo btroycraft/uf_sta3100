@@ -15,9 +15,9 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
-  error: true 
---- 
+execute:
+  error: true
+---
 
 \newpage
 
@@ -35,7 +35,8 @@ head(mort)
 We will need to prepare this dataset first by 1) giving the first column a descriptive column name, 2) transform to a long version of the dataset, 3) convert the new year column to numeric type.
 
 
-```{r, message=FALSE}
+```{r}
+#| message: false
 mort <- mort |> rename(country = ...1)
 long <- mort |> pivot_longer(cols = -country, names_to = "year", values_to = "morts")
 long <- long |> mutate(year = as.numeric(year))

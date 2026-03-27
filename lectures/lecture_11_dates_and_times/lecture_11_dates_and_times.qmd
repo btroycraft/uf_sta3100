@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -191,7 +191,7 @@ as.POSIXct(.Machine$integer.max,
 
 `?as.POSIXct` makes for interesting reading.    
 Usage:
-```{r, eval = FALSE}
+```r
 as.POSIXct(x, tz = "", ...)
 as.POSIXlt(x, tz = "", ...)
 

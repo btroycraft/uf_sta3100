@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -64,8 +64,7 @@ We will use several of these in this course.
 
 **From `help(dnorm)`:**
 
-```{r norm}
-#| eval: false
+```r
   dnorm(x, mean = 0, sd = 1, log = FALSE)
   pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
   qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)

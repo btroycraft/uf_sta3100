@@ -15,8 +15,8 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
-  error: false
+execute:
+  error: true
 ---
 
 # The Pipe Operator(s)

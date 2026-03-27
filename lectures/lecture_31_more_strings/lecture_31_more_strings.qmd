@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -24,9 +24,7 @@ execute:
 
 The file `stringr_lines.txt` was obtained by grepping the R markdown files used to produce the slides used in this class so far. The shell command used (which is run outside R) was:
 
-```{r}
-#| eval: false
-
+```bash
 grep -n "str_" ../lecture_([0-2][0-9]|30)/*.qmd > stringr_lines.txt
 ```
 

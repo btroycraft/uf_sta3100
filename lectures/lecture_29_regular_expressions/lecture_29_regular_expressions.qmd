@@ -15,7 +15,7 @@ header-includes:
   - \usepackage{sectsty}
   - \allsectionsfont{\centering}
   - \pagenumbering{gobble}
-execute: 
+execute:
   error: true
 ---
 
@@ -77,8 +77,7 @@ str_view(x, "\\\\")
 
 The characters
 
-```{r}
-#| eval: false
+```text
 . + * ? ^ $ () [] {} | \
 ```
 
@@ -140,9 +139,7 @@ str_view("abc.45", ".[.].")       # Same as str_view("abc.45", ".\\..")
 ```
 
 There are also predefined classes that can be used inside `[]` such as
-```{r}
-#| eval: false
-
+```text
 [:alnum:]
 [:alpha:]
 [:digit:]
@@ -538,7 +535,7 @@ sentences_with_noun |>
 *** 
 
 ```{r}
-#| echo: FALSE
+#| echo: false
 
 rphone <- function(area_code = NULL, exchange = NULL, station = NULL) { 
   ## Generate random area code and exhange unless otherwise specified. 
