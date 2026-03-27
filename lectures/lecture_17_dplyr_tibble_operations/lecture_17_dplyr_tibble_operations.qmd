@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -47,12 +47,12 @@ guitars$serial <- NULL
 guitars
 ```
 
-# dplyr One-Table "Verbs" and Base R "Equivalents"
+# `dplyr` One-Table "Verbs" and Base-R "Equivalents"
 
 * There are also helper functions to alter/enhance these functions.
-* See [\textcolor{blue}{dplyr <-> Base R}](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a more thorough comparison with base R.
+* See [\textcolor{blue}{`dplyr` <-> Base-R}](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a more thorough comparison with base-R.
 
-|Target     | Purpose                               | dplyr function(s)         |Base R function(s)    |
+|Target     | Purpose                               | `dplyr` function(s)         |Base-R function(s)    |
 |:----------|:--------------------------------------|:--------------------------|:---------------------|  
 |Columns    |Include or remove a column             |`select()`                 |`[, subset()`         |
 |           |Change the names of columns            |`rename()`, `rename_with()`|`names()<-`           |
@@ -62,7 +62,7 @@ guitars
 
 ***
 
-|Target        | Purpose                              | dplyr function(s)   |Base R function(s)                |
+|Target        | Purpose                              | `dplyr` function(s)   |Base-R function(s)                |
 |:-------------|:-------------------------------------|:--------------------|:---------------------------------|  
 |Rows          |Choose rows based on column values    |`filter()`           |`subset()`                        |
 |              |Choose rows based on location         |`slice()`            |`[`                               |
@@ -139,7 +139,7 @@ filter(guitars, (type == "electric") & (weight < 8))
 ***
 
 * Filtering rows and selecting columns are separate operations.
-  - Contrast with base R’s `subset()` with its optional argument `select`.
+  - Contrast with base-R’s `subset()` with its optional argument `select`.
 
 ```{r}
 guitars |>
@@ -187,7 +187,7 @@ arrange(guitars, type, desc(weight))
 
 # Subset Rows by Position with `dplyr::slice()`
 
-The main advantage of these functions over the base R analogues is that they interoperate well with other `dplyr` functions.
+The main advantage of these functions over the base-R analogues is that they interoperate well with other `dplyr` functions.
 
 * Get the 2nd, 4th, and 5th Guitars.
 
@@ -219,7 +219,7 @@ slice_tail(guitars, n = 3)
 slice_max(guitars, weight, n = 3)
 ```
 
-* A base R version could be any of the following:
+* A base-R version could be any of the following:
 
 ```r
 head(guitars[order(guitars$weight, decreasing = TRUE), ], n = 3)
@@ -235,7 +235,7 @@ guitars[order(guitars$weight, decreasing = TRUE)[1:3], ]
 slice_sample(guitars, n = 3)
 ```
 
-* A base R version:
+* A base-R version:
 
 ```r
 guitars[sample(nrow(guitars), 3), ]
@@ -252,11 +252,11 @@ guitars |>
     arrange(desc(type))
 ```
 
-* Note that a tibble is returned (ready for more pipes)
+* Note that a `tibble` is returned (ready for more pipes)
 
 ***
 
-**An alternative (as of dplyr 1.1.0):**
+**An alternative (as of `dplyr` 1.1.0):**
 ```{r}
 summarise(guitars, avg_wt = mean(weight), .by = type)
 ```
@@ -272,7 +272,7 @@ guitars |>
 
 ***
 
-**An alternative (as of dplyr 1.1.0):**
+**An alternative (as of `dplyr` 1.1.0):**
 ```{r}
 summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
 ```
@@ -318,7 +318,7 @@ guitars |>
 
 ***
 
-**An alternative (as of dplyr 1.1.0):**
+**An alternative (as of `dplyr` 1.1.0):**
 ```{r}
 guitars |>
     summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
@@ -400,7 +400,7 @@ Titanic_tbl |> group_by(Class, Survived) |>
     group_vars()
 ```
 
-* Using `summarize()` with the .by optional argument (new in dplyr 1.1.0) only uses transient grouping. For this reason, the last example does not work in the same way if we use .by instead of `group_by()` (see next slide).
+* Using `summarize()` with the .by optional argument (new in `dplyr` 1.1.0) only uses transient grouping. For this reason, the last example does not work in the same way if we use .by instead of `group_by()` (see next slide).
 
 ***
 
@@ -494,7 +494,7 @@ slice_head(df, n = 10)
 ```
 
 * Using a hint from the help for `geom_segment()` to get a `type = "h"` plot with ggplot2.
-* Could use `+ theme(plot.margin = ...)` to change plot margins, but default ggplot2 margins are ok.
+* Could use `+ theme(plot.margin = ...)` to change plot margins, but default `ggplot2` margins are ok.
 ```{r}
 ggplot(df, aes(x = maxrl, y = prop)) +
   geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 

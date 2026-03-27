@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -214,7 +214,7 @@ lm_area$coefficients
 coef(lm_area)
 ```
 
-* Plotting with base R.
+* Plotting with base-R.
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 
@@ -224,7 +224,7 @@ abline(lm_area)
 par(opar)
 ```
 
-* Plotting with ggplot2.
+* Plotting with `ggplot2`.
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 
@@ -323,8 +323,7 @@ In a regression model, R automatically generates \{0,1\}-valued _dummy variables
 * Number of dummy variables is 1 less than the number of levels of the factor.
 * The level with no dummy variable is the _control_ or _reference_ level of the
 factor.
-* To change reference level use base R's `relevel()` or forcats's
-`fct_relevel()`.
+* To change reference level use base-R's `relevel()` or `forcats::fct_relevel()`.
   - For more sophisticated (and confusing) approaches, see `contrasts()`.
 * The coefficient of a dummy variable represents the difference in mean response for an observation at the corresponding level of the factor vs an observation at the control level, with all other variables held constant.
 
@@ -395,7 +394,7 @@ legend("bottomright", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
 par(opar)
 ```
 
-* [\textcolor{blue}{A post on plotting fitted lines with ggplot2}](https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/)
+* [\textcolor{blue}{A post on plotting fitted lines with `ggplot2`}](https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/)
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."

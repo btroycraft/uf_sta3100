@@ -7,21 +7,21 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
 
-# Factors in Base R
+# Factors in Base-R
 
 Why factors? 
 
@@ -128,7 +128,7 @@ levels(f2) <- c("Female", "Male")
 f2
 ```
 
-Correct Ways to Make “M” First with Base R
+Correct Ways to Make “M” First with Base-R
 
 * When constructing the factor, you can explicitly set `levels`.
 ```{r}
@@ -143,7 +143,7 @@ f2
 factor(x, levels = c("M", "F", "NB"))
 ```
 
-* With an existing factor, can use base R’s `relevel()` function.
+* With an existing factor, can use base-R’s `relevel()` function.
 
 ```{r}
 f
@@ -229,7 +229,7 @@ round(qweibull(c(0.10, 0.25, 0.50, 0.75, 0.90), shape = inc_shape, scale = inc_s
 
 What is the shape of this distribution’s density?
 
-**Base R Plot**
+**Base-R Plot**
 ```{r}
 #| fig-cap: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
 
@@ -332,9 +332,9 @@ income_group
 # Factors in the Tidyverse
 # Forcats
 
-The tidyverse package forcats provides functions that solve common problems related to factors.
+The `tidyverse` package `forcats` provides functions that solve common problems related to factors.
 
-* `as_factor()` : generic, similar to base R `as.factor()` but levels default to the order in which they appear in the data (unless ‘x’ is numeric).
+* `as_factor()` : generic, similar to base-R `as.factor()` but levels default to the order in which they appear in the data (unless ‘x’ is numeric).
 
 Changing Levels
 
@@ -459,8 +459,8 @@ hcv |>
 
 * Most common blood type in U.S. is O+.
 * Suppose we want `O+` to be the control/reference level for bloodtype.
-  - Have seen base R function `relevel()` (moves one category to the front).
-  - forcats has `fct_relevel()` which is more general.
+  - Have seen base-R function `relevel()` (moves one category to the front).
+  - `forcats` has `fct_relevel()` which is more general.
 * Let’s make `O+` first while keeping `O+` and `O-` together.
 
 ```{r}

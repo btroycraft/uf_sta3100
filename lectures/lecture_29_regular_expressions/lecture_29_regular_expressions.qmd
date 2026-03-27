@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -271,7 +271,7 @@ str_view(fruit, "([aeiou]).*\\1.*\\1")
 
 In general `pattern` and `replacement` will be regular expressions.
 
-| Purpose                            | stringr                                  |base R                                |
+| Purpose                            | `stringr`                                  |base-R                                |
 |:-----------------------------------|:-----------------------------------------|:-------------------------------------|
 |View regex match                    |`str_view(x, pattern)`                    |                                      |
 |Find positions matching pattern     |`str_which(x, pattern)`                   |`grep(pattern, x)`                    |
@@ -392,7 +392,7 @@ What if a sentence started with a Fruit?
 
 * We have missed any sentence where the fruit was capitalized.
 * Could convert sentences and fruits to lower case with `tolower()`.
-* BETTER: use the stringr helper function `regex()` with `ignore_case = TRUE`.
+* BETTER: use the `stringr` helper function `regex()` with `ignore_case = TRUE`.
 
 ```{r}
 fruit_sentences <- str_subset(sentences, regex(fruit_pattern, ignore_case = TRUE)) 

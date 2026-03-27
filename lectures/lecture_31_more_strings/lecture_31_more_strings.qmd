@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -39,8 +39,8 @@ grep -n "str_" ../lecture_([0-2][0-9]|30)/*.qmd > stringr_lines.txt
 
 # Reading Lines From the File  
 
-* Using `read_lines()` from the readr package to read in these data.
-  - The base R function `readLines()` would also work here.
+* Using `read_lines()` from the `readr` package to read in these data.
+  - The base-R function `readLines()` would also work here.
   
 ```{r}
 #| message: false
@@ -60,9 +60,9 @@ funs <- str_extract_all(strlines, "str_([a-z]+)(_[a-z]+)*\\(")
 funs[1:4]
 ```  
 
-* `flatten_chr()` from the purrr package converts list to a character vector.
+* `flatten_chr()` from the `purrr` package converts list to a character vector.
   - Flattens the list by combining vectors in the list.
-  - Equivalent here to base R `do.call(c, funs)`
+  - Equivalent here to base-R `do.call(c, funs)`
   - As if we ran `c(funs[[1]], funs[[2]], ..., funs[[205]])`
 
 ```{r}
@@ -77,7 +77,7 @@ funs <- str_sub(funs, 1, -2)
 funs[1:5]
 ```  
 
-* So what stringr function have we used so far?
+* So what `stringr` function have we used so far?
 
 ```{r}
 unique(funs)
@@ -115,7 +115,7 @@ df <- tibble(string = strlines)
 slice_head(df, n = 4)
 ```  
 
-The dplyr function `separate_wider_delim()` is very useful for the next step.
+The `dplyr` function `separate_wider_delim()` is very useful for the next step.
 
 `separate_wider_delim()` is similar to `str_split()` but:
 
@@ -167,7 +167,7 @@ df |> pull(fun) |> head(4)
 df <- select(df, -line)
 ```
 
-The tidyr function `unnest_longer()` will
+The `tidyr` function `unnest_longer()` will
 
 * convert the list column into a vector column
 * in a longer version of the data frame (similar to `pivot_longer()`).

@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -34,11 +34,11 @@ execute:
 * A collection of R packages and functions/methods for  
   – importing data into R  
   – tidying, transforming, and otherwise manipulating data in R   
-  – plotting and graphing data ('ggplot2')
-* In most cases these functions are intended to improve on existing functionality in base R while being  
+  – plotting and graphing data ('`ggplot2`')
+* In most cases these functions are intended to improve on existing functionality in base-R while being  
   – More consistent and predictable  
   – Easier to use
-* The tidyverse has sometimes felt like a moving target as it evolved and the developers revised previous design decisions. It is much more settled now, although changes are still made from time to time.
+* The `tidyverse` has sometimes felt like a moving target as it evolved and the developers revised previous design decisions. It is much more settled now, although changes are still made from time to time.
 
 # Tibbles
 
@@ -83,14 +83,14 @@ attributes(guitars_tbl)
 class(guitars_tbl)
 ```
 
-* `tbl` indicates a generic tibble (for S3 object system purposes)
+* `tbl` indicates a generic `tibble` (for S3 object system purposes)
 * `tbl_df` is a subclass of `tbl`
-  - `tbl_df` indicates that the tibble is also a data frame
+  - `tbl_df` indicates that the `tibble` is also a data frame
   - there is also a `tbl_dbi` class for database (SQL) connections
 
 We will see another subclass: 
   
-  * `spec_tbl_df` is a `tbl_df` with a spec attribute (as described in [\textcolor{blue}{tibble subclass}](https://www.tidyverse.org/blog/2018/12/readr-1-3-1/#tibble-subclass))
+  * `spec_tbl_df` is a `tbl_df` with a spec attribute (as described in [\textcolor{blue}{`tibble` subclass}](https://www.tidyverse.org/blog/2018/12/readr-1-3-1/#tibble-subclass))
 
 You do not normally need to worry about any of this.
     
@@ -100,10 +100,10 @@ From the `tbl_df-class` help page:
 Description:
 
         The ‘tbl_df’ class is a subclass of ‘data.frame’, created in order to
-        have different default behaviour. The colloquial term "tibble" refers
+        have different default behaviour. The colloquial term "`tibble`" refers
         to a data frame that has the ‘tbl_df’ class. Tibble is the central data
-        structure for the set of packages known as the tidyverse, including
-        dplyr, ggplot2, tidyr, and readr.
+        structure for the set of packages known as the `tidyverse`, including
+        `dplyr`, `ggplot2`, `tidyr`, and `readr`.
     
         The general ethos is that tibbles are lazy and surly: they do less and
         complain more than base data.frames. This forces problems to be tackled
@@ -123,7 +123,7 @@ Properties:
           • A ‘row.names’ attribute, included for compatibility with
            data.frame. This attribute is only consulted to query the
            number of rows, any row names that might be stored there are
-           ignored by most tibble methods.
+           ignored by most `tibble` methods.
            
 ***         
 
@@ -148,7 +148,7 @@ Behavior:
          • Row names are not added and are strongly discouraged, in
            favor of storing that info as a column. Read about in
            rownames.
-         • ‘df[, j]’ returns a tibble; it does not automatically extract
+         • ‘df[, j]’ returns a `tibble`; it does not automatically extract
            the column inside. ‘df[, j, drop = FALSE]’ is the default.
            Read more in subsetting.
          • There is no partial matching when ‘$’ is used to index by
@@ -164,7 +164,7 @@ Behavior:
 
 ***
 
-**For a tibble, drop = FALSE by default:**
+**For a `tibble`, drop = FALSE by default:**
 ```{r}
 #| echo: true
 guitars_df[, 5]
@@ -299,7 +299,7 @@ y$`crazy name`
 
 ***
 
-**Notice this difference between tibble() and as_tibble()**
+**Notice this difference between `tibble`() and as_tibble()**
 ```{r}
 #| echo: true
 lst <- list(l = letters[1:3], n = 1:3)

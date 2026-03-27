@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -56,18 +56,18 @@ santos |> select(17, 18, 50)    # Looking at the columns where problems occurred
 
 So what happened?
 
-* By default, readr examines 1000 equally spaced rows (all if less than 1000) to determine the column types: logical?, numeric?, date or date-time?, character (default).
+* By default, `readr` examines 1000 equally spaced rows (all if less than 1000) to determine the column types: logical?, numeric?, date or date-time?, character (default).
 * What if all the values examined (up to 1000) in a column are missing? In this case the column type defaults to logical!
   - Why? In general, logical takes the least memory, character the most.
 * We can read all the columns as character and perhaps figure out what happened.
 
 ```{r}
 santos <- read_csv(santos_file, col_types = cols(.default = col_character()))
-table(is.na(santos[[17]]))               # Base R seems easier here.
+table(is.na(santos[[17]]))               # base-R seems easier here.
 santos |> summarize(n = n(), .by = 17)   # dplyr is easy enough here.
 ```
 
-* disbursement_type should be character (or maybe factor), but readr guessed incorrectly because it saw 1000 missing values.
+* disbursement_type should be character (or maybe factor), but `readr` guessed incorrectly because it saw 1000 missing values.
 
 *** 
 
@@ -76,16 +76,16 @@ santos |> group_by(is.na(pick(18))) |> summarize(n = n())    # A dplyr version.
 santos |> summarize(n = n(), .by = 18)
 ```
 
-* disbursement_type_description should be character, but readr guessed incorrectly because it saw 1000 missing values.
+* disbursement_type_description should be character, but `readr` guessed incorrectly because it saw 1000 missing values.
 
 ***
 
 ```{r}
 table(is.na(santos[[50]]))
-table(santos[[50]], useNA = "ifany")                         # A base R version.
+table(santos[[50]], useNA = "ifany")                         # A base-R version.
 ```
 
-* payee_middle_name should be character, but readr guessed incorrectly because it saw 1000 missing values.
+* payee_middle_name should be character, but `readr` guessed incorrectly because it saw 1000 missing values.
 
 * `useNA` controls if an `NA` is a level in the resulting table.
   - If "`no`", ignores `NA` values in the table inputs.
@@ -110,7 +110,7 @@ summary(spec(santos))
 
 # Taking Control of the Column Types
 
-According to the R help for `readr::read_csv()`, there are three ways that we can specify the column types when reading a delimited file with readr.
+According to the R help for `readr::read_csv()`, there are three ways that we can specify the column types when reading a delimited file with `readr`.
 
 `col_types: One of 'NULL', a 'cols()' specification, or a string. See `
             `'vignette("readr")' for more details.`
@@ -129,12 +129,12 @@ According to the R help for `readr::read_csv()`, there are three ways that we ca
             where each character represents one column:
             
 * I think this documentation is out of date, because there is actually a fourth way that the column types can be specified.
-  - Here I am counting the default "let readr guess" as a method.
+  - Here I am counting the default "let `readr` guess" as a method.
 * `readr` now uses the package `vroom` to read delimited (e.g., csv) files. `vroom` is
 much faster than the old `readr` code.
 * Looking at `?vroom::cols` (instead of `?readr::cols`) shows an additional way
 to specify the column types.
-* The fourth way is similar to the way that column types are specified in base R using the `colClasses` argument of `read.csv()`.   
+* The fourth way is similar to the way that column types are specified in base-R using the `colClasses` argument of `read.csv()`.   
 
 # From `?readr::cols`
 
@@ -179,7 +179,7 @@ There are several ways to do this, but note first that:
 
 * zip codes are not really numeric (and they may begin with 0);
 * "disbursement_date" is entered in the spreadsheet as date-time, although all the times are `00:00:00` (see next slide).
-* Aside: Using lubridate functions and `summarize()` to verify that all times in `disbursement_date` are `00:00:00`.
+* Aside: Using `lubridate` functions and `summarize()` to verify that all times in `disbursement_date` are `00:00:00`.
 
 ```{r}
 santos |>
@@ -241,13 +241,13 @@ santos |> slice_head(n = 7)
 
 # Coping With All 78 Columns
 
-Three readr Functions
+Three `readr` Functions
 
 **`spec()`**
-`‘spec()’` extracts the full column specification from a tibble created by `readr`.
+`‘spec()’` extracts the full column specification from a `tibble` created by `readr`.
 
 **`spec_csv()`**
-`spec_csv()` generates a column specification. It used internally by `read_csv()` and other readr functions.
+`spec_csv()` generates a column specification. It used internally by `read_csv()` and other `readr` functions.
 
 * You can run `read_csv()` and then use `spec()` to extract the column spec; 
 * Or you can just run `spec_csv()`. Faster if you have a really big file.
@@ -258,7 +258,7 @@ Three readr Functions
 
 ***
 
-Working with readr’s Guesses
+Working with `readr`’s Guesses
 
 ```{r}
 ## santos_cols <- spec_csv(santos_file, guess_max = 2000)

@@ -7,17 +7,17 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{unicode-math}
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{unicode-math}
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -79,11 +79,11 @@ knitr::include_graphics("special_character.png")
 
 
 <!-- ```{r, echo = FALSE, message=FALSE} -->
-<!-- library(tidyverse) -->
+<!-- library(`tidyverse`) -->
 <!-- library(knitr) -->
 <!-- library(kableExtra) -->
 
-<!-- table.tbl <- tibble( var1 = c("`\\n'", "`\\r'", "`\\t'", "`\\b'", "`\\a'", "`\\f'", "`\\v'", "`\\\\'", "`\\\''", "`\\\"'", "`\\\`'", "`\\nnn'", "`\\xnn'", "`\\unnnn'", "`\\Unnnnnnnn'"), -->
+<!-- table.tbl <- `tibble`( var1 = c("`\\n'", "`\\r'", "`\\t'", "`\\b'", "`\\a'", "`\\f'", "`\\v'", "`\\\\'", "`\\\''", "`\\\"'", "`\\\`'", "`\\nnn'", "`\\xnn'", "`\\unnnn'", "`\\Unnnnnnnn'"), -->
 <!--                  var2 = c("newline (aka ‘line feed’)", "carriage return", "tab", "backspace", "alert (bell)", "form feed", "vertical tab", "backslash ‘\\’", "ASCII apostrophe ‘\'’", "ASCII quotation mark ‘\"’", "ASCII grave accent (backtick) ‘\`’", "character with given octal code (1, 2 or 3 digits)", "character with given hex code (1 or 2 hex digits)", "Unicode character with given code (1-4 hex digits)", "Unicode character with given code (1-8 hex digits)")) -->
 <!-- table.tbl |>  -->
 <!--   kable("latex",  -->
@@ -124,19 +124,19 @@ x
 
 * We will focus on the `stringr` package, included in `tidyverse` 
 * The underlying `stringi` package provides additional functionality if needed. 
-* The `stringx` package defines improved replacements for base R string- manipulation functions and “fully supports Unicode standards.”
+* The `stringx` package defines improved replacements for base-R string- manipulation functions and “fully supports Unicode standards.”
   
-How `stringr` differs from base R for string manipulation
+How `stringr` differs from base-R for string manipulation
 
-1. All stringr functions start with `str_` prefix; base R string functions have no consistent naming scheme.
-2. In stringr functions, the `string` to be manipulated is always the first argument. This makes stringr easier to use in pipes and with `purrr::map()`.
-3. Functions in stringr tend to do less, where many of the string processing functions in base R have multiple purposes. stringr simplifies string operations by eliminating options that you don’t need most of the time.
+1. All `stringr` functions start with `str_` prefix; base-R string functions have no consistent naming scheme.
+2. In `stringr` functions, the `string` to be manipulated is always the first argument. This makes `stringr` easier to use in pipes and with `purrr::map()`.
+3. Functions in `stringr` tend to do less, where many of the string processing functions in base-R have multiple purposes. `stringr` simplifies string operations by eliminating options that you don’t need most of the time.
 
 # Simple String Functions
 
 In these functions `x` represents a single character string or a character vector.
 
-| Purpose                            | stringr                |base R                   |
+| Purpose                            | `stringr`                |Base-R                   |
 |:-----------------------------------|:-----------------------|:------------------------|
 |Length of a string                  |`str_length(x)`         |`nchar(x)`               |
 |Combining strings                   |`str_c(...)`            |`paste(...), paste0(...)`|
@@ -183,7 +183,7 @@ str_c(salut, people, sep = " ") |> str_c(".")
 
 # Collapsing / Flattening
 ```{r}
-str_c(letters[24:26], collapse = " * ")   # Old way, same as base R's paste() function
+str_c(letters[24:26], collapse = " * ")   # Old way, same as base-R's paste() function
 str_flatten(letters[24:26], " * ")                  # New way with str_flatten()
 str_c(c(7, 2, 6), letters[24:26], sep = "*", collapse = " + ")         # Old way
 str_c(c(7, 2, 6), letters[24:26], sep = "*") |> str_flatten(" + ")     # New way
@@ -213,4 +213,4 @@ str_sub(x, -1, -1) <- "]"
 x[1:5]
 ```
 
-* See the [\textcolor{blue}{from-base vignette}](https://cran.r-project.org/web/packages/stringr/vignettes/from-base.html) (`vignette("from-base")`) for other useful stringr functions.
+* See the [\textcolor{blue}{from-base vignette}](https://cran.r-project.org/web/packages/stringr/vignettes/from-base.html) (`vignette("from-base")`) for other useful `stringr` functions.

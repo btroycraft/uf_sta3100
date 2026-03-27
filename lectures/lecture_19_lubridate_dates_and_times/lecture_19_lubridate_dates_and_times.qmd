@@ -7,16 +7,16 @@ format:
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
 lang: en
-geometry:
-  - margin = 1in
-  - paperwidth = 11in
-  - paperheight = 6.875in
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{sectsty}
-  - \allsectionsfont{\centering}
-  - \pagenumbering{gobble}
 execute:
   error: true
 ---
@@ -31,10 +31,10 @@ execute:
 
 **Note**
 
-* `lubridate` is _not_ part of the core tidyverse and the `readr` package does _not_ use `lubridate` when reading dates and date-times.
+* `lubridate` is _not_ part of the core `tidyverse` and the `readr` package does _not_ use `lubridate` when reading dates and date-times.
   - dates are handled with `parse_date()`
   - date-times are handled with `parse_date_time()`
-  - Some of lubridate’s functionality is based on these functions.
+  - Some of `lubridate`’s functionality is based on these functions.
 
   More on `readr` later.
 
@@ -57,7 +57,7 @@ class(now)
 
 
 # Creating Dates
-| Purpose                               | `lubridate` function(s)       |Base R function(s)       |
+| Purpose                               | `lubridate` function(s)       |Base-R function(s)       |
 |:--------------------------------------|:------------------------------|:------------------------|  
 |Current date                           |`today()`                      |`Sys.Date()`             |
 |General conversion to date             |`as_date()`                    |`as.Date()`              |
@@ -78,7 +78,7 @@ as_date("1980-12-08")         # John Lennon killed by a revolver.
 
 ***
 
-**These are pretty easy with lubridate.**
+**These are pretty easy with `lubridate`.**
 ```{r}
 mdy("Dec 8, 1980")
 mdy("12/8/80")
@@ -87,7 +87,7 @@ mdy("December 8 (1980)")
 
 ***
 
-**Base R requires more from the user.**
+**base-R requires more from the user.**
 ```{r}
 as.Date("Dec 8, 1980", format = "%b %d, %Y")
 as.Date("12/8/80", format = "%m/%d/%y")
@@ -130,7 +130,7 @@ make_date(1980)
 
 # Creating Date-Times
 
-| Purpose                                                              | `lubridate` function(s)     |Base R function(s)          |
+| Purpose                                                              | `lubridate` function(s)     |Base-R function(s)          |
 |:---------------------------------------------------------------------|:----------------------------|:---------------------------|  
 |Current date-time                                                     |`now()`                      |`Sys.time()`                |
 |General conversion to date-time                                       |`as_datetime()`              |`as.POSIXct()`              |
@@ -225,7 +225,7 @@ ymd_hm("2019-03-23 5:15 PM", tz = "America/New_York")
 ***
 
 * Use `stringr::str_replace()` to replace “p.m.” with “PM”.
-  - Could use base R `sub()` or `gsub()` instead.
+  - Could use base-R `sub()` or `gsub()` instead.
 
 ```{r}
 tv <- tv |> mutate(`Time (ET)` = str_replace(`Time (ET)`, "p.m.", "PM"))
@@ -251,7 +251,7 @@ tv$dt
 
 # Extracting Date and Date-Time Components
 
-| Purpose        | `lubridate` function(s)                        |Base R function(s)          |
+| Purpose        | `lubridate` function(s)                        |Base-R function(s)          |
 |:---------------|:-----------------------------------------------|:---------------------------|  
 |Extract year    |`year()`                                        |`strftime()` , `format()`   |
 |Extract month   |`month()`                                       |`strftime()` , `format()`   |
@@ -263,7 +263,7 @@ tv$dt
 ***
 
 * `strftime()` always returns type `character`. Use `as.integer()` (or `as.double()` for seconds) to convert to numeric.
-* Any of the lubridate functions in the previous table can also be used to **set** a date component to a new value.
+* Any of the `lubridate` functions in the previous table can also be used to **set** a date component to a new value.
 * `update()` also can be used to change a date or date-time:
   - `lubridate` defines `update()` methods for classes `Date` and `POSIXt`.
   - `POSIXct` and `POSIXlt` both inherit from `POSIXt`.
@@ -310,7 +310,7 @@ as.numeric(month(as_date("1967-12-10"), label = TRUE))
   - 1 month = 4.35 wks, 1 yr = 365.25 days.
 * `period` : conforms to “normal” expectations when added to dates and times.
 * `interval` : removes ambiguity by having a starting point.
-* Please read the [\textcolor{blue}{lubridate vignette}](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
+* Please read the [\textcolor{blue}{`lubridate` vignette}](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
 
 ***
 
