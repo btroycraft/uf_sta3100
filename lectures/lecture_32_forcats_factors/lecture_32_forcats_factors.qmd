@@ -143,7 +143,7 @@ f2
 factor(x, levels = c("M", "F", "NB"))
 ```
 
-* With an existing factor, can use base-R’s `relevel()` function.
+* With an existing factor, can use base-R `relevel()` function.
 
 ```{r}
 f

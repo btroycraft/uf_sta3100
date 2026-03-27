@@ -139,12 +139,12 @@ filter(guitars, (type == "electric") & (weight < 8))
 ***
 
 * Filtering rows and selecting columns are separate operations.
-  - Contrast with base-R’s `subset()` with its optional argument `select`.
+  - Contrast with base-R `subset()` with its optional argument `select`.
 
 ```{r}
 guitars |>
-    filter((type == "electric") & (weight < 8)) |>
-    select(-type, -weight)
+  filter((type == "electric") & (weight < 8)) |>
+  select(-type, -weight)
 
 ## select(filter(guitars, (type == "electric") & (weight < 8)), -type, -weight)
 ```
@@ -247,9 +247,9 @@ guitars[sample(nrow(guitars), 3), ]
 **Calculate the Mean Weight by Type**
 ```{r}
 guitars |>
-    group_by(type) |>
-    summarise(avg_wt = mean(weight)) |>
-    arrange(desc(type))
+  group_by(type) |>
+  summarise(avg_wt = mean(weight)) |>
+  arrange(desc(type))
 ```
 
 * Note that a `tibble` is returned (ready for more pipes)
@@ -266,8 +266,8 @@ summarise(guitars, avg_wt = mean(weight), .by = type)
 **Include the Number of Observations in Each Group**
 ```{r}
 guitars |>
-    group_by(type) |>
-    summarise(n = n(), avg_wt = mean(weight))
+  group_by(type) |>
+  summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
@@ -282,8 +282,8 @@ summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
 **Group by multiple variables.**
 ```{r}
 guitars |>
-    group_by(type, body) |>
-    summarise(n = n(), avg_wt = mean(weight))
+  group_by(type, body) |>
+  summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
@@ -292,9 +292,9 @@ guitars |>
 
 ```{r}
 guitars |>
-    group_by(type, body) |>
-    summarise(n = n(), avg_wt = mean(weight)) |>
-    group_vars()
+  group_by(type, body) |>
+  summarise(n = n(), avg_wt = mean(weight)) |>
+  group_vars()
 ```
 
 ***
@@ -302,8 +302,8 @@ guitars |>
 **We can fix it by `.groups`**
 ```{r}
 guitars |>
-     group_by(type, body) |>
-     summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
+  group_by(type, body) |>
+  summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
 ```
 
 ***
@@ -311,9 +311,9 @@ guitars |>
 * Now check the group variables
 ```{r}
 guitars |>
-    group_by(type, body) |>
-    summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
-    group_vars()
+  group_by(type, body) |>
+  summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
+  group_vars()
 ```
 
 ***
@@ -321,15 +321,15 @@ guitars |>
 **An alternative (as of `dplyr` 1.1.0):**
 ```{r}
 guitars |>
-    summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
+  summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
 ```
 
 * There is a small difference though: the result is not grouped.
 
 ```{r}
 guitars |>
-    summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
-    group_vars()
+  summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
+  group_vars()
 ```
 
 # Revisiting the Titanic
@@ -360,32 +360,32 @@ Titanic_tbl |> group_by(Survived) |> summarize(n = sum(n))
 
 ```{r}
 Titanic_tbl |> group_by(Survived) |>
-    summarize(n = sum(n)) |>
-    mutate(prop = n/sum(n))
+  summarize(n = sum(n)) |>
+  mutate(prop = n/sum(n))
 ```
 
 * Why does this work?
   - Because `summarize()` peels off the last and only level of grouping before `mutate()` is called. Thus the `sum(n)` in `mutate()` is ungrouped.
 ```{r}
 Titanic_tbl |> group_by(Survived) |>
-    summarize(n = sum(n)) |>
-    group_vars()
+  summarize(n = sum(n)) |>
+  group_vars()
 ```
 
 ***
 
 ```{r}
 Titanic_tbl |>
-    group_by(Class, Survived) |>
-    summarize(n = sum(n))
+  group_by(Class, Survived) |>
+  summarize(n = sum(n))
 ```
 
 ***
 
 ```{r}
 Titanic_tbl |> group_by(Class, Survived) |>
-    summarize(n = sum(n)) |>
-    mutate(prop = n/sum(n))
+  summarize(n = sum(n)) |>
+  mutate(prop = n/sum(n))
 ```
 
 * This works because `summarize()` has peeled off the last level of grouping (“Survived”), leaving only grouping by "Class" (see next slide). Thus the `sum(n)` in `mutate` is grouped by “Class”.
@@ -396,8 +396,8 @@ Titanic_tbl |> group_by(Class, Survived) |>
 
 ```{r}
 Titanic_tbl |> group_by(Class, Survived) |>
-    summarize(n = sum(n)) |>
-    group_vars()
+  summarize(n = sum(n)) |>
+  group_vars()
 ```
 
 * Using `summarize()` with the .by optional argument (new in `dplyr` 1.1.0) only uses transient grouping. For this reason, the last example does not work in the same way if we use .by instead of `group_by()` (see next slide).
@@ -408,8 +408,8 @@ Titanic_tbl |> group_by(Class, Survived) |>
 
 ```{r}
 Titanic_tbl |>
-    summarize(n = sum(n), .by = c(Class, Survived)) |>
-    mutate(prop = n/sum(n))
+  summarize(n = sum(n), .by = c(Class, Survived)) |>
+  mutate(prop = n/sum(n))
 ```
 
 ***
@@ -417,8 +417,8 @@ Titanic_tbl |>
 * Here’s how to make the `.by` version give the `group_by()` result.
 ```{r}
 Titanic_tbl |>
-    summarize(n = sum(n), .by = c(Class, Survived)) |>
-    mutate(prop = n/sum(n), .by = Class)
+  summarize(n = sum(n), .by = c(Class, Survived)) |>
+  mutate(prop = n/sum(n), .by = Class)
 ```
   - Is this easier to understand than the `group_by()` approach?
 
@@ -428,19 +428,19 @@ Titanic_tbl |>
   - Just use `ungroup()` to remove all grouping before the `mutate()` step.
 ```{r}
 Titanic_tbl |> group_by(Class, Survived) |>
-    summarize(n = sum(n)) |>
-    ungroup() |>
-    mutate(prop = n/sum(n))
+  summarize(n = sum(n)) |>
+  ungroup() |>
+  mutate(prop = n/sum(n))
 ```  
 
 # Pivoting
 Here’s a way to make the data frame look like a table.
 ```{r}
 Titanic_tbl |>
-    group_by(Class, Survived) |>
-    summarize(n = sum(n)) |>
-    mutate(prop = n/sum(n)) |>
-    pivot_wider(names_from = Survived, values_from = c(n, prop))
+  group_by(Class, Survived) |>
+  summarize(n = sum(n)) |>
+  mutate(prop = n/sum(n)) |>
+  pivot_wider(names_from = Survived, values_from = c(n, prop))
 ```  
 
 ***
@@ -448,9 +448,9 @@ Titanic_tbl |>
 And a variation, pivoting and then adding a single column of proportions.
 ```{r}
 Titanic_tbl |>
-    summarize(n = sum(n), .by = c(Class, Survived)) |>
-    pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
-    mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
+  summarize(n = sum(n), .by = c(Class, Survived)) |>
+  pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
+  mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
 ``` 
 
 

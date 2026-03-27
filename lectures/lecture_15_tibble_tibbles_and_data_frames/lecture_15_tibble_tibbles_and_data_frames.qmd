@@ -1,5 +1,5 @@
 ---
-title: "Tidyverse: Tibbles"
+title: "'tibble': Tibbles and Data Frames"
 subtitle: "STA3100 Lecture 15"
 format:
   html:
@@ -21,7 +21,7 @@ execute:
   error: true
 ---
 
-# What are Tidy Data?
+# What is Tidy Data?
 * Ideas/principles for how data should be organized for statistical analysis.
 * Not necessarily new, but codified by Wickham (2014).
   - Motivated by work on `reshape` package
@@ -29,16 +29,6 @@ execute:
 * A basic principle is that data should be arranged so that  
   – Each variable is a column  
   – Each observation is a row
-
-# So What is the [\textcolor{blue}{Tidyverse}](https://www.tidyverse.org/)?
-* A collection of R packages and functions/methods for  
-  – importing data into R  
-  – tidying, transforming, and otherwise manipulating data in R   
-  – plotting and graphing data ('`ggplot2`')
-* In most cases these functions are intended to improve on existing functionality in base-R while being  
-  – More consistent and predictable  
-  – Easier to use
-* The `tidyverse` has sometimes felt like a moving target as it evolved and the developers revised previous design decisions. It is much more settled now, although changes are still made from time to time.
 
 # Tibbles
 

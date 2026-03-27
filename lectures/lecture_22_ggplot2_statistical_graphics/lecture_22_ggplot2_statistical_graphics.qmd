@@ -1,5 +1,5 @@
 ---
-title: "`ggplot`: Statistical Graphics"
+title: "`ggplot2`: Statistical Graphics"
 subtitle: "STA3100 Lecture 22"
 format:
   html:

@@ -23,12 +23,12 @@ execute:
 ---
 
 # JOINING/MERGING DATA FRAMES
-# `dplyr` Two-Table “Verbs” and Base-R Equivalents
+# `dplyr` Two-Tibble “Verbs” and Base-R Equivalents
 Functions used to merge two data frames by matching on common variables.  
 Besides the assigned readings, see:  
 
-* the Two-table verbs section of [`dplyr` <-> Base-R](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a comparison of `dplyr` and base-R functions. 
-* the [Two-Table Verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html) vignette for more on `dplyr` two-table verbs.
+* the Two-tibble verbs section of [`dplyr` <-> Base-R](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a comparison of `dplyr` and base-R functions. 
+* the [Two-Tibble Verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html) vignette for more on `dplyr` two-tibble verbs.
 * [`dplyr` 1.1.0: Joins](https://www.tidyverse.org/blog/2023/01/dplyr-1-1-0-joins/)
 
 # Mutating Joins
@@ -193,15 +193,15 @@ colors_df
 
 ```{r}
 colors_df <- colors_df |>
-    transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
-    transform(model = replace(model, model == "J-100", "J-100 Xtra"))
+  transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
+  transform(model = replace(model, model == "J-100", "J-100 Xtra"))
 ```
 
 * Or with the base-R `ifelse()` function.
 ```{r}
 colors_df <- colors_df |>
-    transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
-    transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
+  transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
+  transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
 ```
   - `ifelse()` is useful for other kinds of transformations as well, e.g.,
 ```{r}
@@ -216,7 +216,7 @@ y
   - See also `dplyr::case_when()` (can do other kinds of tranformations).
 ```{r}
 colors_tbl <- colors_tbl |>
-    mutate(model = case_match(model,
+  mutate(model = case_match(model,
                               "Les Paul" ~ "Les Paul Standard",
                               "J-100" ~ "J-100 Xtra",
                               .default = model))

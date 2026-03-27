@@ -161,7 +161,7 @@ nrow(uf_progs)
 ## uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_college)
 
 uf_progs <- uf_progs |>
-    mutate(College = rep(College[has_college], times = num_prog_by_college))
+  mutate(College = rep(College[has_college], times = num_prog_by_college))
 
 uf_progs |> select(College, Program) |> slice_head(n = 8)
 ```
@@ -296,7 +296,7 @@ library(tidyverse)
 library(readxl)
 uf_progs <- read_excel("ufAcademicPrograms.xlsx")
 uf_progs <- uf_progs |>
-    mutate(College = fill_vector(College))
+  mutate(College = fill_vector(College))
 uf_progs |>
   select(College, Program) |>
   slice_sample(n = 8) |>

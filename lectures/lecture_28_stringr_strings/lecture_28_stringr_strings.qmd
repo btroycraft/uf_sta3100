@@ -183,7 +183,7 @@ str_c(salut, people, sep = " ") |> str_c(".")
 
 # Collapsing / Flattening
 ```{r}
-str_c(letters[24:26], collapse = " * ")   # Old way, same as base-R's paste() function
+str_c(letters[24:26], collapse = " * ")   # Old way, same as base-R paste() function
 str_flatten(letters[24:26], " * ")                  # New way with str_flatten()
 str_c(c(7, 2, 6), letters[24:26], sep = "*", collapse = " + ")         # Old way
 str_c(c(7, 2, 6), letters[24:26], sep = "*") |> str_flatten(" + ")     # New way

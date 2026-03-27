@@ -87,7 +87,7 @@ mdy("December 8 (1980)")
 
 ***
 
-**base-R requires more from the user.**
+**Base-R requires more from the user.**
 ```{r}
 as.Date("Dec 8, 1980", format = "%b %d, %Y")
 as.Date("12/8/80", format = "%m/%d/%y")
@@ -173,8 +173,8 @@ tv |> pull(`Time (ET)`)      # Same as tv$`Time (ET)` or tv[["Time (ET)"]]
 
 ```{r}
 tv |>
-    mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
-    pull(dt)
+  mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
+  pull(dt)
 ```
 
 * “`After conc. I`” rows leave us with `NA`, which seems reasonable.
@@ -236,14 +236,14 @@ tv |> pull(`Time (ET)`)
 
 ```{r}
 tv <- tv |>
-    mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c(a.m. = "AM", p.m. = "PM")))
+  mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c(a.m. = "AM", p.m. = "PM")))
 ```
 
 ***
 
 ```{r}
 tv <- tv |>
-    mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+  mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
 tv$dt
 ```
 
@@ -464,9 +464,9 @@ tv2
 
 ```{r}
 tv |> left_join(tv2, by = c("Site", "Number")) |>
-    mutate(dt = coalesce(dt.x, dt.y)) |>
-    select(Site, Number, dt.x, dt.y, dt) |>
-    head(n = 8)
+  mutate(dt = coalesce(dt.x, dt.y)) |>
+  select(Site, Number, dt.x, dt.y, dt) |>
+  head(n = 8)
 ```
 
 ***
@@ -488,9 +488,9 @@ tv |>
 
 ```{r}
 tv <- tv |>
-    rows_update(tv2, by = c("Site", "Number"))  |>
-    select(-Day, -`Time (ET)`) |>
-    rename("Date_Time" = dt)
+  rows_update(tv2, by = c("Site", "Number"))  |>
+  select(-Day, -`Time (ET)`) |>
+  rename("Date_Time" = dt)
 ```
 
 * Have a look at the result on the next slide.

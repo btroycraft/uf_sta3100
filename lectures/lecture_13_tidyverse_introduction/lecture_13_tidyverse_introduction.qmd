@@ -1,0 +1,140 @@
+---
+title: "`tidyverse`: Introduction"
+subtitle: "STA3100 Lecture 13"
+format:
+  html:
+    embed-resources: true
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
+lang: en
+execute:
+  error: true
+---
+
+# What Is the `tidyverse`?
+
+* The `tidyverse` is a collection of R packages built around a common design philosophy for data analysis, redefining how many common operations are performed in R.
+* It emphasizes:
+  1. **Tidy data**
+  2. **Consistent** function interfaces
+  3. **Readable** code
+  4. Tools that **work well together**
+
+```{r}
+#| message: false
+
+library(tidyverse)
+```
+
+# The Overarching Design Ethos
+
+* **Tibble-in, tibble-out**: Most `tidyverse` functions take a data frame (`tibble`) as the first argument and likewise return a data frame (`tibble`) as output.
+* Functions are especially **pipe-friendly**
+* Function names are **descriptive** and **consistent** across packages:
+  - Ex: `filter()`, `select()`, `mutate()`, `pivot_longer()`, `str_detect()`
+
+* The `tidyverse` prefers:
+  - **explicit** code over hidden side effects
+  - **rectangular/tabular** data structures
+  - every function has **one main job**
+  - **consistent** names and argument conventions
+* Compared with base-R, `tidyverse` code is often:
+  - more **verbose**
+  - more **readable**
+  - easier to compose with **pipes**
+
+# Tidy Data
+
+* The `tidyverse` is strongly connected to the idea of _tidy data_.
+* A common version of the tidy-data principle is:
+  1. Each **variable** is a column
+  2. Each **observation** is a row
+  3. Each **cell** contains one value
+* Tidy data are easier to:
+  - **filter**
+  - **summarize**
+  - **reshape**
+  - **visualize**
+
+# Why Tibbles?
+
+* A **tibble** is the **main data-frame structure** used throughout the `tidyverse`.
+* A tibble is still a data frame, but it has different default behavior.
+* Tibbles are a little **stricter** and a little **safer** than base-R data frames.
+* In this course, many `tidyverse` functions will:
+  - expect a `tibble`
+  - return a `tibble`
+
+```{r}
+tibble(x = 1:3, y = c("a", "b", "c"))
+```
+
+# Core Packages
+
+* **`tibble`**: modern data-frame structure used throughout the `tidyverse`
+* **`dplyr`**: selecting, filtering, transforming, joining, and summarizing rows/columns
+* **`tidyr`**: reshaping data between wide and long forms
+* **`readr`**: reading and writing flat files such as csv and tsv
+* **`ggplot2`**: plotting and statistical graphics
+
+***
+
+* **`stringr`**: character strings and regular expressions
+* **`forcats`**: factors and factor levels
+* **`lubridate`**: dates and date-times
+* **`purrr`**: functional programming tools for iteration and list-processing
+
+# How These Pieces Fit Together
+
+* A common `tidyverse` workflow in this course will look like:
+  1. **Import** data with `readr`
+  2. **Store** or convert to a `tibble`
+  3. **Transform** with `dplyr`
+  4. **Reshape** with `tidyr`
+  5. Handle strings/factors/dates with `stringr`, `forcats`, and `lubridate`
+  6. **Visualize** with `ggplot2`
+
+```{r}
+#| message: false
+
+example_tbl <-
+  tibble(
+    group = c("A", "A", "B", "B"),
+    score = c(10, 12, 8, 15)
+  ) |>
+  summarize(avg_score = mean(score), .by = group)
+
+example_tbl
+```
+
+# A Minimal Example
+
+```{r}
+#| message: false
+
+tibble(
+  fruit = c("apple", "banana", "apple", "pear"),
+  weight = c(3, 2, 4, 5)
+) |>
+  summarize(
+    n = n(),
+    avg_weight = mean(weight),
+    .by = fruit
+  )
+```
+
+* This is typical `tidyverse` code:
+  - data in a **`tibble`**
+  - a clear **verb** (`summarize()`)
+  - grouping via **`.by`**
+  - output returned as another **`tibble`**

@@ -271,7 +271,7 @@ str_view(fruit, "([aeiou]).*\\1.*\\1")
 
 In general `pattern` and `replacement` will be regular expressions.
 
-| Purpose                            | `stringr`                                  |base-R                                |
+| Purpose                            | `stringr`                                  |Base-R                                |
 |:-----------------------------------|:-----------------------------------------|:-------------------------------------|
 |View regex match                    |`str_view(x, pattern)`                    |                                      |
 |Find positions matching pattern     |`str_which(x, pattern)`                   |`grep(pattern, x)`                    |
