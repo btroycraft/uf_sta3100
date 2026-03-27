@@ -2,6 +2,8 @@
 title: "`dplyr`: Two-Tibble Operations"
 subtitle: "STA3100 Lecture 18"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

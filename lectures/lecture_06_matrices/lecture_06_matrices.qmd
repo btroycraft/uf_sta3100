@@ -2,6 +2,8 @@
 title: "Matrices"
 subtitle: "STA3100 Lecture 6"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

@@ -2,6 +2,8 @@
 title: "Data Frames"
 subtitle: "STA3100 Lecture 9"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

@@ -2,6 +2,8 @@
 title: "Data Frame Operations"
 subtitle: "STA3100 Lecture 10"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

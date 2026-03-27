@@ -2,6 +2,8 @@
 title: "Logical Operators"
 subtitle: "STA3100 Lecture 5"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

@@ -2,6 +2,8 @@
 title: "Pipes"
 subtitle: "STA3100 Lecture 16"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2

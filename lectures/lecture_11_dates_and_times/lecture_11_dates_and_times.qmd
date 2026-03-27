@@ -2,6 +2,8 @@
 title: "Dates and Times"
 subtitle: "STA3100 Lecture 11"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
