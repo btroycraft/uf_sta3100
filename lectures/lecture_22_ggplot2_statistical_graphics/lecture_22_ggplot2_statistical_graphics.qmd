@@ -257,7 +257,7 @@ RColorBrewer::display.brewer.all()
 
 The help file for `brewer.pal()` gives you an idea how to use the package.
 
-You can also get a “sneak peek” of these palettes at: [\textcolor{blue}{http://colorbrewer2.org/}](http://colorbrewer2.org/) . You would provide the number of levels or classes of your data, and then the type of data: sequential, diverging, or qualitative. The names of the `RColorBrewer` palettes are the string after ‘pick a color scheme:’
+You can also get a “sneak peek” of these palettes at: [http://colorbrewer2.org/](http://colorbrewer2.org/) . You would provide the number of levels or classes of your data, and then the type of data: sequential, diverging, or qualitative. The names of the `RColorBrewer` palettes are the string after ‘pick a color scheme:’
 
 We can use these predefined color palettes by adding the `scale_color_brewer` layer.
 ```{r}

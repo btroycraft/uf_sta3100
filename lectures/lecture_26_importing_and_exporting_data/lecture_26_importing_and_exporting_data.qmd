@@ -24,7 +24,7 @@ execute:
 # Initial Reading of the Data
 
 The file `schedule_b-2023-10-27T01_16_01.csv` was downloaded from the
-Federal Election Commission’s [\textcolor{blue}{website}](https://www.fec.gov/data/disbursements/?data_type=processed&two_year_transaction_period=2024&min_date=01%2F01%2F2023&max_date=12%2F31%2F2024). This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period.
+Federal Election Commission’s [website](https://www.fec.gov/data/disbursements/?data_type=processed&two_year_transaction_period=2024&min_date=01%2F01%2F2023&max_date=12%2F31%2F2024). This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period.
 
 * A warning occurs when the file is read using `readr::read_csv()`.
 
@@ -351,7 +351,7 @@ santos_cols
 
 * Note: `cols_condense()` might not do what you want, especially if there are more empty columns (set to logical) than any other type.
 
-<!-- Dr. Presnell have [\textcolor{blue}{proposed}](https://github.com/tidyverse/readr/issues/1478) to the `readr` developers a new version of `cols_condense` that allows the user to specify the `.default` column type which should be "condensed out". By default, the most common column type is still used. -->
+<!-- Dr. Presnell have [proposed](https://github.com/tidyverse/readr/issues/1478) to the `readr` developers a new version of `cols_condense` that allows the user to specify the `.default` column type which should be "condensed out". By default, the most common column type is still used. -->
 
 <!-- ```{r} -->
 <!-- my_cols_condense <- function (x, .default = NULL) { -->

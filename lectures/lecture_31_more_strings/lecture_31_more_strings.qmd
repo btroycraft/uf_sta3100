@@ -228,7 +228,7 @@ The back-reference refers to the last of the repeated matches.
 **Secondary Answer**  
 If you want to group for repetition without creating a back-reference, you can use a non-capturing group: (`?: ...` )
 
-For more information see [_\textcolor{blue}{Grouping and Capturing}_](https://www.regular-expressions.info/brackets.html) and [_\textcolor{blue}{Backreferences}_](https://www.regular-expressions.info/backref.html) in this [\textcolor{blue}{tutorial}](https://www.regular-expressions.info/tutorial.html).
+For more information see [_Grouping and Capturing_](https://www.regular-expressions.info/brackets.html) and [_Backreferences_](https://www.regular-expressions.info/backref.html) in this [tutorial](https://www.regular-expressions.info/tutorial.html).
 
 ***
 
@@ -269,7 +269,7 @@ This can be done using a _positive lookahead_: (`?=...`)
 A positive lookahead causes the regex engine to look ahead for a match without
 retaining it as part of the overall match.
 
-See [\textcolor{blue}{Lookahead and Lookbehind}](https://www.regular-expressions.info/lookaround.html) for more on lookarounds.
+See [Lookahead and Lookbehind](https://www.regular-expressions.info/lookaround.html) for more on lookarounds.
 
 So in the following example:
 

@@ -63,7 +63,7 @@ pie(groupsizes, labels,
     col = c("gray40", "white", "grey", "black", "#F5F5DC"))
 ```
 
-* More colors in R can be found at [\textcolor{blue}{here}](https://rstudio-pubs-static.s3.amazonaws.com/3486_79191ad32cf74955b4502b8530aad627.html).
+* More colors in R can be found at [here](https://rstudio-pubs-static.s3.amazonaws.com/3486_79191ad32cf74955b4502b8530aad627.html).
 * The `RcolorBrewer` package in R contains a number of palettes, or selections of colors.
 
 # Histogram
@@ -206,7 +206,7 @@ axis(2, pos = 5.6, las = 2, tck = 0.01)
 axis(3, col = "blue", lty = 2, lwd = 5)
 axis(4, col = "violet", col.axis = "dark violet", lwd.ticks = 0, font = 5, cex.axis = 0.5)
 ```
-For more information on graphical parameters, please refer to [\textcolor{blue}{here}](https://www.statmethods.net/advgraphs/parameters.html).
+For more information on graphical parameters, please refer to [here](https://www.statmethods.net/advgraphs/parameters.html).
 
 
 **Illustration of some other plot functions**

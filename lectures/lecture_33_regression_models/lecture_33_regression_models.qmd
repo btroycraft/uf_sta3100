@@ -394,7 +394,7 @@ legend("bottomright", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
 par(opar)
 ```
 
-* [\textcolor{blue}{A post on plotting fitted lines with `ggplot2`}](https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/)
+* [A post on plotting fitted lines with `ggplot2`](https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/)
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."

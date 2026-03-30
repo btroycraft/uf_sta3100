@@ -28,7 +28,7 @@ execute:
 * Pipes can improve readability by emphasizing a sequence of actions rather than the object on which the actions are being performed.
 * The idea originated (?) with the UNIX operating system, which has had pipes since its development in the 1970s.
   - In UNIX/Linux command shells, the character "`|`" is the pipe operator.
-* [\textcolor{blue}{Since the release of R 4.1}](https://developer.r-project.org/blosxom.cgi/R-4-1-branch/NEWS/2021/05/17#n2021-05-17), base-R provides an official/native pipe syntax, "`|>`".  
+* [Since the release of R 4.1](https://developer.r-project.org/blosxom.cgi/R-4-1-branch/NEWS/2021/05/17#n2021-05-17), base-R provides an official/native pipe syntax, "`|>`".  
   - You can look up the R help `?pipeOp` to read more about it.
 
 ***
@@ -49,7 +49,7 @@ execute:
   - return a data frame (`tibble`) as their output.  
 This makes them especially pipe-friendly.
 * The `tidyverse` also includes the magrittr pipe "`%>%`", **but** the `tidyverse` developers now encourage users to employ the base-R pipe `|>`.
-  - There is a [\textcolor{blue}{new edition of r4ds}](https://r4ds.hadley.nz/) on the way and [\textcolor{blue}{it uses |>}](https://r4ds.hadley.nz/workflow-style).
+  - There is a [new edition of r4ds](https://r4ds.hadley.nz/) on the way and [it uses |>](https://r4ds.hadley.nz/workflow-style).
   - We will use `|>` in this class.
   - But you will see a lot of `%>%` in the wild (and in the 1st edition of r4ds).
   - `|>` and `%>%` are _usually_ interchangeable, but they do not always work identically.
@@ -94,7 +94,7 @@ gmean_evens <-
 gmean_evens
 ```
 
-* [\textcolor{blue}{The `tidyverse` style}](https://style.tidyverse.org/) guide recommends that a pipe should always have a space before it and should [\textcolor{blue}{usually be followed by a new line}](https://style.tidyverse.org/pipes.html), as demonstrated above.
+* [The `tidyverse` style](https://style.tidyverse.org/) guide recommends that a pipe should always have a space before it and should [usually be followed by a new line](https://style.tidyverse.org/pipes.html), as demonstrated above.
 
 ***
 

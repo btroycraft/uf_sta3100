@@ -149,7 +149,7 @@ There are also predefined classes that can be used inside `[]` such as
 [:space:]
 [:punct:]
 ```
-and others (see the help for `regex` and/or the [\textcolor{blue}{regular-expressions vignette}](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html) for a complete list).
+and others (see the help for `regex` and/or the [regular-expressions vignette](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html) for a complete list).
 
 # Metacharacters
 
@@ -215,7 +215,7 @@ str_view(c("I", "II", "III"), "II*?")
 
 **Example: Random phone numbers**
 
-[\textcolor{blue}{Format}](https://en.wikipedia.org/wiki/North_American_Numbering_Plan#Modern_plan): `NXX` `NXX-XXXX` where N is any digit 2-9 and X is any digit 0-9.
+[Format](https://en.wikipedia.org/wiki/North_American_Numbering_Plan#Modern_plan): `NXX` `NXX-XXXX` where N is any digit 2-9 and X is any digit 0-9.
 
 ```{r}
 rphone <- function(area_code = NULL, exchange = NULL, station = NULL) { 
@@ -401,7 +401,7 @@ matches
 str_subset(sentences, "Grape")
 ```
 
-* Read [\textcolor{blue}{Section 16.5 of r4ds2e}](https://r4ds.hadley.nz/regexps.html#pattern-control) for more `regex()` options.
+* Read [Section 16.5 of r4ds2e](https://r4ds.hadley.nz/regexps.html#pattern-control) for more `regex()` options.
 
 ***
 

@@ -199,5 +199,5 @@ Q. What happens if you try this with an ordinary list (a list that isn’t a dat
 
 * If you want the old behavior (doubtful), set `stringsAsFactors = FALSE`.
 * If you want to know more about the history of this default see:
-  - [\textcolor{blue}{stringsAsFactors: An unauthorized biography}](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/)
-  - [\textcolor{blue}{stringsAsFactors = <sigh>}](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh)
+  - [stringsAsFactors: An unauthorized biography](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/)
+  - [stringsAsFactors = <sigh>](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh)

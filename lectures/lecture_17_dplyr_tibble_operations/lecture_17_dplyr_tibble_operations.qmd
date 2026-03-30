@@ -50,7 +50,7 @@ guitars
 # `dplyr` One-Table "Verbs" and Base-R "Equivalents"
 
 * There are also helper functions to alter/enhance these functions.
-* See [\textcolor{blue}{`dplyr` <-> Base-R}](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a more thorough comparison with base-R.
+* See [`dplyr` <-> Base-R](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a more thorough comparison with base-R.
 
 |Target     | Purpose                               | `dplyr` function(s)         |Base-R function(s)    |
 |:----------|:--------------------------------------|:--------------------------|:---------------------|  

@@ -35,7 +35,7 @@ Dates and Times are **Hard**:
 * Leap years 
 * Time zones
 * Daylight savings time
-* Even [\textcolor{blue}{leap seconds}](https://en.wikipedia.org/wiki/Leap_second).
+* Even [leap seconds](https://en.wikipedia.org/wiki/Leap_second).
 
 Read the R help for `as.Date`.
 
@@ -64,7 +64,7 @@ The value of the double represents the number of days _since_ 1970-01-01.
 ***
 ![](p2.png)
 
-See Explain [\textcolor{blue}{XKCD: 2676: Historical Dates}](https://www.explainxkcd.com/wiki/index.php/2676:_Historical_Dates) and the examples section of `?as.Date`
+See Explain [XKCD: 2676: Historical Dates](https://www.explainxkcd.com/wiki/index.php/2676:_Historical_Dates) and the examples section of `?as.Date`
 
 * Many files and database entries contain a date, which, if not set, defaults to 0 in many OS’s and apps.
 * Many operating system and apps store dates as Unix timestamps, so 0 becomes 1970-01-01.
@@ -144,7 +144,7 @@ time0
 as.numeric(time0)
 ```
 
-That’s midnight in "[\textcolor{blue}{Coordinated Universal Time}](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)" (successor to GMT).  
+That’s midnight in "[Coordinated Universal Time](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)" (successor to GMT).  
 This is one second later:
 ```{r}
 as.numeric(as.POSIXct("1970-01-01 00:00:01", tz = "UTC"))
@@ -177,9 +177,9 @@ now + 1
 
 See:  
 
-* [\textcolor{blue}{Explain XKCD: 2697: Y2K and 2038}](https://www.explainxkcd.com/wiki/index.php/2697:_Y2K_and_2038)
-* [\textcolor{blue}{Year 2000 Problem}](https://en.wikipedia.org/wiki/Year_2000_problem)
-* [\textcolor{blue}{Year 2038 Problem}](https://en.wikipedia.org/wiki/Year_2038_problem)
+* [Explain XKCD: 2697: Y2K and 2038](https://www.explainxkcd.com/wiki/index.php/2697:_Y2K_and_2038)
+* [Year 2000 Problem](https://en.wikipedia.org/wiki/Year_2000_problem)
+* [Year 2038 Problem](https://en.wikipedia.org/wiki/Year_2038_problem)
   - Many operating system and applications (R included) still use 32 bit integers.
   - $2^{31} −1=2,147,483,647$
 ```{r}

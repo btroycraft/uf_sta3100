@@ -71,7 +71,7 @@ library(tidyverse)
 * A **tibble** is the **main data-frame structure** used throughout the `tidyverse`.
 * A tibble is still a data frame, but it has different default behavior.
 * Tibbles are a little **stricter** and a little **safer** than base-R data frames.
-* In this course, many `tidyverse` functions will:
+* Many `tidyverse` functions will:
   - expect a `tibble`
   - return a `tibble`
 

@@ -310,7 +310,7 @@ as.numeric(month(as_date("1967-12-10"), label = TRUE))
   - 1 month = 4.35 wks, 1 yr = 365.25 days.
 * `period` : conforms to “normal” expectations when added to dates and times.
 * `interval` : removes ambiguity by having a starting point.
-* Please read the [\textcolor{blue}{`lubridate` vignette}](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
+* Please read the [`lubridate` vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
 
 ***
 
@@ -423,7 +423,7 @@ tv |>
 * `.` will match any character
 * `*` lets a pattern be optional or repeat (i.e. it matches any number of times, including 0)
 * `?` makes a pattern optional (i.e. it matches 0 or 1 times)  
-For more details, please see [\textcolor{blue}{https://r4ds.hadley.nz/regexps}](https://r4ds.hadley.nz/regexps)
+For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadley.nz/regexps)
 ```{r}
 tv <- tv |>
   separate_wider_regex(Site, c(Site = ".*", " ", Number = "II?"))
@@ -437,7 +437,7 @@ tv |>
 
 # Add Approximate Date-Times for the II Games
 
-* According to [\textcolor{blue}{this source}](https://www.scottfujita.com/how-long-is-a-college-basketball-game/), average game lasts 2 hours and 10 minutes.
+* According to [this source](https://www.scottfujita.com/how-long-is-a-college-basketball-game/), average game lasts 2 hours and 10 minutes.
 * How much time between games at a tournament site? Guess: 30 minutes.
 * So to get approximate times for a II-game, we find the I-game at the same site and add 2 hours and 40 minutes to its time.
 * An easy way to do this is:

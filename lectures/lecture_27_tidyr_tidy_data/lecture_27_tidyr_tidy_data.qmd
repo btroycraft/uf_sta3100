@@ -30,14 +30,14 @@ execute:
 These principles are commonly violated in a variety of ways.
 
 # Border Crossings Data
-The file `Annual Table.tsv` was obtained from the U.S. Department of Transportation's [\textcolor{blue}{Bureau of Transportation Statistics}](https://www.bts.gov/).
+The file `Annual Table.tsv` was obtained from the U.S. Department of Transportation's [Bureau of Transportation Statistics](https://www.bts.gov/).
 ```{r}
 #| message: false
 
 border_tsv <- "Annual Table.csv"
 ```
 
-The file was downloaded from [\textcolor{blue}{https://explore.dot.gov/views/BorderCrossingData/Annual}](https://explore.dot.gov/views/BorderCrossingData/Annual) by
+The file was downloaded from [https://explore.dot.gov/views/BorderCrossingData/Annual](https://explore.dot.gov/views/BorderCrossingData/Annual) by
 
 * clicking on the download icon at the bottom right of the page, 
 * choosing “Crosstab”, and then

@@ -98,7 +98,7 @@ knitr::include_graphics("special_character.png")
 
 # Unicode
 
-See [\textcolor{blue}{Wikipedia’s List of Unicode Characters}](https://en.wikipedia.org/wiki/List_of_Unicode_characters) or the [\textcolor{blue}{Unicode 15.0 Character Charts}](https://www.unicode.org/charts/)
+See [Wikipedia’s List of Unicode Characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters) or the [Unicode 15.0 Character Charts](https://www.unicode.org/charts/)
 
 * Greek, Arabic, Hebrew, and Chinese? 
 
@@ -112,7 +112,7 @@ cat(paste(ltrs, collapse = " "))
 ```
 
 
-* [\textcolor{blue}{Letterlike Symbols}](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Letterlike_Symbols) and [\textcolor{blue}{Playing Cards}](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Playing_Cards)
+* [Letterlike Symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Letterlike_Symbols) and [Playing Cards](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Playing_Cards)
 
 ```{r}
 x <- c("\U2115 \U2282 \U2124 \U2282 \U211A \U2282 \U211D \U2282 \U2102",
@@ -213,4 +213,4 @@ str_sub(x, -1, -1) <- "]"
 x[1:5]
 ```
 
-* See the [\textcolor{blue}{from-base vignette}](https://cran.r-project.org/web/packages/stringr/vignettes/from-base.html) (`vignette("from-base")`) for other useful `stringr` functions.
+* See the [from-base vignette](https://cran.r-project.org/web/packages/stringr/vignettes/from-base.html) (`vignette("from-base")`) for other useful `stringr` functions.

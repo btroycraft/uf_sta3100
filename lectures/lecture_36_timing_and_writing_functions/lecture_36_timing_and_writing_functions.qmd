@@ -24,9 +24,9 @@ execute:
 # Timing Calculations and Writing Simple Functions
 # Timing
 
-* It can be useful to time calculations in order to [\textcolor{blue}{compare different computational approaches}](https://stats.oarc.ucla.edu/r/faq/how-can-i-time-my-code/).
-* There are [\textcolor{blue}{several ways}](https://www.r-bloggers.com/2017/05/5-ways-to-measure-running-time-of-r-code/) to do this, but we will just look at `system.time()`.
-* For more complex problems, sophisticated [\textcolor{blue}{packages for profiling R code}](https://adv-r.hadley.nz/perf-measure.html) may be useful.
+* It can be useful to time calculations in order to [compare different computational approaches](https://stats.oarc.ucla.edu/r/faq/how-can-i-time-my-code/).
+* There are [several ways](https://www.r-bloggers.com/2017/05/5-ways-to-measure-running-time-of-r-code/) to do this, but we will just look at `system.time()`.
+* For more complex problems, sophisticated [packages for profiling R code](https://adv-r.hadley.nz/perf-measure.html) may be useful.
 * `system.time(expr)` evaluates `expr` and returns the execution time in seconds. Actually, it returns three times:
   - `user`: the “user CPU time” taken by the current process (R session)
   - `system`: the “system CPU time” spent by the operating system kernel on

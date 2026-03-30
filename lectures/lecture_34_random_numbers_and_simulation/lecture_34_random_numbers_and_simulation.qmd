@@ -25,7 +25,7 @@ execute:
 
 "Any one who considers arithmetical methods of producing random digits is, of course, in a state of sin. For, as has been pointed out several times, there is no such thing as a random number– there are only methods to produce random numbers, and a strict arithmetic procedure of course is not such a method." - John von Neumann (1951)
 
-[\textcolor{blue}{Random Numbers Fall Mainly in the Planes}](Random Numbers Fall Mainly in the Planes - George Marsaglia (1968)) - George Marsaglia (1968)
+[Random Numbers Fall Mainly in the Planes](Random Numbers Fall Mainly in the Planes - George Marsaglia (1968)) - George Marsaglia (1968)
 
 * A sequence of pseudo-random numbers is usually produced by altering the digits in an integer via arithmetic operations and various operations to shift, flip, or shuffling the bits representing the integer.
 * Hope to produce a sequence of integers which are practically indistinguishable from a sequence of _independent_ random integers uniformly distributed over the range, e.g., 0 to $2^{32-1} - 1$ or 0 to $2^{64-1} - 1$.
@@ -149,7 +149,7 @@ This leads to an obvious question:
 What is the probability that the sample contains at least one of each of the five letters, i.e., at least one "A", at least one "B", at least one "C", at least one "D", and at least one "E"?
 
 
-It would probably take you a while to figure out how to calculate the answer to this question, which is a special case of [\textcolor{blue}{the occupancy problem}](https://probabilityandstats.wordpress.com/2010/03/27/the-occupancy-problem/).
+It would probably take you a while to figure out how to calculate the answer to this question, which is a special case of [the occupancy problem](https://probabilityandstats.wordpress.com/2010/03/27/the-occupancy-problem/).
 
 An alternative approach is to _estimate_ the probability by performing many independent replications of the experiment and counting how often the event in question occurs.
     
@@ -249,7 +249,7 @@ my_simulator(10000, 5, 9)
 
 What is the True Probability?
 
-You can find the formula [\textcolor{blue}{here}](https://probabilityandstats.wordpress.com/2010/04/04/a-formula-for-the-occupancy-problem/). Note, however, that I have reversed the roles of n and k (statisticians use n for sample size).
+You can find the formula [here](https://probabilityandstats.wordpress.com/2010/04/04/a-formula-for-the-occupancy-problem/). Note, however, that I have reversed the roles of n and k (statisticians use n for sample size).
 
 ```{r}
 pr_all_occupied <- function(n, k) {

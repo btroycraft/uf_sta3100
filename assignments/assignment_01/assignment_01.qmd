@@ -2,12 +2,14 @@
 title: "Assignment 1"
 subtitle: "STA3100"
 format:
+  html:
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     pdf-standard: ua-2
+    geometry:
+      - margin = 1in
 lang: en
-geometry:
-  - margin = 1in
 execute:
   eval: false
   echo: true
