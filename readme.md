@@ -1,4 +1,4 @@
-This repository contains the quarto documents necessary to build the class materials for UF STA3100.
+This repository contains the Quarto .qmd documents necessary to build the class materials for UF STA3100.
 
 Dependencies:
 1) [R](https://cloud.r-project.org/)
