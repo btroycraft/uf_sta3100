@@ -1,6 +1,6 @@
 ---
 title: "Basics"
-subtitle: "STA3100 Lecture 1"
+subtitle: "Lecture 1"
 format:
   html:
     embed-resources: true

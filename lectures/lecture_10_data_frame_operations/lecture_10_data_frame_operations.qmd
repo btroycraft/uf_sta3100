@@ -1,6 +1,6 @@
 ---
 title: "Data Frame Operations"
-subtitle: "STA3100 Lecture 10"
+subtitle: "Lecture 10"
 format:
   html:
     embed-resources: true

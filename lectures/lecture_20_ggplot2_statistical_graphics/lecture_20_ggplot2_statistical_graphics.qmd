@@ -1,0 +1,498 @@
+---
+title: "`ggplot2`: Statistical Graphics"
+subtitle: "Lecture 20"
+format:
+  html:
+    embed-resources: true
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
+lang: en
+execute:
+  error: true
+---
+
+\newpage
+
+For most of our examples, we will use the child mortality rate dataset, indicatordeadkids35.csv
+
+```{r}
+#| message: false
+
+	library(tidyverse)
+	library(readr)
+	mort <- read_csv("indicatordeadkids35.csv")
+	head(mort)
+```
+
+We will need to prepare this dataset first by 1) giving the first column a descriptive column name, 2) transform to a long version of the dataset, 3) convert the new year column to numeric type.
+
+
+```{r}
+
+	mort <- mort |>
+		rename(country = ...1)
+	long <- mort |>
+		pivot_longer(cols = -country, names_to = "year", values_to = "morts")
+	long <- long |>
+		mutate(year = as.numeric(year))
+	head(long, 2)
+```
+
+# The Basics: `geom` and `aes`
+
+The general plotting functions of `ggplot2` is `ggplot` and is very powerful using the **g**rammar of **g**raphics. When creating a plot, there are two essential attributes of the plot you need to specify: aesthetics and geoms.
+
+Aesthetics are mappings between the variables in the data and visual properties in the plots. Aesthetics are set in the `aes()` function and the most common aesthetics are
+
+* x
+* y
+* color/colour
+* size
+* fill
+* shape
+* linetype
+* group
+
+<!-- If you set these in `aes`, then you set them to a variable. If you want to set them for all values, set them in a `geom`. -->
+
+The other essential element of a `ggplot` is a `geom` layer to determine how the data will be plotted.
+
+* `geom_point` - add points
+* `geom_line` - add lines
+* `geom_density` - add density plot
+* `geom_histogram` - add a histogram
+* `geom_smooth` - add a smoother
+* `geom_boxplot` - add a boxplot
+* `geom_bar` - add a bar chart
+* `geom_tile` - rectangles/heatmaps
+
+You add these layer with `+` sign. If you assign a plot to an object, you must call `print` to display it (this is the same a submitting the name of the object to the console).
+
+Let’s look at the mortality rate is Sweden over time in scatterplot.
+
+```{r}
+#| fig-alt: "Scatterplot of Sweden child mortality rates over time using points."
+
+	sweden_long <- long |>
+		filter(country == "Sweden")
+	g <- ggplot(sweden_long, aes(x = year, y = morts))
+	g                 # nothing happens because we don't have a geom layer yet
+	gpoints <- g + geom_point()
+	gpoints
+```
+
+We can add a `geom_line()` layer instead of points.
+ 
+```{r}
+#| fig-alt: "Line plot of Sweden child mortality rates over time."
+
+	g + geom_line()
+```
+
+Multiple layers can be added to the same plot. Let’s add a smoother through the points.
+
+```{r}
+#| fig-alt: "Line plot of Sweden child mortality rates over time with a smooth trend line."
+
+	g + geom_line() + geom_smooth()
+```
+
+If we want to change the data we are using in the plot, we need to make a new call to `ggplot`. For example, now let’s look at the mortality rates over time using line plots for each of the countries: United States, United Kingdom, Sweden, Afghanistan, Rwanda. To get a line for each country individually, we need to specify the group aesthetic and map it to the country variable.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates over time for five countries."
+
+	sub <- long |>
+		filter(country %in% c("United States", "United Kingdom", "Sweden",
+		"Afghanistan", "Rwanda"))
+	g <- sub |>
+		ggplot(aes(x = year, y = morts, group = country))
+	g + geom_line()
+```
+
+Note that we have a single plot with a trajectory over time of the mortality rates for each of these five countries, but we cannot tell which country corresponds to which line. We will see how to fix this by using color and a legend in the upcoming sections.
+
+We could have also made side by side boxplots of the mortality rates by country using the `group` aesthetic.
+
+```{r}
+#| fig-alt: "Boxplots of child mortality rates over time grouped by country."
+
+	sub |>
+		ggplot(aes(x = year, y = morts, group = country)) +
+			geom_boxplot(aes(color = country))
+```
+
+# Axes and Titles
+
+The first adjustment we might want to make to a plot is adding descriptive axis labels and a title. We can do this using either the `labs` function or the individual `xlab`, `ylab`, and `ggtitle` functions.
+
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with axis labels and a title."
+
+	gg <- g + geom_line() + 
+		labs(x = "Year", y = "Mortality Rate", title = "Child Mortality Rates",
+		subtitle = "Stratified by Country")
+	gg
+```
+
+The x and y axis limits can be adjusted using the `xlim()` and `ylim()` functions to change the view of the plotting regions. For example, let’s zoom in on the years 1900-2000 for the bottom three lines. The mortality rates in this region appear to range from 0 to 1.5.
+
+```{r}
+#| fig-alt: "Zoomed line plot of child mortality rates from 1900 to 2000 with y-axis limited to low values."
+
+	gg + xlim(c(1900, 2000)) + ylim(c(0, 1.5))
+```
+
+We may also want to change the default tic marks on the x and or y axes. This can be done by using the function `scale_x_continuous` and `scale_y_continuous`, since both the x and y variables are being treated as continuous in this plot. For example, let’s change the axis tics to go by 50 instead of 100 years and 0.5 instead 1 for mortality rate. We do this by setting the breaks argument in the corresponding `scale_*_continuous` functions.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with custom axis tick breaks."
+
+	gg + scale_x_continuous(breaks = seq(1750, 2100, by = 50)) +
+		scale_y_continuous(breaks = seq(0, 5, by = 0.5))
+```
+
+If you want to change the text displayed at each of these tic marks to be different from the actual numbers, use the `labels` argument.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with custom axis tick labels on the x-axis."
+
+	gg + scale_x_continuous(breaks = seq(1750, 2100, by = 50), labels = letters[1:8]) +
+		scale_y_continuous(breaks = seq(0, 5, by = 0.5))
+```
+
+We may also want to change the position and appearance of the text appearing in the titles or axes. In order to make these changes, we need to use the `theme` function (see `?theme` for all this function can do). theme controls most of the look and feel of the plot. The arguments passed to theme components are required to be set using special `element_type()` functions. There are four major types.
+
+1. `element_text()`: used to set text element attributes such as labels and titles
+2. `element_line()`: used to modify line based components such as the axis lines, major and minor grid lines, etc.
+3. `element_rect()`: modifies rectangle components such as plot and panel background
+4. `element_blank()`: turns off the displaying theme.
+
+For now, we need the `element_text()` function to use with `theme`. Inside `element_text` we can set
+
+* size - adjusts size of the text
+* face - font face (“plain”, “italic”, “bold”, “bold.italic”)
+* family - font family
+* color - font color
+* hjust/vjust - horizontal/vertical justification (a number between 0 and 1)
+* lineheight - similar to size for text
+* angle - text rotation angle
+
+The following example, shows how many of these work on our line plot as an example (note this is not a pretty plot, but just to show how these work).
+```{r}
+#| fig-showtime: true
+#| fig-alt: "Line plot of child mortality rates styled with customized title and axis text formatting."
+
+	library(showtext)
+	font_families()
+	gg + theme(plot.title = element_text(size = 20, 
+		family = "mono",
+		face = "bold", 
+		color = "tomato",
+		hjust = 0.5),  # title
+		plot.subtitle = element_text(size = 15,
+		family = "mono",
+		face = "bold",
+		hjust = 0.5),  # subtitle
+		axis.title.x = element_text(vjust = .5,  
+		size = 15),  # X axis title
+		axis.title.y = element_text(size = 15),  # Y axis title
+		axis.text.x = element_text(size = 10, 
+		angle = 30,
+		vjust = .5),  # X axis text
+		axis.text.y = element_text(size = 10))   # Y axis text
+```
+
+# Plotting Characters, Line Types and Colors
+
+To set the plotting character for a point, we use the `shape` aesthetic in `geom_point`. R has 26 plotting characters numbered from 0 to 25.
+```{r}
+#| fig-alt: "Scatterplot of Sweden child mortality rates over time using a triangle plotting character."
+
+	ggplot(sweden_long, aes(x = year, y = morts)) +
+		geom_point(shape = 2)
+```
+
+If we are using different plotting characters to distinguish between groups, we use `shape` inside of aes in `geom_point` assigned to the variable defining the groups. For example. Let’s use a different plotting character for each of the five countries in the child mortality dataset.
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates over time using different point shapes by country."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point(aes(shape = country))
+```
+
+Notice that ggplot automatically chooses a set of plotting characters and makes a legend for you. We can also choose specific plotting characters for each group instead of letting ggplot choose them automatically by using `scale_shape_manual`.
+
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates over time with manually assigned point shapes by country."
+
+	ggplot(sub, aes(x = year, y = morts)) + geom_point(aes(shape = country)) +
+		scale_shape_manual(values = c("United States" = 1, "United Kingdom" = 2, 
+		"Sweden" = 3, "Afghanistan" = 4, "Rwanda" = 5))
+```
+
+R also has 7 different line types that can be chosen by the numbers 0 to 6 or by name (e.g. “blank”, “solid”, “dashed”, etc.). We set this by using the `linetype` aesthetic.
+
+```{r}
+#| fig-alt: "Line plot of Sweden child mortality rates over time using a dashed line."
+
+	ggplot(sweden_long, aes(x = year, y = morts)) +
+		geom_line(linetype = 2)
+```
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates over time using different line types by country."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(linetype = country))
+```
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates over time with manually assigned line types by country."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(linetype = country)) +
+			scale_linetype_manual(values = c("United States" = 1, "United Kingdom" = 2, 
+		"Sweden" = 3, "Afghanistan" = 4, "Rwanda" = 5))
+```
+
+We can also modify the colors used in the plots by using the `color` aesthetic or the `fill` aesthetic depending on the plot type. Similar to plotting characters and linetypes, we can let `ggplot` choose this automatically by using a data mapping in the `aes` function or by setting them manually by using `scale_color_manual`. Colors can be specified by name (for some colors, see `colors()`), by hexadecimal codes, rgb (`rgb()`) values, or integer numbers.
+
+```{r}
+#| fig-alt: "Scatterplot of Sweden child mortality rates over time using blue points."
+
+	ggplot(sweden_long, aes(x = year, y = morts)) +
+		geom_point(color = "blue")
+```
+
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates over time using point colors to distinguish countries."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point(aes(color = country))
+```
+
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates over time with manually assigned point colors by country."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point(aes(color = country)) +
+			scale_color_manual(values = c("United States" = "red", "United Kingdom" = "#D95F02", 
+		"Sweden" = rgb(0,1,0), "Afghanistan" = rgb(0,0,1), "Rwanda" = 5))
+```
+
+It’s actually pretty hard to make a good color palette. Luckily, smart and artistic people have spent a lot more time thinking about this. The result is the `RColorBrewer` package
+
+`RColorBrewer::display.brewer.all()` will show you all of the palettes available. 
+```{r}
+#| fig-alt: "Display of available ColorBrewer palettes."
+
+	RColorBrewer::display.brewer.all()
+```
+
+The help file for `brewer.pal()` gives you an idea how to use the package.
+
+You can also get a “sneak peek” of these palettes at: [http://colorbrewer2.org/](http://colorbrewer2.org/) . You would provide the number of levels or classes of your data, and then the type of data: sequential, diverging, or qualitative. The names of the `RColorBrewer` palettes are the string after ‘pick a color scheme:’
+
+We can use these predefined color palettes by adding the `scale_color_brewer` layer.
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates over time using a ColorBrewer palette for countries."
+
+	library(RColorBrewer)
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "RdBu")
+```
+
+For both points and lines, we can adjust the size/thickness by using the `size` aesthetic.
+
+We can of course mix all these together by adding the layers to a single plot. For example, let’s create a scatterplot with smoother lines for each group and adjust the linetypes, plotting characters and colors.
+```{r}
+#| fig-alt: "Scatterplot of child mortality rates with smooth trend lines, using different colors, shapes, and line types by country."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point(aes(shape = country, color = country), size = 3) +
+			geom_smooth(aes(linetype = country, color = country), se = FALSE, linewidth = 1.5) +
+				scale_color_brewer(type = "seq", palette = "Dark2") +
+					scale_shape_manual(values = c("United States" = 1, "United Kingdom" = 2, 
+		"Sweden" = 3, "Afghanistan" = 4, "Rwanda" = 5)) +
+			scale_linetype_manual(values = c("United States" = 1, "United Kingdom" = 2, 
+		"Sweden" = 3, "Afghanistan" = 4, "Rwanda" = 5))
+```
+
+# Modifying a Legend
+
+To modify the labels and title text in a legend, use the correspond `scale_aesthetic_vartype` that was used (or could be used) to define the groups in the legend with the `name` argument for the legend title and `labels` for the group labels.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with a customized legend title and labels."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "Dark2", name = "Country",
+		labels = paste("Country", 1:5))
+```
+
+You can also disable a legend from appearing or part of the legend from appearing by using the option `guide = none` in the corresponding `scale_aesthetic_vartype` function that defines the part of the legend you want to omit.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with the legend hidden."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "Dark2", name = "Country",
+		labels = paste("Country", 1:5),
+		guide = "none")
+```
+
+In order the style the legend text, background, or change its position, we need to use the various `theme._` arguments in `theme`. Some of the different options we can set include: legend.background, legend.key, legend.text, legend.title, legend.position, legend.direction, and legend.justification. For a full list see `?theme`. Remember that some of these have to be assigned using an element_type function such as `element_text` or `element_rect`.
+
+The `legend.position` option allows you to specify the location of the legend as one of “none”, “left”, “right”, “bottom”, “top”, or a two element numeric vector to place it within the plot.
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with the legend positioned below the plot."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "Dark2", name = "Country") +
+				theme(legend.position = "bottom")
+```
+
+```{r}
+#| fig-alt: "Line plot of child mortality rates with the legend positioned inside the plotting area."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "Dark2", name = "Country") +
+				theme(legend.position = c(0.85, 0.75))
+```
+
+We can modify how the background of the legend appears and text size using the theme options legend.title, legend.text, and legend.background.
+
+```{r}
+#| warning: false
+#| fig-alt: "Line plot of child mortality rates with a styled legend and transparent legend background."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_line(aes(color = country)) +
+			scale_color_brewer(type = "seq", palette = "Dark2", name = "Country") +
+				theme(legend.position = c(0.85, 0.75), 
+		legend.background = element_rect(fill = "transparent"),
+		legend.key = element_rect(fill = "transparent"),
+		legend.title = element_text(size = 20, face = "bold"),
+		legend.text = element_text(size = 12, face = "italic"))
+```
+
+# Adding Text, Labels, and Annotation
+
+We can add labels to plots, e.g. to points or lines, by using the `geom_text` layer. For example, we can label the points in a scatterplot of the mortality rates for 2000 vs 1980. We will only use a few of the countries to make the plot legible.
+
+```{r}
+#| fig-alt: "Scatterplot of mortality rates in 2000 versus 1980 with country labels added to selected points."
+
+	mort_sub <- mort[mort$`1980` > 1.5 & mort$country != "Chad",][5:15,]
+	ggplot(mort_sub, aes(x = `1980`, y = `2000`)) +
+		geom_point() + 
+			geom_text(aes(label = country), nudge_y = 0.05) +
+				xlim(c(1.5, 3))
+```
+
+We can also add custom text to a plot by using `annotate`.
+
+```{r}
+#| fig-alt: "Scatterplot of mortality rates in 2000 versus 1980 with an annotation showing the Pearson correlation."
+
+	r <- round(cor(mort$`1980`, mort$`2000`), 2)
+	ggplot(mort, aes(x = `1980`, y = `2000`)) +
+		geom_point() +
+			annotate(geom = "text", x = 1, 2.5, 
+		label = paste("The Pearson correlation is", r),
+		size = 5, color = "blue")
+```
+
+# Drawing Mulitple Plots in a Single Figure
+
+If we want to break down a dense plot into smaller separate plots by some grouping, we can use `facet_wrap` which takes a formula that defines the groups. For example, if I want 5 separate scatterplots with loess lines for the mortality data subset `sub`, we could use `facet_wrap` to break these into 5 separate plots instead of one that are plotted in a single panel.
+
+```{r}
+#| fig-alt: "Faceted panel of five country-specific mortality scatterplots over time with lines."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point() +
+			geom_line(aes(color = country)) +
+				facet_wrap(~ country) +
+					scale_color_discrete(guide = "none")
+```
+
+We can adjust the layout and number of rows and columns by using `nrow` and `ncol` in `facet_wrap`.
+
+```{r}
+#| fig-alt: "Faceted panel of five country-specific mortality scatterplots over time arranged in one row."
+
+	ggplot(sub, aes(x = year, y = morts)) +
+		geom_point() +
+			geom_line(aes(color = country)) +
+				facet_wrap(~ country, nrow = 1) +
+					scale_color_discrete(guide = "none")
+```
+
+It may also be the case that we want to put several completely different plots (i.e. several different `ggplot` plots) in a single panel. For example, in a simple linear regression I may want to view the diagnostic plots of simple linear regression fit plot, histogram of residuals, residuals vs predicted values, and qq plot of residuals together in a panel. We will use the `grid.arrange` function of the `gridExtra` package.
+
+First, let’s make the fit plot.
+```{r}
+#| fig-alt: "Scatterplot of mortality rates in 2000 versus 1980 with a fitted regression line."
+
+	# fit plot
+	fitplot <- ggplot(mort, aes(x = `1980`, y = `2000`)) +
+		geom_point() +
+			geom_smooth(method = "lm", se = FALSE)
+	print(fitplot)
+```
+
+Here we fit the linear regression model and get the residuals and fitted values to make the histogram of residuals, residuals vs predicted values, and qq plot of residuals (more on these functions in the next chapter).
+
+```{r}
+#| fig-alt: "Histogram of residuals from the simple linear regression model."
+
+	slr_fit <- lm(`2000` ~ `1980`, data = mort)
+	slr_resid <- residuals(slr_fit)
+	slr_fitted <- predict(slr_fit)
+	fit_stat <- tibble(residuals = slr_resid, fitted_values = slr_fitted)
+	resid_hist <- ggplot(fit_stat, aes(x = residuals)) + 
+		geom_histogram(bins = 15, fill = "dark gray") + theme_bw()
+	print(resid_hist)
+```
+```{r}
+#| fig-alt: "QQ plot of residuals from the simple linear regression model."
+
+	resid_qqplot <- ggplot(fit_stat, aes(sample = residuals)) + stat_qq() + stat_qq_line()
+	print(resid_qqplot)
+```
+```{r}
+#| fig-alt: "Scatterplot of residuals versus fitted values from the simple linear regression model with a horizontal reference line."
+
+	fit_v_pred <- ggplot(fit_stat, aes(x = fitted_values, y = residuals)) +
+		geom_point() + geom_abline(intercept = 0, slope = 0, color = "red")
+	print(fit_v_pred)
+```
+
+Now, lets put all the plots together in a 2x2 grid.
+
+```{r}
+#| fig-alt: "Four-panel figure combining the regression fit, residuals versus fitted values, residual histogram, and residual QQ plot."
+
+	#install.packages("gridExtra")
+	library(gridExtra)
+	grid.arrange(fitplot, fit_v_pred, resid_hist, resid_qqplot, nrow = 2, ncol = 2)
+```

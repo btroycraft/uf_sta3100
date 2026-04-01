@@ -1,6 +1,6 @@
 ---
 title: "Arrays"
-subtitle: "STA3100 Lecture 7"
+subtitle: "Lecture 7"
 format:
   html:
     embed-resources: true

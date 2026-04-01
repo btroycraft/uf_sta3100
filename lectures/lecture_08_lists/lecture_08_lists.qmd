@@ -1,6 +1,6 @@
 ---
 title: "Lists"
-subtitle: "STA3100 Lecture 8"
+subtitle: "Lecture 8"
 format:
   html:
     embed-resources: true

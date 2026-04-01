@@ -1,6 +1,6 @@
 ---
 title: "Vectors"
-subtitle: "STA3100 Lecture 2"
+subtitle: "Lecture 2"
 format:
   html:
     embed-resources: true

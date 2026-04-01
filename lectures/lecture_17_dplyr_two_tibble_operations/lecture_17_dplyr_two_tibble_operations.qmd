@@ -1,0 +1,313 @@
+---
+title: "`dplyr`: Two-Tibble Operations"
+subtitle: "Lecture 17"
+format:
+  html:
+    embed-resources: true
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
+lang: en
+
+execute:
+  error: true
+---
+
+# JOINING/MERGING DATA FRAMES
+# `dplyr` Two-Tibble “Verbs” and Base-R Equivalents
+Functions used to merge two data frames by matching on common variables.  
+Besides the assigned readings, see:  
+
+* the Two-tibble verbs section of [`dplyr` <-> Base-R](https://cran.r-project.org/web/packages/dplyr/vignettes/base.html) for a comparison of `dplyr` and base-R functions. 
+* the [Two-Tibble Verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html) vignette for more on `dplyr` two-tibble verbs.
+* [`dplyr` 1.1.0: Joins](https://www.tidyverse.org/blog/2023/01/dplyr-1-1-0-joins/)
+
+# Mutating Joins
+| Rows included                  | `dplyr` function(s)            |Base-R function(s)                |
+|:-------------------------------|:-----------------------------|:---------------------------------|  
+|matched in both `df1` & `df2`   |`inner_join(df1, df2)`        |`merge(df1, df2)`                 |
+|all from both `df1` & `df2`     |`full_join(df1, df2)`         |`merge(df1, df2, all = TRUE)`     |
+|all in `df1`                    |`left_join(df1, df2)`         |`merge(df1, df2, all.x = TRUE)`   |
+|all in `df2`                    |`right_join(df1, df2)`        |`merge(df1, df2, all.y = TRUE)`   |
+    
+# Filtering Joins
+
+* Mostly for diagnosing join mismatches.
+* Returns matched (`semi_join()`) or unmatched (`anti_join()`) rows of `df1`.
+* Does not actually perform the merge: just acts as a row-filter on `df1`.
+
+| Rows included                 | `dplyr` function(s)   |Base-R function(s)                      |
+|:------------------------------|:--------------------|:---------------------------------------|  
+|in `df1` & matched in `df2`    |`semi_join(df1, df2)`|`df1[df1$x %in% df2$x, , drop = FALSE]` |
+|in `df1` & not matched in `df2`|`anti_join(df1, df2)`|`df1[!df1$x %in% df2$x, , drop = FALSE]`|
+
+
+# Guitars Again
+```{r}
+
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+
+	guitars_df <- data.frame(mfr, model, serial, type, w_case_kg, case_kg)
+
+	library("tidyverse")
+	guitars_tbl <- as_tibble(guitars_df)
+```
+
+* Removing `w_case_kg` and `case_kg` to save room in slides.
+```{r}
+	guitars_df <- subset(guitars_df, select = -c(w_case_kg, case_kg))
+	guitars_tbl <- select(guitars_tbl, -w_case_kg, -case_kg)
+```
+
+# Suppose Color is Recorded in a Separate Data Frame
+```{r}
+	colors_tbl <-
+	tribble(~model, ~color, ~serial,
+		"Firebird V", "sunburst", "616619",
+		"Les Paul", "wine", "00235628",
+		"ES175", "sunburst", "03531746",
+		"Stratocaster", "black", "EJ15230",
+		"Telecaster", "blonde", "60671",
+		"J-100", "natural", "90783019",
+		"D-28", "natural", "2457919")
+	colors_df <- as.data.frame(colors_tbl)
+```
+
+***
+
+```{r}
+	guitars_tbl
+	colors_tbl
+```
+
+* Notice that:
+  - a guitar is missing (M-21) from colors data.
+  - a new guitar has been added (D-28) to colors data.
+  - "Les Paul Standard" appears as "Les Paul" and "J-100 Xtra" as "J-100" in colors data.
+
+# Inner Join: All Key(s) Must Match
+
+* Keep rows for which the default keys `model` and `serial` match.
+  - Default keys for matching are any columns with the same names in both data frames.
+
+**Base-R**
+```{r}
+	merge(guitars_df, colors_df)
+```
+
+***
+
+**`dplyr::inner_join()`**
+
+```{r}
+	inner_join(guitars_tbl, colors_tbl)
+```
+
+* Presumably we are surprised that our guitar collection has shrunk.
+* Note that:
+  - `merge()` moved the join keys to the front
+  - `inner_join()` kept column order from left to right, dropping any duplicated columns.
+
+***
+
+**Specify Matching on `serial` only.**  
+**Base-R**
+```{r}
+	merge(guitars_df, colors_df, by = "serial")
+```
+
+* Get 2 model cols because the entries do not match.
+* We are still missing two guitars (M-21 and D-28).
+* Again, `merge()` has made the matching key the first column.
+
+***
+
+**`dplyr::inner_join()`**
+```{r}
+	inner_join(guitars_tbl, colors_tbl, by = "serial")
+```
+
+* Get 2 model cols because the entries do not match.
+* We are still missing two guitars (M-21 and D-28).
+* Columns still in original left-to-right order.
+
+***
+
+* Since `dplyr` 1.1.0, there is an optional `unmatched` argument.
+  - The default is `unmatched = "drop"`.
+  - Can change this to `unmatched = "error"`.
+  - Useful when each item should have at least one match. (With larger data frames we might not notice otherwise.)
+
+```{r}
+	inner_join(guitars_tbl, colors_tbl, by = "serial", unmatched = "error")
+```
+
+# Diagnose Mismatches
+
+**Base-R**
+```{r}
+	guitars_df[!(guitars_df$model %in% colors_df$model),]    # In guitars, not in colors
+	colors_df[!(colors_df$model %in% guitars_df$model),]     # In colors, not in guitars
+```
+
+***
+
+**`dplyr::anti_join()`**
+```{r}
+	anti_join(guitars_tbl, colors_tbl)         # In guitars, not in colors
+	anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
+```
+
+***
+
+**Let’s repair the mismatched model names.**
+
+* This is the most basic of base-R ways to do it.
+
+```{r}
+	colors_df$model[colors_df$model == "Les Paul"] <- "Les Paul Standard"
+	colors_df$model[colors_df$model == "J-100"] <- "J-100 Xtra"
+	colors_df
+```
+
+***
+
+* We could have fixed the mismatches with the base-R `replace()` function.
+
+```{r}
+	colors_df <- colors_df |>
+		transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
+			transform(model = replace(model, model == "J-100", "J-100 Xtra"))
+```
+
+* Or with the base-R `ifelse()` function.
+```{r}
+	colors_df <- colors_df |>
+		transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
+			transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
+```
+  - `ifelse()` is useful for other kinds of transformations as well, e.g.,
+```{r}
+	x <- 1:10
+	y <- ifelse((x %% 2) == 0, -x, 2*x)
+	y
+```
+
+***
+
+* The `dplyr::case_match()` can fix both mismatches at once.
+  - See also `dplyr::case_when()` (can do other kinds of tranformations).
+```{r}
+	colors_tbl <- colors_tbl |>
+		mutate(model = case_match(model,
+		"Les Paul" ~ "Les Paul Standard",
+		"J-100" ~ "J-100 Xtra",
+		.default = model))
+	colors_tbl
+```
+
+***
+
+**Which mismatches remain?**
+
+```{r}
+	anti_join(guitars_tbl, colors_tbl)        # In guitars, not in colors
+	anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
+```
+
+
+# Full Outer Join: All Rows from Both Data Frames
+
+**Base-R**
+
+* Default matching on all common column names.
+
+```{r}
+	merge(guitars_df, colors_df, all = TRUE)
+```
+
+***
+
+**`dplyr::full_join()`**
+
+* Default matching on all common column names.
+
+```{r}
+	full_join(guitars_tbl, colors_tbl)
+```
+
+***
+
+**Contrast With ...**  
+**Base-R**
+
+* Matching on specified column(s).
+
+```{r}
+	merge(guitars_df, colors_df, by = "serial", all = TRUE)
+```
+
+***
+
+**`dplyr::full_join()`**  
+
+* Matching on specified column(s).
+
+```{r}
+	full_join(guitars_tbl, colors_tbl, by = "serial")
+```
+
+# Left Outer Join: All Rows from First Data Frame
+
+**Base-R**  
+
+* Default matching on all common column names.
+
+```{r}
+	merge(guitars_df, colors_df, all.x = TRUE)
+```
+
+***
+
+**`dplyr::left_join()`**   
+
+* Matching on specified column(s).
+
+```{r}
+	left_join(guitars_tbl, colors_tbl, by = "serial")
+```
+
+# Right Outer Join: All Rows from Second Data Frame
+
+**Base-R**  
+
+* Matching on specified column(s).
+
+```{r}
+	merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
+```
+
+***
+
+**`dplyr::right_join()`**  
+
+* Default matching on all common column names.
+```{r}
+	right_join(guitars_tbl, colors_tbl)
+```

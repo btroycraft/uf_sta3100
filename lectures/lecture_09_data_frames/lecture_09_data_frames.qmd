@@ -1,6 +1,6 @@
 ---
 title: "Data Frames"
-subtitle: "STA3100 Lecture 9"
+subtitle: "Lecture 9"
 format:
   html:
     embed-resources: true

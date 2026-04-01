@@ -1,6 +1,6 @@
 ---
 title: "Type Conversion"
-subtitle: "STA3100 Lecture 3"
+subtitle: "Lecture 3"
 format:
   html:
     embed-resources: true

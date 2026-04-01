@@ -1,6 +1,6 @@
 ---
 title: "Dates and Times"
-subtitle: "STA3100 Lecture 11"
+subtitle: "Lecture 11"
 format:
   html:
     embed-resources: true

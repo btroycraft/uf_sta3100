@@ -1,6 +1,6 @@
 ---
 title: "Logical Operators"
-subtitle: "STA3100 Lecture 5"
+subtitle: "Lecture 5"
 format:
   html:
     embed-resources: true

@@ -1,6 +1,6 @@
 ---
 title: "`tidyverse`: Introduction"
-subtitle: "STA3100 Lecture 13"
+subtitle: "Lecture 13"
 format:
   html:
     embed-resources: true

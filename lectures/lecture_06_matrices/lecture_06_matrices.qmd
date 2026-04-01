@@ -1,6 +1,6 @@
 ---
 title: "Matrices"
-subtitle: "STA3100 Lecture 6"
+subtitle: "Lecture 6"
 format:
   html:
     embed-resources: true

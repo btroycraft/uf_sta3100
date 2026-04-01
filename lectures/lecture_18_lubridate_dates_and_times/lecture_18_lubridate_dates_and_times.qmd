@@ -1,0 +1,511 @@
+---
+title: "`lubridate`: Dates and Times"
+subtitle: "Lecture 18"
+format:
+  html:
+    embed-resources: true
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
+lang: en
+execute:
+  error: true
+---
+
+# THE `LUBRIDATE` PACKAGE
+# Dates with `lubridate`
+`lubridate` 
+
+* tries to make it easier to work with dates and date-times. 
+* does not introduce new classes for dates or date-times.
+* has 3 new difftime-like classes ("durations”, "periods”, and "intervals”).
+
+**Note**
+
+* `lubridate` is _not_ part of the core `tidyverse` and the `readr` package does _not_ use `lubridate` when reading dates and date-times.
+  - dates are handled with `parse_date()`
+  - date-times are handled with `parse_date_time()`
+  - Some of `lubridate`’s functionality is based on these functions.
+
+  More on `readr` later.
+
+***
+
+```{r}
+#| message: false
+
+	library(tidyverse)
+	# lubridate is not loaded by tidyverse package.
+	library(lubridate)
+	# lubridate version of Sys.Date()
+	today <- today()
+	class(today)
+
+	# lubridate version of Sys.time()
+	now <- now()        
+	class(now)
+```
+
+
+# Creating Dates
+| Purpose                               | `lubridate` function(s)       |Base-R function(s)       |
+|:--------------------------------------|:------------------------------|:------------------------|  
+|Current date                           |`today()`                      |`Sys.Date()`             |
+|General conversion to date             |`as_date()`                    |`as.Date()`              |
+|Convert character string to date       |`ymd()`, `mdy()`, `dmy()`, etc.|`as.Date()`              |
+|Make date from numeric year, month, day|`make_date()`                  |`ISOdate()` + `as.Date()`|
+    
+# Dates from Character Strings
+
+```{r}
+	as_date("1980-12-08")         # John Lennon killed by a revolver.
+```
+
+* To facilitate conversion of strings to dates `lubridate` provides `ymd()`, `ydm()`, `myd()`, `mdy()`, `dym()`, and `dmy()`.
+  - Choose function according to order of year, month, and day in string.
+  - The function will try to figure out the rest of the format, e.g.,
+    + Is month represented by “1” or “01” or “Jan” or “January”?
+    + Are fields separated by “-” or “/” or “,” or “”, or whatever.
+
+***
+
+**These are pretty easy with `lubridate`.**
+```{r}
+	mdy("Dec 8, 1980")
+	mdy("12/8/80")
+	mdy("December 8 (1980)")
+```
+
+***
+
+**Base-R requires more from the user.**
+```{r}
+	as.Date("Dec 8, 1980", format = "%b %d, %Y")
+	as.Date("12/8/80", format = "%m/%d/%y")
+	as.Date("December 8 (1980)", format = "%B %d (%Y)")
+```
+
+***
+
+`?strptime`
+
+`Details:`
+
+`...`
+
+    '%b' Abbreviated month name in the current locale on this platform.
+          (Also matches full name on input: in some locales there are
+          no abbreviations of names.)
+
+    '%B' Full month name in the current locale.  (Also matches abbreviated
+          name on input.)
+
+***
+
+**But it is possible to come up with a format that `dmy()` can’t parse.**
+```{r}
+	dmy("08121980")
+	dmy("081280")
+	dmy("8121980")
+	dmy("8 12 1980")       # Separators help a lot.
+```
+
+# Dates from Pieces of Dates
+`make_date()` : useful if numeric year, month, and day stored in separate cols.
+
+```{r}
+	make_date(1980, 12, 8)
+	make_date(1980, 12)
+	make_date(1980)
+```
+
+# Creating Date-Times
+
+| Purpose                                                              | `lubridate` function(s)     |Base-R function(s)          |
+|:---------------------------------------------------------------------|:----------------------------|:---------------------------|  
+|Current date-time                                                     |`now()`                      |`Sys.time()`                |
+|General conversion to date-time                                       |`as_datetime()`              |`as.POSIXct()`              |
+|Convert character string to date-time                                 |`ymd_hms()`, `mdy_hm()`, etc.|`strptime()`, `as.POSIXct()`|
+|Make date-time from numeric year, month, day, hour, minute, and second|`make_datetime()`            |`ISOdatetime()`             |
+
+# Example: TV Times of NCAA Tournament Games
+
+```{r}
+	cat(readLines("tvRndOf32-2019.csv", n = 4), sep = "\n")
+	tv <- read_csv("tvRndOf32-2019.csv")
+```
+
+***
+  
+```{r}
+	tv |>
+		slice_head(n = 8)
+```
+
+* Date and time are split across two columns.
+* Format(s) may be problematic (read as character).
+* Some times are specified as `After conc. I`.
+
+***
+
+```{r}
+	tv |>
+		pull(`Time (ET)`)      # Same as tv$`Time (ET)` or tv[["Time (ET)"]]
+```
+
+* Let’s try to construct date-times anyway.
+```{r}
+	tv |>
+		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "))) |>
+			pull(dt)
+```
+       - Note: `stringr::str_c()` is very similar to `paste0()`.
+  
+***
+
+* Notice that the time zone is set to UTC (Universal Coordinated Time).
+* Run `OlsonNames()` for list of time zones.
+
+```{r}
+	tv |>
+		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
+			pull(dt)
+```
+
+* “`After conc. I`” rows leave us with `NA`, which seems reasonable.
+* Any other problems?
+
+***
+
+* “p.m.” is not being used.
+```{r}
+	ymd_hm("2019-03-23 5:15 p.m.", tz = "America/New_York")
+```
+
+  
+* How would the correct time be formatted with AM/PM in our current locale?
+  - Note use of `%I` for the hour with `%p` for the AM/PM indicator.
+```{r}
+	strftime(as.POSIXct("2019-03-23 17:15:00"), "%Y-%m-%d %I:%M:%S %p")
+```
+
+* Checking that “PM” works where “p.m.” does not.
+
+```{r}
+	ymd_hm("2019-03-23 5:15 PM", tz = "America/New_York")
+```
+
+***
+
+`?strptime`
+
+`Details:`
+
+    '%H' Hours as decimal number (00-23).  As a special exception strings
+          such as '24:00:00' are accepted for input, since ISO 8601
+          allows these.
+
+    '%I' Hours as decimal number (01-12).
+    
+    '%p' AM/PM indicator in the locale.  Used in conjunction with '%I' and
+          *not* with '%H'.  An empty string in some locales (for
+          example on some OSes, non-English European locales including
+          Russia). The behaviour is undefined if used for input in such
+          a locale.
+          
+          Some platforms accept '%P' for output, which uses a
+          lower-case version ('%p' may also use lower case): others
+          will output 'P'.
+
+***
+
+* Use `stringr::str_replace()` to replace “p.m.” with “PM”.
+  - Could use base-R `sub()` or `gsub()` instead.
+
+```{r}
+	tv <- tv |>
+		mutate(`Time (ET)` = str_replace(`Time (ET)`, "p.m.", "PM"))
+	tv |>
+		pull(`Time (ET)`)
+```
+
+* Note: the following code replaces all “a.m.” with “AM” and all “p.m.” with “PM”. Not required here but would have also worked.
+
+```{r}
+	tv <- tv |>
+		mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c(a.m. = "AM", p.m. = "PM")))
+```
+
+***
+
+```{r}
+	tv <- tv |>
+		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+	tv$dt
+```
+
+* More on this example in next lecture.
+
+# Extracting Date and Date-Time Components
+
+| Purpose        | `lubridate` function(s)                        |Base-R function(s)          |
+|:---------------|:-----------------------------------------------|:---------------------------|  
+|Extract year    |`year()`                                        |`strftime()` , `format()`   |
+|Extract month   |`month()`                                       |`strftime()` , `format()`   |
+|Extract day     |`day()`, `yday()`, `qday()`, `mday()`, `wday()` |`strftime()` , `format()`   |
+|Extract hour    |`hour()`                                        |`strftime()` , `format()`   |
+|Extract minute  |`minute()`                                      |`strftime()` , `format()`   |
+|Extract second  |`second()`                                      |`strftime()` , `format()`   |
+
+***
+
+* `strftime()` always returns type `character`. Use `as.integer()` (or `as.double()` for seconds) to convert to numeric.
+* Any of the `lubridate` functions in the previous table can also be used to **set** a date component to a new value.
+* `update()` also can be used to change a date or date-time:
+  - `lubridate` defines `update()` methods for classes `Date` and `POSIXt`.
+  - `POSIXct` and `POSIXlt` both inherit from `POSIXt`.
+
+***
+
+```{r}
+	year(as_date("1967-12-10"))        # Otis Redding dies in plane crash.
+	month(as_date("1967-12-10"))
+	day(as_date("1967-12-10"))
+```
+
+***
+  
+```{r}
+	wday(as_date("1967-12-10"))
+	mday(as_date("1967-12-10"))
+	qday(as_date("1967-12-10"))
+	yday(as_date("1967-12-10"))
+```
+
+***  
+
+```{r}
+	wday(as_date("1967-12-10"), label = TRUE)
+	is.factor(wday(as_date("1967-12-10"), label = TRUE))       # More on factors ...
+	is.ordered(wday(as_date("1967-12-10"), label = TRUE))      # ... and ordered factors later.
+	as.numeric(wday(as_date("1967-12-10"), label = TRUE))
+```
+
+***
+
+```{r}
+	month(as_date("1967-12-10"), label = TRUE)
+	as.numeric(month(as_date("1967-12-10"), label = TRUE))
+```
+
+# Time Spans
+
+`lubridate` defines three new classes that are similar to difftime:
+
+* `duration` : most like difftime but always coded in seconds.
+  - 1 min = 60 sec, 1 hr = 60 min, 1 day = 24 hr, 1 wk = 7 days
+  - 1 month = 4.35 wks, 1 yr = 365.25 days.
+* `period` : conforms to “normal” expectations when added to dates and times.
+* `interval` : removes ambiguity by having a starting point.
+* Please read the [`lubridate` vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html).
+
+***
+
+|Class      | Construction Functions                                                                                                                    |
+|:----------|:------------------------------------------------------------------------------------------------------------------------------------------|  
+|`duration` |`duration()`, `dseconds()`, `dminutes()`, `dhours()`, `ddays()`, `dweeks()`, `dmonths()`, `dyears()`, `dmilliseconds()`, `dmicroseconds()`,|
+|           |`dnanoseconds()`, `dpicoseconds()`                                                                                                         |
+|`period`   |`period()`, `seconds()`, `minutes()`, `hours()`, `days()`, `weeks()`, `months()`, `years()`, `milliseconds()`, `microseconds()`,           |
+|           | `nanoseconds()`, `picoseconds()`                                                                                                          |
+|`interval` |`interval()`, `start %--% end`                                                                                                             |
+
+# Fun With Dates and Times
+
+```{r}
+	dyears(1)           # A duration
+	years(1)            # A period
+	as_date("2019-07-01") + dyears(1)    # Adding a duration
+	as_date("2019-07-01") + years(1)     # Adding a period
+```
+
+***
+
+```{r}
+	dhours(24)          # A duration
+	hours(24)           # A period
+	ymd_hms("2022-11-05 12:00:00", tz = "America/New_York") + dhours(24)    # Surprised?
+	ymd_hms("2022-11-05 12:00:00", tz = "America/New_York") + hours(24)     # What you expected?
+```
+
+# Intervals
+
+**A trip to Brevard**
+```{r}
+	arrive <- ymd_hm("2022-07-25 18:25", tz = "America/New_York") 
+	depart <- ymd_hm("2022-08-15 11:22", tz = "America/New_York") 
+	brevard <- interval(arrive, depart)                # Or arrive %--% depart 
+	brevard
+```
+
+```{r}
+	str(brevard)
+```
+***
+
+**Sister Decides to Go to Brevard Too**
+
+```{r}
+	sis_arr <- ymd_h("2022-07-28 23", tz = "America/New_York")
+	sis_dep <- ymd_h("2022-08-01 13", tz = "America/New_York")
+	sis <- sis_arr %--% sis_dep
+	sis
+```
+
+***
+
+* Sister decides to move her trip up by a week.
+
+```{r}
+	sis <- int_shift(sis, -weeks(1))
+	sis
+```
+
+* And adds 2 days to her stay.
+
+```{r}
+	int_end(sis) <- int_end(sis) + days(2)
+	sis
+```
+
+***
+
+* Do our stays overlap?
+
+```{r}
+	brevard
+	sis
+	int_overlaps(brevard, sis)
+	intersect(brevard, sis)
+```
+
+# THE `LUBRIDATE` PACKAGE (EXTRA NOTES)
+# TV Times Example Continued
+Let’s read the data again and get back into it.
+```{r}
+#| message: false
+
+	library(tidyverse)
+	library(lubridate)
+	tv <- read_csv("tvRndOf32-2019.csv")
+```
+
+***
+
+
+* We constructed date-times for the first (I) game at each site as follows.
+
+```{r}
+	tv <- tv |>
+		mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c("a.m." = "AM", "p.m." = "PM"))) |>
+			mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+	tv |>
+		select(Day, `Time (ET)`, Site, dt) |>
+			slice_head(n = 8)
+```
+
+***
+
+* Let’s separate the `Site` column into the site and game number (I or II).
+* The `tidyr` function `separate_wider_regex()` is perfect for this.
+* `.` will match any character
+* `*` lets a pattern be optional or repeat (i.e. it matches any number of times, including 0)
+* `?` makes a pattern optional (i.e. it matches 0 or 1 times)  
+For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadley.nz/regexps)
+```{r}
+	tv <- tv |>
+		separate_wider_regex(Site, c(Site = ".*", " ", Number = "II?"))
+	tv |>
+		select(Day, `Time (ET)`, Site, Number, dt) |>
+			slice_head(n = 7)
+```
+
+
+***
+
+# Add Approximate Date-Times for the II Games
+
+* According to [this source](https://www.scottfujita.com/how-long-is-a-college-basketball-game/), average game lasts 2 hours and 10 minutes.
+* How much time between games at a tournament site? Guess: 30 minutes.
+* So to get approximate times for a II-game, we find the I-game at the same site and add 2 hours and 40 minutes to its time.
+* An easy way to do this is:
+  1. create a data frame with the sites, number, and times for just the I-games.
+  2. add 2 hours and 40 minutes to the times of these games.
+  3. change the number to “II”, thus creating a data frame of sites, numbers, and approximate date-times for the II-games.
+  4. `left_join()` the original data with these now II-games back into the original data frame by matching on site and number.
+
+***
+
+```{r}
+	tv2 <- tv |>
+		filter(Number == "I") |>
+			select(Site, Number, dt) |>
+				mutate(Number = "II",
+		dt = dt + dhours(2) + dminutes(40))
+	tv2
+```
+
+***
+
+* `left_join()` creates columns `dt.x` and `dt.y`
+* Combine them with `coalesce()`.
+
+```{r}
+	tv |>
+		left_join(tv2, by = c("Site", "Number")) |>
+			mutate(dt = coalesce(dt.x, dt.y)) |>
+				select(Site, Number, dt.x, dt.y, dt) |>
+					head(n = 8)
+```
+
+***
+  
+* Alternatively, the function `dplyr::rows_update()` avoids creating the `dt.x` and `dt.y` columns and does exactly what we need here.
+
+```{r}
+	tv |>
+		rows_update(tv2, by = c("Site", "Number")) |>
+			select(Site, Number, dt) |>
+				head(n = 8)
+```
+
+***
+
+* So let’s do this and then
+  - delete the old columns that we don’t need
+  - rename the dt column
+
+```{r}
+	tv <- tv |>
+		rows_update(tv2, by = c("Site", "Number"))  |>
+			select(-Day, -`Time (ET)`) |>
+				rename("Date_Time" = dt)
+```
+
+* Have a look at the result on the next slide.
+* The next thing one might want to do is to separate the "Game" column into 4 columns containing the two teams and their numeric seeds.
+
+***
+
+```{r}
+	tv |>
+		slice_head(n = 14)
+```

@@ -1,6 +1,6 @@
 ---
 title: "Probability Distributions"
-subtitle: "STA3100 Lecture 4"
+subtitle: "Lecture 4"
 format:
   html:
     embed-resources: true

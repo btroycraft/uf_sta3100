@@ -1,0 +1,302 @@
+---
+title: "Statistical Graphics"
+subtitle: "Lecture 19"
+format:
+  html:
+    embed-resources: true
+  pdf:
+    pdf-engine: lualatex
+    pdf-standard: ua-2
+    geometry:
+      - margin = 1in
+      - paperwidth = 11in
+      - paperheight = 6.875in
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{sectsty}
+      - \allsectionsfont{\centering}
+      - \pagenumbering{gobble}
+lang: en
+execute:
+  error: true
+---
+
+# High level graphics functions
+
+We first discuss several basic plots.  The functions to draw these in R are called "high level" because you don't need to worry about the details of where the ink goes; you just describe the plot you want, and R does the drawing.
+
+# Bar charts and dot charts
+
+The most basic type of graph is one that summarizes a single set of numbers.  Bar charts and dot charts do this by displaying a bar or dot whose length or position corresponds to the number.
+```{r}
+#| fig-alt: "Bar chart of death rates in Virginia by age group and urbanization."
+
+	VADeaths
+	barplot(VADeaths, beside = TRUE, legend = TRUE, ylim = c(0, 90), 
+		ylab = "Deaths per 1000", main = "Death rates in Virginia")  # Bar charts
+```
+
+The bars in bar charts are easy to recognize, because the positions of the ends of the bars and the lengths of the bars are easy to see.  The area of the bars also reinforces our perception.
+
+If we are displaying numbers where zero is not relevant, then a dot chart is a better choice: in a dot chart it is mainly the position of the dot that is perceived.
+```{r}
+#| fig-width: 7
+#| fig-height: 6
+#| fig-alt: "Dot chart of death rates in Virginia by age group and urbanization."
+
+	dotchart(VADeaths, xlim = c(0, 75), xlab = "Deaths per 1000", 
+		main = "Death rates in Virginia")  # Dot charts
+```
+
+
+# Pie charts
+
+Pie charts displays a vector of numbers by breaking up a circular disk into pieces whose angle (and hence area) is proportional to each number.
+```{r}
+#| fig-alt: "Pie chart of five grade-group proportions labeled A, B, C, D, and F."
+
+	groupsizes <- c(18, 30, 32, 10, 10)
+	labels <- c("A", "B", "C", "D", "F")
+	pie(groupsizes, labels, col = c("grey40", "white", "grey", "black", "grey90"))
+```
+
+Color can be very useful in graphs to distinguish groups from each other.  
+```{r}
+#| fig-alt: "Pie chart of the same five grade-group proportions with an alternate color palette."
+
+	pie(groupsizes, labels, 
+		col = c("gray40", "white", "grey", "black", "#F5F5DC"))
+```
+
+* More colors in R can be found at [here](https://rstudio-pubs-static.s3.amazonaws.com/3486_79191ad32cf74955b4502b8530aad627.html).
+* The `RcolorBrewer` package in R contains a number of palettes, or selections of colors.
+
+# Histogram
+
+A histogram is a special type of bar chart that is used to show the frequency distribution of a collection of numbers.
+
+```{r}
+#| fig-alt: "Histogram of 100 simulated normal values using a ColorBrewer palette."
+
+	library(RColorBrewer)
+	mypalette <- brewer.pal(20, "Spectral")
+
+	x <- rnorm(100)
+	hist(x, col = mypalette)
+```
+
+```{r}
+#| fig-alt: "Histogram of 10,000 simulated normal values using the default Sturges breaks."
+
+	x <- rnorm(10000)
+	hist(x, breaks = "Sturges") # Default
+```
+
+```{r}
+#| fig-alt: "Histogram of 10,000 simulated normal values using Scott breaks."
+
+	hist(x, breaks = "Scott")
+```
+
+```{r}
+#| fig-alt: "Histogram of 10,000 simulated normal values using Freedman-Diaconis breaks."
+
+	hist(x, breaks = "Freedman-Diaconis", col = mypalette)
+```
+
+```{r}
+#| fig-alt: "Histogram of 10,000 simulated normal values using five bins."
+
+	hist(x, breaks = 5)
+```
+
+```{r}
+#| fig-alt: "Histogram of 10,000 simulated normal values using custom half-unit breaks and alternating colors."
+
+	hist(x, breaks = (-12:12) / 2, col = c("blue", "orange"))
+```
+
+
+# Boxplots
+
+A box plot (or "box-and-whisker plot") is an alternative to a histogram to give a quick visual display of the main features of a set of data.  A rectangular box is drawn, together with lines which protrude from two opposing sides.  The box gives an indication of the location and spread of the central portion of the data, which the extent of the lines (the "whiskers") provides an idea of the range of the bulk of the data.  
+
+The basic construction of the box part of the boxplot is as follows.
+
+1. A horizontal line is drawn at the median.  
+2. Split the data into two halves, each containing the median.  
+3. Calculate the upper and lower quartiles as the medians of each half, and draw horizontal lines at each of these values.  Then connect the lines to form a rectangular box. 
+
+The box thus drawn defines the _interquartile range_ (IQR).  This is the difference between the upper quartile and the lower quartile.  We use the IQR to give a measure of the amount of variability in the central portion of the dataset, since about 50% of the data will lie within the box.
+
+```{r}
+#| fig-alt: "Boxplots of iris sepal length grouped by species."
+
+	boxplot(Sepal.Length ~ Species, data = iris, ylab = "Sepal length (cm)", 
+		main = "Iris measurement", boxwex = 0.5)    # boxwex changes the width of the box
+```
+
+# Scatterplots
+
+Scatterplots are drawn using the `plot()` function.  Its basic usage is `plot(x, y, ...)` where `x` and `y` are numeric vectors of the same length holding the data to be plotted.
+
+```{r}
+#| fig-alt: "Scatterplot of simulated normal x values against simulated Poisson y values."
+
+	x <- rnorm(100)
+	y <- rpois(100, 30)
+
+	plot(x, y, main = "Poisson versus Normal")
+```
+
+```{r}
+#| fig-alt: "Line plot connecting simulated normal x values and simulated Poisson y values in data order."
+
+	plot(x, y, type = "l")
+```
+
+```{r}
+#| fig-alt: "Line plot connecting sorted simulated normal x values and sorted simulated Poisson y values."
+
+	plot(sort(x), sort(y), type = "l")
+```
+
+# Plotting data from data frame
+
+```{r}
+#| fig-alt: "Scatterplot of orange tree circumference versus age."
+
+	head(Orange)
+	Orange$Tree
+	summary(Orange$Tree)
+	unique(as.character(Orange$Tree))
+
+	plot(circumference ~ age, data = Orange)
+```
+
+```{r}
+#| fig-alt: "Scatterplot of orange tree circumference versus age with point symbols indicating tree."
+
+	plot(circumference ~ age, data = Orange, pch = as.character(Tree), cex = 0.75)
+```
+
+# QQ plots
+
+Quantile-quantile plots (otherwise known as QQ plots) are a type of scatterplot used to compared the distributions of two groups or to compare a sample with a reference distribution.  
+
+* When the distributions of X and Y match, the points in the QQ plot will lie near the line y=x.  We will see a different straight line if one distribution is a linear transofrmation of the other.  On the other hand, if the two distributions are not the same, we will see systematic patterns in the QQ plot.
+
+
+```{r}
+#| fig-alt: "QQ plot comparing two normal samples with the same distribution."
+
+	X <- rnorm(1000)
+
+	par(mfrow = c(2, 2))
+	A <- rnorm(1000)
+	qqplot(X, A, main = "A and X are the same")
+```
+
+```{r}
+#| fig-alt: "QQ plot comparing a normal sample to a shifted and rescaled normal sample."
+
+	B <- rnorm(1000, mean = 3, sd = 2)
+	qqplot(X, B, main = "B is rescaled X")
+```
+
+```{r}
+#| fig-alt: "QQ plot comparing a normal sample to a heavy-tailed t distribution sample."
+
+	C <- rt(1000, df = 2)
+	qqplot(X, C, main = "C has heavier tails")
+```
+
+```{r}
+#| fig-alt: "QQ plot comparing a normal sample to a right-skewed lognormal sample."
+
+	D <- exp(rnorm(1000)) 
+	qqplot(X, D, main = "D is skewed to the right")
+```
+
+
+# Low level graphics functions
+
+Now we will describe some of these low level functions, which are also available to users to customize their plots.  
+
+The command `plot` opens a new plot region. The commands `points`, `lines`, `abline`, `polygon`, `segments`, `arrows`, `symbols`, and `legend` can add components to existing graphs.
+
+**Adding to plots**
+```{r}
+#| fig-alt: "Scatterplot of orange tree circumference versus age with separate fitted lines for each tree."
+
+	plot(circumference ~ age, data = Orange, pch = as.numeric(Tree))
+	abline(lm(circumference ~ age, data = Orange, subset = Tree == "1"), lty = 1)
+	abline(lm(circumference ~ age, data = Orange, subset = Tree == "2"), lty = 2)
+	abline(lm(circumference ~ age, data = Orange, subset = Tree == "3"), lty = 3)
+	abline(lm(circumference ~ age, data = Orange, subset = Tree == "4"), lty = 4)
+	abline(lm(circumference ~ age, data = Orange, subset = Tree == "5"), lty = 5)
+	legend("topleft", legend = paste("Tree", 1:5), lty = 1:5, pch = 1:5, lwd = c(1, 1, 2, 1, 1))
+```
+
+**The plotting region and margins**
+```{r}
+#| fig-alt: "Illustration of the plotting region and margins with labeled text and points."
+
+	par(mar = c(5, 5, 5, 5) + 0.1)
+	plot(c(1, 9), c(0, 50), type = "n", xlab = "", ylab = "")
+	text(6, 40, "Plot region")
+	points(6, 20)
+	text(6, 20, "(6, 20)", adj = c(0.5, 2))
+	mtext(paste("Margin", 1:4), side = 1:4, line = 3)
+	mtext(paste("Line", 0:4), side = 1, line = 0:4, at = 3, cex = 0.6)
+	mtext(paste("Line", 0:4), side = 2, line = 0:4, at = 15, cex = 0.6)
+	mtext(paste("Line", 0:4), side = 3, line = 0:4, at = 3, cex = 0.6)
+	mtext(paste("Line", 0:4), side = 4, line = 0:4, at = 15, cex = 0.6)
+```
+
+**Adjusting axis tick label**
+```{r}
+#| fig-alt: "Histogram of log-transformed island areas with custom axis labels."
+
+	log(1000*islands, 10)
+	hist(log(1000*islands, 10), axes = FALSE, xlab = "Area (in sq. miles)", 
+		main = "Area of the World's Largest Islands")
+	box()
+	axis(side = 1, at = 4:7, 
+		labels = c("10,000", "100,000", "1,000,000", "10,000,000"))
+	axis(side = 2)
+```
+
+* The axes have been removed initially, using the `axes = FALSE` argument.  This removes the box as well, so it is replaced using the box `box()` function.
+
+```{r}
+#| fig-alt: "Scatterplot with customized axes demonstrating axis label formatting."
+
+	# A Silly Axis Example
+
+	length <- c(7.9, 6.5, 8.4, 5.5, 6.5, 8.0, 7.0, 7.5)
+	width <- c(2.3, 1.7, 2.6, 1.7, 1.9, 2.1, 1.8, 1.9)
+	plot(width ~ length, axes = FALSE)
+	axis(1, at = c(5.5, 6.2, 6.9, 7.6, 8.3), labels = c("l", "a", "b", "e", "l"), 
+		col = "violet")
+	axis(2, pos = 5.6, las = 2, tck = 0.01)
+	axis(3, col = "blue", lty = 2, lwd = 5)
+	axis(4, col = "violet", col.axis = "dark violet", lwd.ticks = 0, font = 5, cex.axis = 0.5)
+```
+For more information on graphical parameters, please refer to [here](https://www.statmethods.net/advgraphs/parameters.html).
+
+
+**Illustration of some other plot functions**
+```{r}
+#| fig-alt: "Chi-square density curve with the upper-tail rejection region shaded and labeled."
+
+	zv <- qchisq(0.9, 10)
+	cord.x <- c(zv, seq(zv, 30, 0.01), zv)
+	cord.y <- c(0, dchisq(seq(zv, 30, 0.01), 10), 0)
+	curve(dchisq(x, 10), xlim = c(0, 30), xaxp = c(0, 0, 1), xlab = "", ylab = "", 
+		main = expression(paste(chi ^ 2, " distribution")))
+	axis(1, zv, col = "red", labels = expression(paste(chi[alpha] ^ 2)), cex.axis = 1, 
+		font = 3)
+	polygon(cord.x, cord.y, density = 20, col = "blue")
+	legend(20, 0.06, legend = expression(paste(alpha, " area")), border = "brown", fill = "blue", density = 20, cex = 1)
+```
