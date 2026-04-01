@@ -54,46 +54,46 @@ Besides the assigned readings, see:
 # Guitars Again
 ```{r}
 
-mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
-model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
-           "J-100 Xtra", "M-21")
-serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
-type <- rep(c("electric", "acoustic"), times = c(5, 2))
-body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
-w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
-case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
 
-guitars_df <- data.frame(mfr, model, serial, type, w_case_kg, case_kg)
+	guitars_df <- data.frame(mfr, model, serial, type, w_case_kg, case_kg)
 
-library("tidyverse")
-guitars_tbl <- as_tibble(guitars_df)
+	library("tidyverse")
+	guitars_tbl <- as_tibble(guitars_df)
 ```
 
 * Removing `w_case_kg` and `case_kg` to save room in slides.
 ```{r}
-guitars_df <- subset(guitars_df, select = -c(w_case_kg, case_kg))
-guitars_tbl <- select(guitars_tbl, -w_case_kg, -case_kg)
+	guitars_df <- subset(guitars_df, select = -c(w_case_kg, case_kg))
+	guitars_tbl <- select(guitars_tbl, -w_case_kg, -case_kg)
 ```
 
 # Suppose Color is Recorded in a Separate Data Frame
 ```{r}
-colors_tbl <-
-    tribble(~model, ~color, ~serial,
-            "Firebird V", "sunburst", "616619",
-            "Les Paul", "wine", "00235628",
-            "ES175", "sunburst", "03531746",
-            "Stratocaster", "black", "EJ15230",
-            "Telecaster", "blonde", "60671",
-            "J-100", "natural", "90783019",
-            "D-28", "natural", "2457919")
-colors_df <- as.data.frame(colors_tbl)
+	colors_tbl <-
+	tribble(~model, ~color, ~serial,
+		"Firebird V", "sunburst", "616619",
+		"Les Paul", "wine", "00235628",
+		"ES175", "sunburst", "03531746",
+		"Stratocaster", "black", "EJ15230",
+		"Telecaster", "blonde", "60671",
+		"J-100", "natural", "90783019",
+		"D-28", "natural", "2457919")
+	colors_df <- as.data.frame(colors_tbl)
 ```
 
 ***
 
 ```{r}
-guitars_tbl
-colors_tbl
+	guitars_tbl
+	colors_tbl
 ```
 
 * Notice that:
@@ -108,7 +108,7 @@ colors_tbl
 
 **Base-R**
 ```{r}
-merge(guitars_df, colors_df)
+	merge(guitars_df, colors_df)
 ```
 
 ***
@@ -116,7 +116,7 @@ merge(guitars_df, colors_df)
 **`dplyr::inner_join()`**
 
 ```{r}
-inner_join(guitars_tbl, colors_tbl)
+	inner_join(guitars_tbl, colors_tbl)
 ```
 
 * Presumably we are surprised that our guitar collection has shrunk.
@@ -129,7 +129,7 @@ inner_join(guitars_tbl, colors_tbl)
 **Specify Matching on `serial` only.**  
 **Base-R**
 ```{r}
-merge(guitars_df, colors_df, by = "serial")
+	merge(guitars_df, colors_df, by = "serial")
 ```
 
 * Get 2 model cols because the entries do not match.
@@ -140,7 +140,7 @@ merge(guitars_df, colors_df, by = "serial")
 
 **`dplyr::inner_join()`**
 ```{r}
-inner_join(guitars_tbl, colors_tbl, by = "serial")
+	inner_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
 * Get 2 model cols because the entries do not match.
@@ -155,23 +155,23 @@ inner_join(guitars_tbl, colors_tbl, by = "serial")
   - Useful when each item should have at least one match. (With larger data frames we might not notice otherwise.)
 
 ```{r}
-inner_join(guitars_tbl, colors_tbl, by = "serial", unmatched = "error")
+	inner_join(guitars_tbl, colors_tbl, by = "serial", unmatched = "error")
 ```
 
 # Diagnose Mismatches
 
 **Base-R**
 ```{r}
-guitars_df[!(guitars_df$model %in% colors_df$model),]    # In guitars, not in colors
-colors_df[!(colors_df$model %in% guitars_df$model),]     # In colors, not in guitars
+	guitars_df[!(guitars_df$model %in% colors_df$model),]    # In guitars, not in colors
+	colors_df[!(colors_df$model %in% guitars_df$model),]     # In colors, not in guitars
 ```
 
 ***
 
 **`dplyr::anti_join()`**
 ```{r}
-anti_join(guitars_tbl, colors_tbl)         # In guitars, not in colors
-anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
+	anti_join(guitars_tbl, colors_tbl)         # In guitars, not in colors
+	anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
 ```
 
 ***
@@ -181,9 +181,9 @@ anti_join(colors_tbl, guitars_tbl)         # In colors, not in guitars
 * This is the most basic of base-R ways to do it.
 
 ```{r}
-colors_df$model[colors_df$model == "Les Paul"] <- "Les Paul Standard"
-colors_df$model[colors_df$model == "J-100"] <- "J-100 Xtra"
-colors_df
+	colors_df$model[colors_df$model == "Les Paul"] <- "Les Paul Standard"
+	colors_df$model[colors_df$model == "J-100"] <- "J-100 Xtra"
+	colors_df
 ```
 
 ***
@@ -191,22 +191,22 @@ colors_df
 * We could have fixed the mismatches with the base-R `replace()` function.
 
 ```{r}
-colors_df <- colors_df |>
-  transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
-  transform(model = replace(model, model == "J-100", "J-100 Xtra"))
+	colors_df <- colors_df |>
+		transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
+			transform(model = replace(model, model == "J-100", "J-100 Xtra"))
 ```
 
 * Or with the base-R `ifelse()` function.
 ```{r}
-colors_df <- colors_df |>
-  transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
-  transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
+	colors_df <- colors_df |>
+		transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
+			transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
 ```
   - `ifelse()` is useful for other kinds of transformations as well, e.g.,
 ```{r}
-x <- 1:10
-y <- ifelse((x %% 2) == 0, -x, 2*x)
-y
+	x <- 1:10
+	y <- ifelse((x %% 2) == 0, -x, 2*x)
+	y
 ```
 
 ***
@@ -214,12 +214,12 @@ y
 * The `dplyr::case_match()` can fix both mismatches at once.
   - See also `dplyr::case_when()` (can do other kinds of tranformations).
 ```{r}
-colors_tbl <- colors_tbl |>
-  mutate(model = case_match(model,
-                              "Les Paul" ~ "Les Paul Standard",
-                              "J-100" ~ "J-100 Xtra",
-                              .default = model))
-colors_tbl
+	colors_tbl <- colors_tbl |>
+		mutate(model = case_match(model,
+		"Les Paul" ~ "Les Paul Standard",
+		"J-100" ~ "J-100 Xtra",
+		.default = model))
+	colors_tbl
 ```
 
 ***
@@ -227,8 +227,8 @@ colors_tbl
 **Which mismatches remain?**
 
 ```{r}
-anti_join(guitars_tbl, colors_tbl)        # In guitars, not in colors
-anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
+	anti_join(guitars_tbl, colors_tbl)        # In guitars, not in colors
+	anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
 ```
 
 
@@ -239,7 +239,7 @@ anti_join(colors_tbl, guitars_tbl)        # In colors, not in guitars
 * Default matching on all common column names.
 
 ```{r}
-merge(guitars_df, colors_df, all = TRUE)
+	merge(guitars_df, colors_df, all = TRUE)
 ```
 
 ***
@@ -249,7 +249,7 @@ merge(guitars_df, colors_df, all = TRUE)
 * Default matching on all common column names.
 
 ```{r}
-full_join(guitars_tbl, colors_tbl)
+	full_join(guitars_tbl, colors_tbl)
 ```
 
 ***
@@ -260,7 +260,7 @@ full_join(guitars_tbl, colors_tbl)
 * Matching on specified column(s).
 
 ```{r}
-merge(guitars_df, colors_df, by = "serial", all = TRUE)
+	merge(guitars_df, colors_df, by = "serial", all = TRUE)
 ```
 
 ***
@@ -270,7 +270,7 @@ merge(guitars_df, colors_df, by = "serial", all = TRUE)
 * Matching on specified column(s).
 
 ```{r}
-full_join(guitars_tbl, colors_tbl, by = "serial")
+	full_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
 # Left Outer Join: All Rows from First Data Frame
@@ -280,7 +280,7 @@ full_join(guitars_tbl, colors_tbl, by = "serial")
 * Default matching on all common column names.
 
 ```{r}
-merge(guitars_df, colors_df, all.x = TRUE)
+	merge(guitars_df, colors_df, all.x = TRUE)
 ```
 
 ***
@@ -290,7 +290,7 @@ merge(guitars_df, colors_df, all.x = TRUE)
 * Matching on specified column(s).
 
 ```{r}
-left_join(guitars_tbl, colors_tbl, by = "serial")
+	left_join(guitars_tbl, colors_tbl, by = "serial")
 ```
 
 # Right Outer Join: All Rows from Second Data Frame
@@ -300,7 +300,7 @@ left_join(guitars_tbl, colors_tbl, by = "serial")
 * Matching on specified column(s).
 
 ```{r}
-merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
+	merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
 ```
 
 ***
@@ -309,5 +309,5 @@ merge(guitars_df, colors_df, all.y = TRUE, by = "serial")
 
 * Default matching on all common column names.
 ```{r}
-right_join(guitars_tbl, colors_tbl)
+	right_join(guitars_tbl, colors_tbl)
 ```

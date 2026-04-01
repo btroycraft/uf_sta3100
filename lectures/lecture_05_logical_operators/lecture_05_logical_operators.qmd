@@ -26,19 +26,19 @@ execute:
 ```{r}
 #| label: xy
 
-  set.seed(32139)
-  x <- runif(5) ; y <- runif(5)
-  x
-  y
+	set.seed(32139)
+	x <- runif(5) ; y <- runif(5)
+	x
+	y
 ```
 
 ```{r}
 #| label: vw
 
-  v <- x < y
-  w <- x >= 1/2
-  v
-  w
+	v <- x < y
+	w <- x >= 1/2
+	v
+	w
 ```
 
 \newpage
@@ -48,8 +48,8 @@ execute:
 ```{r}
 #| label: negation
 
-  v
-  !v
+	v
+	!v
 ```  
 
 \newpage
@@ -58,12 +58,12 @@ execute:
 ```{r}
 #| label: aoa
 
-  v
-  w
-  v | w         # "or"
-  v & w         # "and"
-  xor(v, w)     # "exclusive or"
-  (v | w) & !(v & w)   # Do you see why this is the same as xor(v, w)?
+	v
+	w
+	v | w         # "or"
+	v & w         # "and"
+	xor(v, w)     # "exclusive or"
+	(v | w) & !(v & w)   # Do you see why this is the same as xor(v, w)?
 ``` 
 
 \newpage
@@ -77,9 +77,9 @@ execute:
 ```{r}
 #| label: table
 
-  x <- (rnorm(10) > 0)
-  x
-  table(x)
+	x <- (rnorm(10) > 0)
+	x
+	table(x)
 ```
 
 \newpage
@@ -90,11 +90,11 @@ execute:
 ```{r}
 #| label: all
 
-  x <- c(TRUE, TRUE)  ;  y <- c(TRUE, FALSE)  ;  z <- c(FALSE, FALSE)
-  all(x)
-  all(y)
-  any(y)
-  any(z)
+	x <- c(TRUE, TRUE)  ;  y <- c(TRUE, FALSE)  ;  z <- c(FALSE, FALSE)
+	all(x)
+	all(y)
+	any(y)
+	any(z)
 ```
 
 ### DeMorgan’s Laws in R Syntax  

@@ -27,14 +27,14 @@ execute:
 ```{r}
 #| message: false
 
-library(tidyverse)
+	library(tidyverse)
 ```
 
 ```{r}
-houses <- readRDS("houseSalesGNV2020.rds") 
-names(houses)
-houses <- as_tibble(houses)
-head(houses, 12)
+	houses <- readRDS("houseSalesGNV2020.rds") 
+	names(houses)
+	houses <- as_tibble(houses)
+	head(houses, 12)
 ```
 
 # Capturing the directional part of the street address
@@ -45,26 +45,31 @@ head(houses, 12)
 * Someday I'll use `regexp(..., comments = TRUE)` to explain this regexp.
 
 ```{r}
-direction_regex <- ".*?(\\b(?i)((?:north|south)(?:\\h*(?:east|west))?\\b|\\b(?:east|west|[NS][EW]?|[EW]))\\b).*"
-houses |> 
-  mutate(direction = str_replace(street, direction_regex, "\\1")) |>
-  pull(direction) |> unique()
-houses <- houses |>
-  mutate(direction = ifelse(str_detect(street, direction_regex), street, NA),
-         direction = str_replace(direction, direction_regex, "\\1"), 
-         direction = str_to_upper(direction))
-houses |> group_by(direction) |> count()
+	direction_regex <- ".*?(\\b(?i)((?:north|south)(?:\\h*(?:east|west))?\\b|\\b(?:east|west|[NS][EW]?|[EW]))\\b).*"
+	houses |> 
+		mutate(direction = str_replace(street, direction_regex, "\\1")) |>
+			pull(direction) |>
+				unique()
+	houses <- houses |>
+		mutate(direction = ifelse(str_detect(street, direction_regex), street, NA),
+		direction = str_replace(direction, direction_regex, "\\1"), 
+		direction = str_to_upper(direction))
+	houses |>
+		    group_by(direction) |>
+			    count()
 ```
 
 * Now using the direction to add a factor variable for quadrant.
 * If direction is not one of NE, NW, SE, or SW, then I set quadrant to `NA`.
 
 ```{r}
-houses <- houses |> 
-  mutate(quadrant = ifelse(direction %in% c("NE", "NW", "SE", "SW"),
-                           direction, NA),
-         quadrant = factor(quadrant, levels = c("NE", "NW", "SE", "SW")))
-houses |> group_by(quadrant) |> count()
+	houses <- houses |> 
+		mutate(quadrant = ifelse(direction %in% c("NE", "NW", "SE", "SW"),
+		direction, NA),
+		quadrant = factor(quadrant, levels = c("NE", "NW", "SE", "SW")))
+	houses |>
+		group_by(quadrant) |>
+			count()
 ```
 
 # An Egregious Outlier
@@ -73,19 +78,19 @@ houses |> group_by(quadrant) |> count()
 #| fig-cap: "Gainesville house prices by square footage."
 #| fig-alt: "Gainesville house prices by square footage."
 
-opar <- par(mar = c(5.1, 4.1, 1.1, 1.1))
-with(houses, plot(sqft, price))
-with(houses, text(sqft, price, ifelse(price > 2e6, street, ""), pos = 4)) 
-par(opar)
+	opar <- par(mar = c(5.1, 4.1, 1.1, 1.1))
+	with(houses, plot(sqft, price))
+	with(houses, text(sqft, price, ifelse(price > 2e6, street, ""), pos = 4)) 
+	par(opar)
 ```
 
 ```{r}
 #| fig-cap: "Gainesville house prices by square footage."
 #| fig-alt: "Gainesville house prices by square footage."
 
-ggplot(houses, aes(x = sqft, y = price)) + 
-  geom_point() +
-  geom_text(aes(label = ifelse(price > 2e6, street, "")), hjust = "inward")
+	ggplot(houses, aes(x = sqft, y = price)) + 
+		geom_point() +
+			geom_text(aes(label = ifelse(price > 2e6, street, "")), hjust = "inward")
 ```
 
 ![A house with incorrect sales data on realtor.com.](WrongPrice.png)
@@ -97,38 +102,38 @@ ggplot(houses, aes(x = sqft, y = price)) +
 ```{r}
 #| fig-alt: "Histogram of dollars per square foot for Gainesville houses after excluding extreme values."
 
-houses <- houses |>
-  mutate(dpsf = price / sqft,
-         dpsf_hi_lo = cut(dpsf, breaks = c(0, 50, 100, 300, 400, Inf),
-         labels = c("very_low", "low", "med", "high", "very_high")))
-houses |>
-  group_by(dpsf_hi_lo) |>
-  summarize(n = n())
+	houses <- houses |>
+		mutate(dpsf = price / sqft,
+		dpsf_hi_lo = cut(dpsf, breaks = c(0, 50, 100, 300, 400, Inf),
+		labels = c("very_low", "low", "med", "high", "very_high")))
+	houses |>
+		group_by(dpsf_hi_lo) |>
+			summarize(n = n())
 
-houses |>
-  filter(dpsf < 400) |>
-  ggplot(aes(x = dpsf)) +
-    # Intentionally undersmoothing to see gaps
-    geom_histogram(binwidth = 5)
+	houses |>
+		filter(dpsf < 400) |>
+			ggplot(aes(x = dpsf)) +
+				# Intentionally undersmoothing to see gaps
+				geom_histogram(binwidth = 5)
 ```
 
 ```{r}
 #| fig-alt: "Density plot of dollars per square foot for Gainesville houses after excluding extreme values."
 
-houses |>
-  filter(dpsf < 400) |>
-  ggplot(aes(x = dpsf)) +
-    # Undersmoothing a bit
-    geom_density(adjust = 0.8)
+	houses |>
+		filter(dpsf < 400) |>
+			ggplot(aes(x = dpsf)) +
+				# Undersmoothing a bit
+				geom_density(adjust = 0.8)
 ```
 
 
 ```{r}
-sqft_na <- is.na(houses$sqft)
-beds_na <- is.na(houses$beds) ; baths_na <- is.na(houses$baths)
-quadrant_na <- is.na(houses$quadrant)
-too_low <- (houses$dpsf < 50) ; too_high <- (houses$dpsf > 300)
-leave_out <- sqft_na | beds_na | baths_na | quadrant_na | too_low | too_high
+	sqft_na <- is.na(houses$sqft)
+	beds_na <- is.na(houses$beds) ; baths_na <- is.na(houses$baths)
+	quadrant_na <- is.na(houses$quadrant)
+	too_low <- (houses$dpsf < 50) ; too_high <- (houses$dpsf > 300)
+	leave_out <- sqft_na | beds_na | baths_na | quadrant_na | too_low | too_high
 ```
 
 There are
@@ -147,9 +152,9 @@ Altogether, these make up 80 of the 1080 observations.
   - Remember, outliers are often the most interesting observations.
 * We will just work with the last 200 or so house sales that passed our filter.  
 ```{r}
-myhouses <- houses |> 
-  filter(!leave_out) |> 
-  slice_max(date, n = 200)
+	myhouses <- houses |> 
+		filter(!leave_out) |> 
+			slice_max(date, n = 200)
 ```
 
 # Two-Sample Student's t Test
@@ -157,16 +162,18 @@ myhouses <- houses |>
 Is there a difference in average price between houses in East vs West Gainesville?
 
 ```{r}
-myhouses <- myhouses |> 
-  mutate(EW = fct_collapse(quadrant, E = c("NE","SE"), W = c("NW", "SW")))
-myhouses |> group_by(EW) |> summarize(n = n(), mean_price = mean(price))
-with(myhouses, t.test(price[EW == "W"], price[EW == "E"]))
+	myhouses <- myhouses |> 
+		mutate(EW = fct_collapse(quadrant, E = c("NE","SE"), W = c("NW", "SW")))
+	myhouses |>
+		group_by(EW) |>
+			summarize(n = n(), mean_price = mean(price))
+	with(myhouses, t.test(price[EW == "W"], price[EW == "E"]))
 ```
 
 * Or use the formula method for `t.test()`
 
 ```{r}
-t.test(price ~ EW, data = myhouses)
+	t.test(price ~ EW, data = myhouses)
 ```
 
 **Wait, what is Welch's two-sample t-test!?**  
@@ -176,14 +183,14 @@ t.test(price ~ EW, data = myhouses)
 * Why might the following variances be relevant?
 
 ```{r}
-with(myhouses, tapply(price, EW, var))
-with(myhouses, tapply(price, EW, sd))
+	with(myhouses, tapply(price, EW, var))
+	with(myhouses, tapply(price, EW, sd))
 ```
 
 * The standard t-test and t-confidence interval (shown below) may not be appropriate here.
 
 ```{r}
-t.test(price ~ EW, data = myhouses, var.equal = TRUE)
+	t.test(price ~ EW, data = myhouses, var.equal = TRUE)
 ```
 
 # Simple Linear Regression
@@ -194,9 +201,9 @@ Notice that there is a "formula" method for `plot()` and for many other function
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-opar <- par(mar = c(5.1, 4.1, 0.1, 0.5)) 
-plot(price ~ sqft, data = myhouses) 
-par(opar)
+	opar <- par(mar = c(5.1, 4.1, 0.1, 0.5)) 
+	plot(price ~ sqft, data = myhouses) 
+	par(opar)
 ```
 
 A _simple_ linear regression model states that the mean of the response $Y$ is a linear (or more precisely an _affine_) function of a _single numeric_ predictor $x$.
@@ -218,15 +225,15 @@ $$
 response variable on the left from the predictor on the right.
 
 ```{r}
-lm_area <- lm(price ~ sqft, data = myhouses)
-names(lm_area)
+	lm_area <- lm(price ~ sqft, data = myhouses)
+	names(lm_area)
 ```
 
 The least squares estimates $\hat{\beta}_0=-66,590$ and $\hat{\beta}_1=175$ can be accessed by name or by using the extractor function `coef()`.
 
 ```{r}
-lm_area$coefficients
-coef(lm_area)
+	lm_area$coefficients
+	coef(lm_area)
 ```
 
 * Plotting with base-R.
@@ -234,10 +241,10 @@ coef(lm_area)
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-opar <- par(mar = c(5.1, 4.1, 0.1, 0.1)) 
-plot(price ~ sqft, data = myhouses)
-abline(lm_area) 
-par(opar)
+	opar <- par(mar = c(5.1, 4.1, 0.1, 0.1)) 
+	plot(price ~ sqft, data = myhouses)
+	abline(lm_area) 
+	par(opar)
 ```
 
 * Plotting with `ggplot2`.
@@ -245,28 +252,28 @@ par(opar)
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-ggplot(myhouses, aes(x = sqft, y = price)) + 
-  geom_point() +
-  geom_smooth(method = lm)
+	ggplot(myhouses, aes(x = sqft, y = price)) + 
+		geom_point() +
+			geom_smooth(method = lm)
 ```
 
 ```{r}
-summary(lm_area) # Prints a summary of the regression fit.
+	summary(lm_area) # Prints a summary of the regression fit.
 ```
 
 The list returned by `summary()` can be saved for further use.
 
 ```{r}
-lm_area_smry <- summary(lm_area) 
-names(lm_area_smry)
-lm_area_smry$coefficients
-lm_area_smry$coefficients[, "Std. Error"]
+	lm_area_smry <- summary(lm_area) 
+	names(lm_area_smry)
+	lm_area_smry$coefficients
+	lm_area_smry$coefficients[, "Std. Error"]
 ```
 
 Confidence intervals for the coefficients can be computed from the summary information, but it is easier to use the `confint()` function.
 
 ```{r}
-confint(lm_area)
+	confint(lm_area)
 ```
 
 * We are 95% confident that mean house price increases by between 161 and 190 dollars for every 1-square-foot increase in house area.
@@ -282,28 +289,28 @@ $$ \mu=\beta_0+\beta_1 x_1+\beta_2 x_2+\beta_3 x_3 $$
 * The _terms_ in the model are added to the RHS of the model formula.
 
 ```{r}
-lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
-summary(lm_abb)
+	lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
+	summary(lm_abb)
 ```
 
 ## `update()`  
 The update function provides a shorthand for fitting a new model by building on an existing model. For instance, having already run
 ```{r}
-lm_area <- lm(price ~ sqft, data = myhouses)
+	lm_area <- lm(price ~ sqft, data = myhouses)
 ```
 we could have replaced
 ```{r}
-lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
+	lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
 ```
 by
 ```{r}
-lm_abb <- update(lm_area, . ~ . + beds + baths)
+	lm_abb <- update(lm_area, . ~ . + beds + baths)
 ```
 * In the model formula for `update()`, the periods (".") on the LHS and RHS of the tilde character represent the terms that were already on the LHS and RHS of the model formula for `lm_area`.
 * We can also take away variables.
 ```{r}
-summary(update(lm_abb, . ~ . - beds))
-summary(update(lm_abb, . ~ . - baths))
+	summary(update(lm_abb, . ~ . - beds))
+	summary(update(lm_abb, . ~ . - baths))
 ```
 
 ## Comparing Nested Models
@@ -326,7 +333,7 @@ $$ E(\text{price})=\beta_0+\beta_1\cdot\text{sqft}+\beta_2\cdot\text{beds}+\beta
 and we wish to test
 $$ H_0: \beta_2=\beta_3=0\quad\text{ vs }\quad H_1: \text{either } \beta_2\neq0\text{ or }\beta_3\neq0\text{ (or both)} $$
 ```{r}
-anova(lm_area, lm_abb, test = "F")
+	anova(lm_area, lm_abb, test = "F")
 ```
 
 * The p-value 0.1079 indicates very little evidence against the null hypothesis.
@@ -345,9 +352,9 @@ factor.
 * The coefficient of a dummy variable represents the difference in mean response for an observation at the corresponding level of the factor vs an observation at the control level, with all other variables held constant.
 
 ```{r}
-table(myhouses$quadrant)
-lm_aq <- lm(price ~ sqft + quadrant, data = myhouses) 
-summary(lm_aq)
+	table(myhouses$quadrant)
+	lm_aq <- lm(price ~ sqft + quadrant, data = myhouses) 
+	summary(lm_aq)
 ```
 
 * In this example, "NE" acts as the reference level of the `quadrant` factor and there are 3 dummy variables:
@@ -399,17 +406,17 @@ Note: "Controlling for" means holding constant. So "controlling for area" means 
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
+	opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
 
-plot(price ~ sqft, pch = as.integer(quadrant), data = myhouses)
-ab <- coef(lm_aq)
-abline(ab["(Intercept)"], ab["sqft"], lty = 1) 
-abline(ab["(Intercept)"] + ab["quadrantNW"], ab["sqft"], lty = 2)
-abline(ab["(Intercept)"] + ab["quadrantSE"], ab["sqft"], lty = 3)
-abline(ab["(Intercept)"] + ab["quadrantSW"], ab["sqft"], lty = 4) 
-legend("bottomright", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
+	plot(price ~ sqft, pch = as.integer(quadrant), data = myhouses)
+	ab <- coef(lm_aq)
+	abline(ab["(Intercept)"], ab["sqft"], lty = 1) 
+	abline(ab["(Intercept)"] + ab["quadrantNW"], ab["sqft"], lty = 2)
+	abline(ab["(Intercept)"] + ab["quadrantSE"], ab["sqft"], lty = 3)
+	abline(ab["(Intercept)"] + ab["quadrantSW"], ab["sqft"], lty = 4) 
+	legend("bottomright", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
 
-par(opar)
+	par(opar)
 ```
 
 * [A post on plotting fitted lines with `ggplot2`](https://aosmith.rbind.io/2018/11/16/plot-fitted-lines/)
@@ -418,31 +425,31 @@ par(opar)
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-plot3 <- myhouses |> 
-  bind_cols(fitted_price = predict(lm_aq)) |> 
-  ggplot(aes(x = sqft, y = price, color = quadrant)) + 
-  geom_point() +
-  geom_line(aes(y = fitted_price), linewidth = 1)
-plot3
+	plot3 <- myhouses |> 
+		bind_cols(fitted_price = predict(lm_aq)) |> 
+			ggplot(aes(x = sqft, y = price, color = quadrant)) + 
+				geom_point() +
+					geom_line(aes(y = fitted_price), linewidth = 1)
+	plot3
 ```
 
 ```{r}
-## houses_grid <- 
-##   expand.grid(sqft = range(myhouses$sqft), quadrant = unique(myhouses$quadrant))
-houses_grid <- 
-  expand_grid(sqft = range(myhouses$sqft), quadrant = unique(myhouses$quadrant))
-houses_grid$price = predict(lm_aq, newdata = houses_grid)
-houses_grid
+	## houses_grid <- 
+	##   expand.grid(sqft = range(myhouses$sqft), quadrant = unique(myhouses$quadrant))
+	houses_grid <- 
+	expand_grid(sqft = range(myhouses$sqft), quadrant = unique(myhouses$quadrant))
+	houses_grid$price = predict(lm_aq, newdata = houses_grid)
+	houses_grid
 ```
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-plot3b <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
-  geom_point() +
-  geom_line(data = houses_grid)
-plot3b
+	plot3b <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
+		geom_point() +
+			geom_line(data = houses_grid)
+	plot3b
 ```
 
 # Interactions
@@ -493,8 +500,8 @@ So model `price ~ sqft + quadrant + sqft:quadrant` gives:
 * Remember `price ~ sqft * quadrant` is shorthand for this model.
 
 ```{r}
-lm_aqi <- lm(price ~ sqft * quadrant, data = myhouses) 
-summary(lm_aqi)$coefficients
+	lm_aqi <- lm(price ~ sqft * quadrant, data = myhouses) 
+	summary(lm_aqi)$coefficients
 ```
 
 |$\hat{\alpha}$|$\hat{\beta}$|$\hat{\gamma}_{\text{NW}}$|$\hat{\gamma}_{\text{SE}}$|$\hat{\gamma}_{\text{SW}}$|$\hat{\delta}_{\text{NW}}$|$\hat{\delta}_{\text{SE}}$|$\hat{\delta}_{\text{SW}}$|
@@ -520,38 +527,38 @@ Interpretation is more complicated now. We estimate that mean house price:
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
+	opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
 
-plot(price ~ sqft, pch = as.integer(quadrant), data = myhouses)
-ab <- coef(lm_aqi)
-abline(ab["(Intercept)"], ab["sqft"], lty = 1)
-abline(ab["(Intercept)"] + ab["quadrantNW"], ab["sqft"] + ab["sqft:quadrantNW"], lty = 2) 
-abline(ab["(Intercept)"] + ab["quadrantSE"], ab["sqft"] + ab["sqft:quadrantSE"], lty = 3) 
-abline(ab["(Intercept)"] + ab["quadrantSW"], ab["sqft"] + ab["sqft:quadrantSW"], lty = 4) 
-legend("topleft", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
+	plot(price ~ sqft, pch = as.integer(quadrant), data = myhouses)
+	ab <- coef(lm_aqi)
+	abline(ab["(Intercept)"], ab["sqft"], lty = 1)
+	abline(ab["(Intercept)"] + ab["quadrantNW"], ab["sqft"] + ab["sqft:quadrantNW"], lty = 2) 
+	abline(ab["(Intercept)"] + ab["quadrantSE"], ab["sqft"] + ab["sqft:quadrantSE"], lty = 3) 
+	abline(ab["(Intercept)"] + ab["quadrantSW"], ab["sqft"] + ab["sqft:quadrantSW"], lty = 4) 
+	legend("topleft", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
 
-par(opar)
+	par(opar)
 ```
 
 ```{r}
-houses_grid$price = predict(lm_aqi, newdata = houses_grid) 
-houses_grid
+	houses_grid$price = predict(lm_aqi, newdata = houses_grid) 
+	houses_grid
 ```
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-plot4 <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
-  geom_point() +
-  geom_line(data = houses_grid)
-plot4
+	plot4 <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
+		geom_point() +
+			geom_line(data = houses_grid)
+	plot4
 ```
 
 # Model Comparisons
 
 ```{r}
-anova(lm_area, lm_aq, lm_aqi)
+	anova(lm_area, lm_aq, lm_aqi)
 ```
 
 \raggedright Note that   

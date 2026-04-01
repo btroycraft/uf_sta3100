@@ -24,26 +24,26 @@ execute:
 # Guitars Again
 ```{r}
 
-mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
-model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
-           "J-100 Xtra", "M-21")
-serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
-type <- rep(c("electric", "acoustic"), times = c(5, 2))
-body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
-w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
-case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
 
-library(tidyverse)
+	library(tidyverse)
 
-guitars <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
+	guitars <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
 ```
 
 ***
 
 * Deleting column of serial numbers to declutter slides.
 ```{r}
-guitars$serial <- NULL
-guitars
+	guitars$serial <- NULL
+	guitars
 ```
 
 # `dplyr` One-Table "Verbs" and Base-R "Equivalents"
@@ -79,8 +79,8 @@ guitars
 * Add columns for weights of the guitars in kg and lb.
 * Can define `kg` and use it to define `lb` in the same call to `mutate()`.
 ```{r}
-guitars <- mutate(guitars, kg = w_case_kg - case_kg, lb = 2.2 * kg)
-guitars
+	guitars <- mutate(guitars, kg = w_case_kg - case_kg, lb = 2.2 * kg)
+	guitars
 ```
 
 # Rename Columns with `dplyr::rename()`
@@ -88,8 +88,8 @@ guitars
 * `new_name = old_name`. Not required to quote new or old column names.
 * Can rename more than one column at a time.
 ```{r}
-guitars <- rename(guitars, weight = lb, kilos = kg)
-guitars
+	guitars <- rename(guitars, weight = lb, kilos = kg)
+	guitars
 ```
 
 # Select Columns with `dplyr::select()`
@@ -97,25 +97,25 @@ guitars
 * Can use "-" with column numbers **and column names**.
 * Not required to quote column names and not require to use `c()`.
 ```{r}
-guitars <- select(guitars, -w_case_kg, -case_kg, -kilos)
-## guitars <- select(guitars, -c(w_case_kg, case_kg, kilos))               # Also works.
-guitars
+	guitars <- select(guitars, -w_case_kg, -case_kg, -kilos)
+	## guitars <- select(guitars, -c(w_case_kg, case_kg, kilos))               # Also works.
+	guitars
 ```
 
 # Relocate Columns with `dplyr::relocate()`
 
 * Make `type` the first column.
 ```{r}
-guitars <- relocate(guitars, type)
-guitars
+	guitars <- relocate(guitars, type)
+	guitars
 ```
 
 ***
 
 What if we now wanted to move the type column back?
 ```{r}
-guitars <- relocate(guitars, type, .after = model)
-guitars
+	guitars <- relocate(guitars, type, .after = model)
+	guitars
 ```
 
 # OPERATING ON ROWS
@@ -124,7 +124,7 @@ guitars
 * View only guitars under 8 lb
 
 ```{r}
-filter(guitars, weight < 8)
+	filter(guitars, weight < 8)
 ```
 
 ***
@@ -132,7 +132,7 @@ filter(guitars, weight < 8)
 * View only electric guitars under 8 lb
 
 ```{r}
-filter(guitars, (type == "electric") & (weight < 8))
+	filter(guitars, (type == "electric") & (weight < 8))
 ```
 
 ***
@@ -141,11 +141,11 @@ filter(guitars, (type == "electric") & (weight < 8))
   - Contrast with base-R `subset()` with its optional argument `select`.
 
 ```{r}
-guitars |>
-  filter((type == "electric") & (weight < 8)) |>
-  select(-type, -weight)
+	guitars |>
+		filter((type == "electric") & (weight < 8)) |>
+			select(-type, -weight)
 
-## select(filter(guitars, (type == "electric") & (weight < 8)), -type, -weight)
+	## select(filter(guitars, (type == "electric") & (weight < 8)), -type, -weight)
 ```
 
 # Ordering Observations with `dplyr::arrange()`
@@ -153,7 +153,7 @@ guitars |>
 * Arrange the guitars by `weight` (lightest to heaviest):
 
 ```{r}
-arrange(guitars, weight)
+	arrange(guitars, weight)
 ```
 
 ***
@@ -163,7 +163,7 @@ arrange(guitars, weight)
 * Arrange the guitars from heaviest to lightest:
 
 ```{r}
-arrange(guitars, desc(weight))
+	arrange(guitars, desc(weight))
 ```
 
 ***
@@ -173,7 +173,7 @@ arrange(guitars, desc(weight))
 * Alphabetically by `mfr` and by `weight` within `mfr`.
 
 ```{r}
-arrange(guitars, mfr, weight)
+	arrange(guitars, mfr, weight)
 ```
 
 ***
@@ -181,7 +181,7 @@ arrange(guitars, mfr, weight)
 * Alphabetically by `type` and from heaviest to lightest within `type`.
 
 ```{r}
-arrange(guitars, type, desc(weight))
+	arrange(guitars, type, desc(weight))
 ```
 
 # Subset Rows by Position with `dplyr::slice()`
@@ -191,7 +191,7 @@ The main advantage of these functions over the base-R analogues is that they int
 * Get the 2nd, 4th, and 5th Guitars.
 
 ```{r}
-slice(guitars, 2, 4, 5)     # Or slice(guitars, c(2,4,5))
+	slice(guitars, 2, 4, 5)     # Or slice(guitars, c(2,4,5))
 ```
 
 ***
@@ -199,7 +199,7 @@ slice(guitars, 2, 4, 5)     # Or slice(guitars, c(2,4,5))
 * Get the first 3 guitars.
 
 ```{r}
-slice_head(guitars, n = 3)     # Default is n = 1.
+	slice_head(guitars, n = 3)     # Default is n = 1.
 ```
 
 ***
@@ -207,7 +207,7 @@ slice_head(guitars, n = 3)     # Default is n = 1.
 * Get the last 3 guitars.
 
 ```{r}
-slice_tail(guitars, n = 3)
+	slice_tail(guitars, n = 3)
 ```
 
 ***
@@ -215,7 +215,7 @@ slice_tail(guitars, n = 3)
 * Get the 3 heaviest guitars.
 
 ```{r}
-slice_max(guitars, weight, n = 3)
+	slice_max(guitars, weight, n = 3)
 ```
 
 * A base-R version could be any of the following:
@@ -231,7 +231,7 @@ guitars[order(guitars$weight, decreasing = TRUE)[1:3], ]
 * Choose a random sample (without replacement) of 3 guitars.
 
 ```{r}
-slice_sample(guitars, n = 3)
+	slice_sample(guitars, n = 3)
 ```
 
 * A base-R version:
@@ -245,10 +245,10 @@ guitars[sample(nrow(guitars), 3), ]
 
 **Calculate the Mean Weight by Type**
 ```{r}
-guitars |>
-  group_by(type) |>
-  summarise(avg_wt = mean(weight)) |>
-  arrange(desc(type))
+	guitars |>
+		group_by(type) |>
+			summarise(avg_wt = mean(weight)) |>
+				arrange(desc(type))
 ```
 
 * Note that a `tibble` is returned (ready for more pipes)
@@ -257,32 +257,32 @@ guitars |>
 
 **An alternative (as of `dplyr` 1.1.0):**
 ```{r}
-summarise(guitars, avg_wt = mean(weight), .by = type)
+	summarise(guitars, avg_wt = mean(weight), .by = type)
 ```
 
 ***
 
 **Include the Number of Observations in Each Group**
 ```{r}
-guitars |>
-  group_by(type) |>
-  summarise(n = n(), avg_wt = mean(weight))
+	guitars |>
+		group_by(type) |>
+			summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
 
 **An alternative (as of `dplyr` 1.1.0):**
 ```{r}
-summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
+	summarise(guitars, n = n(), avg_wt = mean(weight), .by = type)
 ```
 
 ***
 
 **Group by multiple variables.**
 ```{r}
-guitars |>
-  group_by(type, body) |>
-  summarise(n = n(), avg_wt = mean(weight))
+	guitars |>
+		group_by(type, body) |>
+			summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
@@ -290,101 +290,107 @@ guitars |>
 * Notice that the result of the previous command was still grouped by `type`:
 
 ```{r}
-guitars |>
-  group_by(type, body) |>
-  summarise(n = n(), avg_wt = mean(weight)) |>
-  group_vars()
+	guitars |>
+		group_by(type, body) |>
+			summarise(n = n(), avg_wt = mean(weight)) |>
+				group_vars()
 ```
 
 ***
 
 **We can fix it by `.groups`**
 ```{r}
-guitars |>
-  group_by(type, body) |>
-  summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
+	guitars |>
+		group_by(type, body) |>
+			summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
 ```
 
 ***
 
 * Now check the group variables
 ```{r}
-guitars |>
-  group_by(type, body) |>
-  summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
-  group_vars()
+	guitars |>
+		group_by(type, body) |>
+			summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
+				group_vars()
 ```
 
 ***
 
 **An alternative (as of `dplyr` 1.1.0):**
 ```{r}
-guitars |>
-  summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
+	guitars |>
+		summarise(n = n(), avg_wt = mean(weight), .by = c(type, body))
 ```
 
 * There is a small difference though: the result is not grouped.
 
 ```{r}
-guitars |>
-  summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
-  group_vars()
+	guitars |>
+		summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
+			group_vars()
 ```
 
 # Revisiting the Titanic
 
 **Converting a Table to a Tibble**
 ```{r}
-is.array(Titanic)
-dim(Titanic)
-class(Titanic)
-dimnames(Titanic)
+	is.array(Titanic)
+	dim(Titanic)
+	class(Titanic)
+	dimnames(Titanic)
 ```
 
 ***
 
 ```{r}
-Titanic_tbl <- as_tibble(Titanic)
-Titanic_tbl
+	Titanic_tbl <- as_tibble(Titanic)
+	Titanic_tbl
 ```
 
 ***
 
 ```{r}
-Titanic_tbl |> summarize(n = sum(n))
-Titanic_tbl |> group_by(Survived) |> summarize(n = sum(n))
+	Titanic_tbl |>
+		summarize(n = sum(n))
+	Titanic_tbl |>
+		group_by(Survived) |>
+			summarize(n = sum(n))
 ```
 
 ***
 
 ```{r}
-Titanic_tbl |> group_by(Survived) |>
-  summarize(n = sum(n)) |>
-  mutate(prop = n/sum(n))
+	Titanic_tbl |>
+		group_by(Survived) |>
+			summarize(n = sum(n)) |>
+				mutate(prop = n/sum(n))
 ```
 
 * Why does this work?
   - Because `summarize()` peels off the last and only level of grouping before `mutate()` is called. Thus the `sum(n)` in `mutate()` is ungrouped.
 ```{r}
-Titanic_tbl |> group_by(Survived) |>
-  summarize(n = sum(n)) |>
-  group_vars()
+	Titanic_tbl |>
+		group_by(Survived) |>
+			summarize(n = sum(n)) |>
+				group_vars()
 ```
 
 ***
 
 ```{r}
-Titanic_tbl |>
-  group_by(Class, Survived) |>
-  summarize(n = sum(n))
+	Titanic_tbl |>
+		group_by(Class, Survived) |>
+			summarize(n = sum(n))
 ```
 
 ***
 
 ```{r}
-Titanic_tbl |> group_by(Class, Survived) |>
-  summarize(n = sum(n)) |>
-  mutate(prop = n/sum(n))
+	Titanic_tbl |>
+		group_by(Class, Survived) |>
+			summarize(n = sum(n)) |>
+				mutate(prop = n/sum(n))
 ```
 
 * This works because `summarize()` has peeled off the last level of grouping (“Survived”), leaving only grouping by "Class" (see next slide). Thus the `sum(n)` in `mutate` is grouped by “Class”.
@@ -394,9 +400,10 @@ Titanic_tbl |> group_by(Class, Survived) |>
 * Showing the grouping (by “Class”) still remaining after the call to `summarize()`.
 
 ```{r}
-Titanic_tbl |> group_by(Class, Survived) |>
-  summarize(n = sum(n)) |>
-  group_vars()
+	Titanic_tbl |>
+		group_by(Class, Survived) |>
+			summarize(n = sum(n)) |>
+				group_vars()
 ```
 
 * Using `summarize()` with the .by optional argument (new in `dplyr` 1.1.0) only uses transient grouping. For this reason, the last example does not work in the same way if we use .by instead of `group_by()` (see next slide).
@@ -406,18 +413,18 @@ Titanic_tbl |> group_by(Class, Survived) |>
 * This is not what we want:
 
 ```{r}
-Titanic_tbl |>
-  summarize(n = sum(n), .by = c(Class, Survived)) |>
-  mutate(prop = n/sum(n))
+	Titanic_tbl |>
+		summarize(n = sum(n), .by = c(Class, Survived)) |>
+			mutate(prop = n/sum(n))
 ```
 
 ***
 
 * Here’s how to make the `.by` version give the `group_by()` result.
 ```{r}
-Titanic_tbl |>
-  summarize(n = sum(n), .by = c(Class, Survived)) |>
-  mutate(prop = n/sum(n), .by = Class)
+	Titanic_tbl |>
+		summarize(n = sum(n), .by = c(Class, Survived)) |>
+			mutate(prop = n/sum(n), .by = Class)
 ```
   - Is this easier to understand than the `group_by()` approach?
 
@@ -426,70 +433,77 @@ Titanic_tbl |>
 * And how to make the `group_by()` version give the first (unwanted) `.by` result.
   - Just use `ungroup()` to remove all grouping before the `mutate()` step.
 ```{r}
-Titanic_tbl |> group_by(Class, Survived) |>
-  summarize(n = sum(n)) |>
-  ungroup() |>
-  mutate(prop = n/sum(n))
+	Titanic_tbl |>
+		group_by(Class, Survived) |>
+			summarize(n = sum(n)) |>
+				ungroup() |>
+					mutate(prop = n/sum(n))
 ```  
 
 # Pivoting
 Here’s a way to make the data frame look like a table.
 ```{r}
-Titanic_tbl |>
-  group_by(Class, Survived) |>
-  summarize(n = sum(n)) |>
-  mutate(prop = n/sum(n)) |>
-  pivot_wider(names_from = Survived, values_from = c(n, prop))
+	Titanic_tbl |>
+		group_by(Class, Survived) |>
+			summarize(n = sum(n)) |>
+				mutate(prop = n/sum(n)) |>
+					pivot_wider(names_from = Survived, values_from = c(n, prop))
 ```  
 
 ***
 
 And a variation, pivoting and then adding a single column of proportions.
 ```{r}
-Titanic_tbl |>
-  summarize(n = sum(n), .by = c(Class, Survived)) |>
-  pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
-  mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
+	Titanic_tbl |>
+		summarize(n = sum(n), .by = c(Class, Survived)) |>
+			pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
+				mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
 ``` 
 
 
 # Example: Run Length Encoding a Sequence of Coin Tosses
   Question: Suppose we toss a fair coin 100 times. What is the probability of seeing at least one run of 6 or more consective heads or tails?
 ```{r}
-x <- sample(c("H","T"), 100, replace = TRUE) 
-noquote(x)
-xr <- rle(x)
-xr
+	x <- sample(c("H","T"), 100, replace = TRUE) 
+	noquote(x)
+	xr <- rle(x)
+	xr
 ```
 There is no `as_tibble()` method for class rle, but this works:
 ```{r}
-library(tidyverse)
-xr_df <- as_tibble(unclass(xr))
-xr_df |> summarize(max_run = max(lengths)) # Length of longest run overall.
+	library(tidyverse)
+	xr_df <- xr |>
+		unclass() |>
+			as_tibble()
+	
+	xr_df |>
+		summarize(max_run = max(lengths)) # Length of longest run overall.
 
-xr_df |> summarize(max_run = max(lengths), .by = values) # Longest runs of H and T.
+	xr_df |>
+		summarize(max_run = max(lengths), .by = values) # Longest runs of H and T.
 ```
 Simulation
 ```{r}
-nsim <- 10000; ntosses <- 100
-maxrl <- vector("integer", length = nsim) 
-for (i in 1:nsim) {
-  x <- sample(c("H","T"), ntosses, replace = TRUE) 
-  xr <- rle(x)
-  maxrl[i] <- as_tibble(unclass(xr)) |>
-    group_by(values) |>
-    summarise(max_run = max(lengths)) |>
-    filter(values == "H") |>
-    pull(max_run)
-  #maxrl[i] <- max(xr$lengths)
-}
+	nsim <- 10000; ntosses <- 100
+	maxrl <- vector("integer", length = nsim) 
+	for (i in 1:nsim) {
+		x <- sample(c("H","T"), ntosses, replace = TRUE) 
+		xr <- rle(x)
+		maxrl[i] <- as_tibble(unclass(xr)) |>
+			group_by(values) |>
+				summarise(max_run = max(lengths)) |>
+					filter(values == "H") |>
+						pull(max_run)
+		#maxrl[i] <- max(xr$lengths)
+		}
 ```
 Now we plot the maximum run length 
 ```{r}
-df <- tibble(maxrl) |>
-  count(maxrl) |>     # similar to summarize(n = n(), .by = maxrl)
-  mutate(prop = n / sum(n))
-slice_head(df, n = 10)
+	df <- tibble(maxrl) |>
+		# similar to summarize(n = n(), .by = maxrl)
+		count(maxrl) |>
+			mutate(prop = n / sum(n))
+	slice_head(df, n = 10)
 ```
 
 * Using a hint from the help for `geom_segment()` to get a `type = "h"` plot with ggplot2.
@@ -497,9 +511,9 @@ slice_head(df, n = 10)
 ```{r}
 #| fig-alt: "Segment plot of the estimated distribution of maximum run length from the simulation."
 
-ggplot(df, aes(x = maxrl, y = prop)) +
-  geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 
-  labs(title = "Estimated distribution of maximum run length.",
-       x = "Maximum Run Length", 
-       y = "Relative Frequency")
+	ggplot(df, aes(x = maxrl, y = prop)) +
+		geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 
+			labs(title = "Estimated distribution of maximum run length.",
+		x = "Maximum Run Length", 
+		y = "Relative Frequency")
 ```

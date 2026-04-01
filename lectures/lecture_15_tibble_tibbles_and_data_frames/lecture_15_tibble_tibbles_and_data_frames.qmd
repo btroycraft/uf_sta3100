@@ -36,44 +36,44 @@ The `tibble` package is loaded by the `tidyverse` meta-package.
 ```{r}
 #| echo: true
 
-library(tibble)   # Not needed if you have run library("tidyverse") instead
+	library(tibble)   # Not needed if you have run library("tidyverse") instead
 
-mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
-model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
-           "J-100 Xtra", "M-21")
-serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
-type <- rep(c("electric", "acoustic"), times = c(5, 2))
-body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
-w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
-case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
 
-guitars_df <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
-guitars_tbl <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
+	guitars_df <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+	guitars_tbl <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
 ```
 ***
 
 ```{r}
 #| echo: true
 
-guitars_df
+	guitars_df
 ```
 ***
 ```{r}
 #| echo: true
 
-guitars_tbl
+	guitars_tbl
 ```
 ***
 ```{r}
 #| echo: true
 
-attributes(guitars_tbl)
+	attributes(guitars_tbl)
 ```
 ***
 ```{r}
 #| echo: true
 
-class(guitars_tbl)
+	class(guitars_tbl)
 ```
 
 * `tbl` indicates a generic `tibble` (for S3 object system purposes)
@@ -161,8 +161,8 @@ Behavior:
 ```{r}
 #| echo: true
 
-guitars_df[, 5]
-guitars_tbl[, 5]
+	guitars_df[, 5]
+	guitars_tbl[, 5]
 ```
 ***
 
@@ -170,8 +170,8 @@ Even in this case:
 ```{r}
 #| echo: true
 
-guitars_df[1, 5]
-guitars_tbl[1, 5]
+	guitars_df[1, 5]
+	guitars_tbl[1, 5]
 ```
 ***
 
@@ -179,15 +179,15 @@ guitars_tbl[1, 5]
 ```{r}
 #| echo: true
 
-names(guitars_df)
-guitars_df$mo
+	names(guitars_df)
+	guitars_df$mo
 ```
 
 Although not with `[[`:
 ```{r}
 #| echo: true
 
-guitars_df[["mo"]]
+	guitars_df[["mo"]]
 ```
 ***
 
@@ -195,8 +195,8 @@ guitars_df[["mo"]]
 ```{r}
 #| echo: true
 
-names(guitars_tbl)
-guitars_tbl$mo
+	names(guitars_tbl)
+	guitars_tbl$mo
 ```
 
 # `vignette("tibble")`
@@ -208,14 +208,14 @@ guitars_tbl$mo
 ```{r}
 #| echo: true
 
-tibble(x = 1:3, y = list(1:5, 1:10, 1:20))
+	tibble(x = 1:3, y = list(1:5, 1:10, 1:20))
 ```
 
 And not so easy with ordinary data frames:
 ```{r}
 #| echo: true
 
-data.frame(x = 1:3, y = list(1:5, 1:10, 1:20))
+	data.frame(x = 1:3, y = list(1:5, 1:10, 1:20))
 ```
 
 ***
@@ -223,8 +223,8 @@ Another example:
 ```{r}
 #| echo: true
 
-tibble(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
-data.frame(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
+	tibble(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
+	data.frame(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
 ```
 ***
 
@@ -232,14 +232,14 @@ So this what `data.frame()` is doing (and was trying to do in the first example)
 ```{r}
 #| echo: true
 
-data.frame(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
+	data.frame(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
 ```
 
 Tibbles are lazy and surly (in a good way?):
 ```{r}
 #| echo: true
 
-tibble(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
+	tibble(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
 ```
 
 ***
@@ -251,7 +251,7 @@ Finally, here are two ways to get a list column in an ordinary data frame.
 ```{r}
 #| echo: true
 
-data.frame(x = 1:2, y = I(list(num = 1:2, ltr = letters[1:4])))
+	data.frame(x = 1:2, y = I(list(num = 1:2, ltr = letters[1:4])))
 ```
 
 * Add the list column to an existing data frame:
@@ -259,9 +259,9 @@ data.frame(x = 1:2, y = I(list(num = 1:2, ltr = letters[1:4])))
 ```{r}
 #| echo: true
 
-df <- data.frame(x = 1:2)
-df$y <- list(num = 1:2, ltr = letters[1:4])
-df
+	df <- data.frame(x = 1:2)
+	df$y <- list(num = 1:2, ltr = letters[1:4])
+	df
 ```
 
 ***
@@ -282,13 +282,13 @@ You can use non-syntactic names (not recommended), but you must quote them with 
 ```{r}
 #| echo: true
 
-_x <- 1:5
+	_x <- 1:5
 ```
 ```{r}
 #| echo: true
 
-`_x` <- 1:5
-`_x`
+	`_x` <- 1:5
+	`_x`
 ```
 
 ***
@@ -296,13 +296,13 @@ _x <- 1:5
 ```{r}
 #| echo: true
 
-x <- data.frame(`crazy name` = 1)
-x
+	x <- data.frame(`crazy name` = 1)
+	x
 
-y <- tibble(`crazy name` = 1)
-y
+	y <- tibble(`crazy name` = 1)
+	y
 
-y$`crazy name`
+	y$`crazy name`
 ```
 
 ***
@@ -311,10 +311,10 @@ y$`crazy name`
 ```{r}
 #| echo: true
 
-lst <- list(l = letters[1:3], n = 1:3)
-tibble(lst)
+	lst <- list(l = letters[1:3], n = 1:3)
+	tibble(lst)
 
-as_tibble(lst)
+	as_tibble(lst)
 ```
 
 # References

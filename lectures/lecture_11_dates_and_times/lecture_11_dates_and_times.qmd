@@ -23,11 +23,11 @@ execute:
 
 # Dates
 
-![](p1.png)
+![Illustration introducing calendar dates and times](p1.png)
 
 ```{r}
-today <- Sys.Date()
-today
+	today <- Sys.Date()
+	today
 ```
 Dates and Times are **Hard**:
 
@@ -42,10 +42,10 @@ Read the R help for `as.Date`.
 ***
 
 ```{r}
-  today
-  attributes(today)
-  typeof(today)       # Internal type/storage mode
-  unclass(today)      # Removes class attribute
+	today
+	attributes(today)
+	typeof(today)       # Internal type/storage mode
+	unclass(today)      # Removes class attribute
 ```
 
 ***
@@ -55,14 +55,14 @@ The value of the double represents the number of days _since_ 1970-01-01.
 * 1970-01-01 = Unix day zero
 
 ```{r}
-  day0 <- as.Date("1970-01-01")           # Converts character string to Date. 
-  as.numeric(day0)                        # as.numeric() strips off attributes
-  as.numeric(as.Date("1970-02-01"))
-  as.numeric(as.Date("1959-02-03"))       # the day the music died
+	day0 <- as.Date("1970-01-01")           # Converts character string to Date. 
+	as.numeric(day0)                        # as.numeric() strips off attributes
+	as.numeric(as.Date("1970-02-01"))
+	as.numeric(as.Date("1959-02-03"))       # the day the music died
 ```
 
 ***
-![](p2.png)
+![XKCD comic about historical dates and default epoch dates](p2.png)
 
 See Explain [XKCD: 2676: Historical Dates](https://www.explainxkcd.com/wiki/index.php/2676:_Historical_Dates) and the examples section of `?as.Date`
 
@@ -75,22 +75,22 @@ becomes 1899-12-30.
 
 * Dates can be incremented:
 ```{r}
-today + 7
+	today + 7
 ```
 
 * `ISOdate()` creates date-times from numeric year, month, and day.
   - Useful if year, month, day stored in separate numeric columns.
   - Can convert to date using `as.Date()`.
 ```{r}
-ISOdate(2020:2022, 12, 31)        # Month and day are recycled here.
-as.Date(ISOdate(2020:2022, 12, 31))
+	ISOdate(2020:2022, 12, 31)        # Month and day are recycled here.
+	as.Date(ISOdate(2020:2022, 12, 31))
 ```
 
 # Handling Other Date Formats in Base-R
 ```{r}
-as.Date("02/03/1959", format = "%m/%d/%Y")    # Bad
-as.Date("1-28-86", format = "%m-%d-%y")       # Bad, awful, and terrible.
-as.Date("9-11-01", format = "%m-%d-%y")       # Even worse?
+	as.Date("02/03/1959", format = "%m/%d/%Y")    # Bad
+	as.Date("1-28-86", format = "%m-%d-%y")       # Bad, awful, and terrible.
+	as.Date("9-11-01", format = "%m-%d-%y")       # Even worse?
 ```
 See `?strptime` for more information about format strings.
 
@@ -124,56 +124,56 @@ base-R provides two ways of storing date-time information, POSIXct, and POSIXlt.
 
 POSIXct is simplest.
 ```{r}
-now <- Sys.time()
-now
+	now <- Sys.time()
+	now
 ```
     
 ***
 ```{r}
-now
-attributes(now)
-typeof(now)
-unclass(now)
+	now
+	attributes(now)
+	typeof(now)
+	unclass(now)
 ```  
 
 ***
 The numeric value is the number of seconds since 1970-01-01.
 ```{r}
-time0 <- as.POSIXct("1970-01-01", tz = "UTC") # Convert character string to date-time. 
-time0
-as.numeric(time0)
+	time0 <- as.POSIXct("1970-01-01", tz = "UTC") # Convert character string to date-time. 
+	time0
+	as.numeric(time0)
 ```
 
 That’s midnight in "[Coordinated Universal Time](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)" (successor to GMT).  
 This is one second later:
 ```{r}
-as.numeric(as.POSIXct("1970-01-01 00:00:01", tz = "UTC"))
+	as.numeric(as.POSIXct("1970-01-01 00:00:01", tz = "UTC"))
 ```
 
 ***
 
 ```{r}
-as.numeric(as.POSIXct("1970-01-01 00:01", tz = "UTC"))   # 1 minute later
-as.numeric(as.POSIXct("1970-01-01 01:00", tz = "UTC"))   # 1 hour later
-as.numeric(as.POSIXct("1970-01-01"))      # Midnight in my time zone
+	as.numeric(as.POSIXct("1970-01-01 00:01", tz = "UTC"))   # 1 minute later
+	as.numeric(as.POSIXct("1970-01-01 01:00", tz = "UTC"))   # 1 hour later
+	as.numeric(as.POSIXct("1970-01-01"))      # Midnight in my time zone
 ```
 
 What’s your system’s time zone?
 
 ```{r}
-Sys.timezone()
+	Sys.timezone()
 ```
 ***
 
 Times can be incremented too:
 ```{r}
-now
-now + 1
+	now
+	now + 1
 ```
 
 ***
 
-![](p3.png)
+![XKCD comic about Y2K and the Year 2038 problem](p3.png)
 
 See:  
 
@@ -183,10 +183,10 @@ See:
   - Many operating system and applications (R included) still use 32 bit integers.
   - $2^{31} −1=2,147,483,647$
 ```{r}
-.Machine$integer.max
-as.POSIXct(.Machine$integer.max,
-           origin="1970-01-01",
-           tz="UTC")
+	.Machine$integer.max
+	as.POSIXct(.Machine$integer.max,
+		origin="1970-01-01",
+		tz="UTC")
 ```
 
 ***
@@ -234,27 +234,27 @@ as.POSIXlt(x, tz = "", format,
 # Durations
 Durations represent the amount of time between dates or date-times and are stored in `difftimes`.
 ```{r}
-one_week <- as.difftime(1, units = "weeks")
-one_week
-typeof(one_week)
+	one_week <- as.difftime(1, units = "weeks")
+	one_week
+	typeof(one_week)
 ```
 
 ***
 ```{r}
-attributes(one_week)
-as.numeric(one_week)
-one_week_days <- as.difftime(7, units = "days")
-one_week_days
+	attributes(one_week)
+	as.numeric(one_week)
+	one_week_days <- as.difftime(7, units = "days")
+	one_week_days
 ```
 
 ***    
 
 
 ```{r}
-as.numeric(one_week_days)
-one_week + one_week_days
-today - as.Date("1986-01-28")
-difftime(today, as.Date("1986-01-28"), units = "weeks")
+	as.numeric(one_week_days)
+	one_week + one_week_days
+	today - as.Date("1986-01-28")
+	difftime(today, as.Date("1986-01-28"), units = "weeks")
 ```
 
 ***
@@ -277,9 +277,9 @@ Note:
     
 # Other Formats
 ```{r}
-as.difftime("3:20", format = "%H:%M")
-as.difftime("3:20", format = "%M:%S")
-as.difftime("3:20", format = "%M:%S", units = "secs")
+	as.difftime("3:20", format = "%H:%M")
+	as.difftime("3:20", format = "%M:%S")
+	as.difftime("3:20", format = "%M:%S", units = "secs")
 ```    
 
 # An Aside: `is.numeric()`
@@ -302,20 +302,20 @@ Thus `is.numeric(x)` returns true if and only if
 
 Dates are stored as `double`, but fail the 2nd test (`today + tomorrow = ???`):
 ```{r}
-is.double(today)
-is.numeric(today)
+	is.double(today)
+	is.numeric(today)
 ```
 
 ***
 Same for date-times:
 ```{r}
-is.double(now)
-is.numeric(now)
+	is.double(now)
+	is.numeric(now)
 ```
 ***
 
 Same for durations (why?):
 ```{r}
-is.double(one_week)
-is.numeric(one_week)
+	is.double(one_week)
+	is.numeric(one_week)
 ```

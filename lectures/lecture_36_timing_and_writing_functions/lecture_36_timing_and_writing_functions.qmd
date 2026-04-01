@@ -34,32 +34,32 @@ behalf of the current process
   - `elapsed`: the wall clock time taken
 
 ```{r}
-nsim <- 10000 
-ntosses <- 100
+	nsim <- 10000 
+	ntosses <- 100
 ```
 
 * Pre-allocating the `maxrl` vector.
 
 ```{r}
-system.time({
-  maxrl <- vector(length = nsim) 
-  for (i in 1:nsim) {
-    x <- sample(c("H","T"), ntosses, replace = TRUE) 
-    xr <- rle(x)
-    maxrl[i] <- max(xr$lengths)
-  }})
+	system.time({
+		maxrl <- vector(length = nsim) 
+		for (i in 1:nsim) {
+		x <- sample(c("H","T"), ntosses, replace = TRUE) 
+		xr <- rle(x)
+		maxrl[i] <- max(xr$lengths)
+		}})
 ```
 
 * Building the `maxrl` vector as we go.
 
 ```{r}
-system.time({ 
-  maxrl <- NULL
-  for (i in 1:nsim) {
-    x <- sample(c("H","T"), ntosses, replace = TRUE) 
-    xr <- rle(x)
-    maxrl <- c(maxrl, max(xr$lengths))
-  }})
+	system.time({ 
+		maxrl <- NULL
+		for (i in 1:nsim) {
+		x <- sample(c("H","T"), ntosses, replace = TRUE) 
+		xr <- rle(x)
+		maxrl <- c(maxrl, max(xr$lengths))
+		}})
 ```
 
 * Generating all $10,000 \times 100 = 1,000,000$ tosses at once.
@@ -67,11 +67,11 @@ system.time({
 * Using `apply()` to get the 10,000 maximum run lengths.
 
 ```{r}
-system.time({
-  sims <- matrix(sample(c("H","T"), ntosses * nsim, replace = TRUE), 
-                 ncol = nsim)
-  maxrl <- apply(sims, 2, function(x) max(rle(x)$lengths))
-  })
+	system.time({
+		sims <- matrix(sample(c("H","T"), ntosses * nsim, replace = TRUE), 
+		ncol = nsim)
+		maxrl <- apply(sims, 2, function(x) max(rle(x)$lengths))
+		})
 ```
 
 # Defining an R Function
@@ -81,22 +81,22 @@ Recall
 * A simple R function can be defined on one line.
 
 ```{r}
-incr <- function(x) x + 1 
-incr(1:5)
+	incr <- function(x) x + 1 
+	incr(1:5)
 ```
 
 * Function calls can be nested (or piped).
 
 ```{r}
-incr(incr(1:5))
+	incr(incr(1:5))
 ```
 
 * Arguments may have default values which may be overridden when the function is called.
 
 ```{r}
-incr <- function(x, a = 1)  x + a 
-incr(1:5)
-incr(1:5, a = 3)
+	incr <- function(x, a = 1)  x + a 
+	incr(1:5)
+	incr(1:5, a = 3)
 ```
 
 * For more complicated functions, the body is enclosed in curly braces `{...}`.
@@ -113,38 +113,38 @@ Let’s write an R function to calculate the longest run in a sequence and optio
 to decide whether to perform a default operation or something else.
 
 ```{r}
-fmaxrl <- function(x, outcome = NULL) { 
-  xr <- rle(x)
-  if (is.null(outcome)) { 
-    res <- max(xr$lengths)
-    } else {
-      res <- max(xr$lengths[xr$values == outcome])
-  }
-  res 
-}
+	fmaxrl <- function(x, outcome = NULL) { 
+		xr <- rle(x)
+		if (is.null(outcome)) { 
+		res <- max(xr$lengths)
+		} else {
+		res <- max(xr$lengths[xr$values == outcome])
+		}
+		res 
+		}
 ```
 
 * Because there was no further calculation to do after `if() {...} else {...}`, the previous function definition could be abbreviated slightly ...
 
 ```{r}
-fmaxrl <- function(x, outcome = NULL) { 
-  xr <- rle(x)
-  if (is.null(outcome)) { 
-    max(xr$lengths)
-  } else {
-    max(xr$lengths[xr$values == outcome])
-  } 
-}
+	fmaxrl <- function(x, outcome = NULL) { 
+		xr <- rle(x)
+		if (is.null(outcome)) { 
+		max(xr$lengths)
+		} else {
+		max(xr$lengths[xr$values == outcome])
+		} 
+		}
 ```
 
 * ... but this is harder to understand, so I wouldn’t do it this way.
 
 ```{r}
-x <- sample(c("H","T"), 100, replace = TRUE) 
-fmaxrl(x)
-fmaxrl(x, outcome = "H")
-fmaxrl(x, outcome = "T")
-fmaxrl(x, outcome = 5)       # May wish to handle this more gracefully.
+	x <- sample(c("H","T"), 100, replace = TRUE) 
+	fmaxrl(x)
+	fmaxrl(x, outcome = "H")
+	fmaxrl(x, outcome = "T")
+	fmaxrl(x, outcome = 5)       # May wish to handle this more gracefully.
 ```
 
 ***
@@ -152,30 +152,30 @@ fmaxrl(x, outcome = 5)       # May wish to handle this more gracefully.
 **Nesting if-else Statements**
 
 ```{r}
-fmaxrl <- function(x, outcome = NULL) { 
-  xr <- rle(x)
-  if (is.null(outcome)) { 
-    res <- max(xr$lengths)
-  } else {
-    eq_to_outcome <- (xr$values == outcome) 
-    if (any(eq_to_outcome)) {
-      res <- max(xr$lengths[eq_to_outcome]) 
-    } else {
-      res <- 0 
-    }
-  }
-  res 
-}
+	fmaxrl <- function(x, outcome = NULL) { 
+		xr <- rle(x)
+		if (is.null(outcome)) { 
+		res <- max(xr$lengths)
+		} else {
+		eq_to_outcome <- (xr$values == outcome) 
+		if (any(eq_to_outcome)) {
+		res <- max(xr$lengths[eq_to_outcome]) 
+		} else {
+		res <- 0 
+		}
+		}
+		res 
+		}
 ```
 
 ```{r}
-fmaxrl(x)
-fmaxrl(x, outcome = "H")
-fmaxrl(x, outcome = "T")
-fmaxrl(x, outcome = 5)
-mean(apply(sims, 2, fmaxrl) >= 6)
-mean(apply(sims, 2, fmaxrl, outcome = "H") >= 6)
-mean(apply(sims, 2, fmaxrl, outcome = "T") >= 6)   # Q: Why not equal to answer for "H"?
+	fmaxrl(x)
+	fmaxrl(x, outcome = "H")
+	fmaxrl(x, outcome = "T")
+	fmaxrl(x, outcome = 5)
+	mean(apply(sims, 2, fmaxrl) >= 6)
+	mean(apply(sims, 2, fmaxrl, outcome = "H") >= 6)
+	mean(apply(sims, 2, fmaxrl, outcome = "T") >= 6)   # Q: Why not equal to answer for "H"?
 ```
 
 Q: What is the estimated probability that in 100 tosses we observe at least one run of 6 or more heads **and** at least one run of 6 or more tails?
@@ -188,14 +188,14 @@ Q: What is the estimated probability that in 100 tosses we observe at least one 
 Here is better version of the `fmaxrl` function.
 
 ```{r}
-fmaxrl <- function(x, outcome = NULL) { 
-  xr <- rle(x)
-  if (!is.null(outcome)) {
-    is_outcome <- (xr$values == outcome)
-    xr$lengths <- xr$lengths[is_outcome] 
-  }
-  if (length(xr$lengths) == 0L) 0 else max(xr$lengths)  # Return 0 or max(xr$lengths)
-}
+	fmaxrl <- function(x, outcome = NULL) { 
+		xr <- rle(x)
+		if (!is.null(outcome)) {
+		is_outcome <- (xr$values == outcome)
+		xr$lengths <- xr$lengths[is_outcome] 
+		}
+		if (length(xr$lengths) == 0L) 0 else max(xr$lengths)  # Return 0 or max(xr$lengths)
+		}
 ```
 
 

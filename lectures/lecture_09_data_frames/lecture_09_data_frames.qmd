@@ -26,28 +26,28 @@ execute:
 # Data Frames
 Data frames are usually created by reading data from a file, such as a spreadsheet, but they can be created manually using `data.frame()`.  
 ```{r}
-mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
 
-model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
-           "J-100 Xtra", "M-21")
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
 
-serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
 
-type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
 
-body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
 
-w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
 
-case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
 ```
 
 \newpage
 
 ```{r}
-  guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
-  
-  guitars
+	guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+	
+	guitars
 ```
 
 * Notice the column names: data frames always have column names (unlike matrices).
@@ -56,28 +56,28 @@ case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
 \newpage
 
 ```{r}
-summary(guitars)
+	summary(guitars)
 ```
 
 \newpage
 
 # A Closer Look
 ```{r}
-  str(guitars) 
+	str(guitars) 
 ```
 
 ```{r}
-  attributes(guitars)
+	attributes(guitars)
 ```
 
 # Indexing Data Frames
 **A data frame is NOT a matrix ...**
 ```{r}
-  is.matrix(guitars)
+	is.matrix(guitars)
 ```
 ... and while there is no explicit `dim` attribute (previous slide), we still get ...
 ```{r}
-  dim(guitars)
+	dim(guitars)
 ```
 ... and you can ...
 
@@ -85,31 +85,31 @@ summary(guitars)
 
 **Index a Data Frame Like a Matrix**
 ```{r}
-  guitars[2, 6]
-  # Or guitars[2, "w_case_kg"]
-  guitars[2, ]
-  guitars[, 6]
+	guitars[2, 6]
+	# Or guitars[2, "w_case_kg"]
+	guitars[2, ]
+	guitars[, 6]
 ```
 
 ```{r}
-  guitars[2:3, ]
-  guitars[, c(2, 6, 7)]
+	guitars[2:3, ]
+	guitars[, c(2, 6, 7)]
 ```
 
 * Note however that `guitars[2, 6]` and `guitars[, 6]` returned vectors
 ```{r}
-  str(guitars[2, 6])
-  str(guitars[, 6])
+	str(guitars[2, 6])
+	str(guitars[, 6])
 ```
 while the other examples returned a data frame.  
 This is the default behavior for data frames if indexing returns a single column (or part of a single column).
 
 * You can force `guitars[2, 6]` and `guitars[, 6]` to return a (single-column) data frame with `drop = TRUE`.
 ```{r}
-  guitars[2, 6, drop = FALSE]
-  # Returns a data frame with 1 row and 1 column.
-  guitars[, 6, drop = FALSE]
-  # Returns a data frame with 1 column.
+	guitars[2, 6, drop = FALSE]
+	# Returns a data frame with 1 row and 1 column.
+	guitars[, 6, drop = FALSE]
+	# Returns a data frame with 1 column.
 ```
 
 \newpage
@@ -122,62 +122,62 @@ This is the default behavior for data frames if indexing returns a single column
 
 * You can also assign row names, but this is usually discouraged:
 ```{r}
-  guitars2 <- guitars
-  rownames(guitars2) <- guitars2$serial
-  guitars2$serial <- NULL
-  
-  rownames(guitars2)
-  colnames(guitars2)
+	guitars2 <- guitars
+	rownames(guitars2) <- guitars2$serial
+	guitars2$serial <- NULL
+	
+	rownames(guitars2)
+	colnames(guitars2)
 ```    
 
 ```{r}
-  dimnames(guitars2)
-  guitars2["EJ15230", c("mfr", "model", "type")]
+	dimnames(guitars2)
+	guitars2["EJ15230", c("mfr", "model", "type")]
 ```  
 
 ```{r}
-  guitars2
-  str(guitars2)
+	guitars2
+	str(guitars2)
 ```
 
 \newpage
 
 # Surprise: A Data Frame is a List (of It’s Columns)
 ```{r}
-  is.list(guitars)
-  names(guitars)
+	is.list(guitars)
+	names(guitars)
 ```
 So you can also index a data frame like a list (next slide).
 
 ***
 
 ```{r}
-  guitars[5]      # Or guitars["w_case_kg"]
-  guitars[[5]]    # Or guitars[["w_case_kg"]]
-  guitars$w_case_kg
+	guitars[5]      # Or guitars["w_case_kg"]
+	guitars[[5]]    # Or guitars[["w_case_kg"]]
+	guitars$w_case_kg
 ```
 
 ***
 
 Again, note the difference:
 ```{r}
-  str(guitars[5])
-  str(guitars[[5]])
+	str(guitars[5])
+	str(guitars[[5]])
 ```
 
 \newpage
 
 # Two Ways of Getting the Same Thing
 ```{r}
-  guitars[c(1,5)]
-  guitars[, c(1,5)]
+	guitars[c(1,5)]
+	guitars[, c(1,5)]
 ```
 Q. What would happen if you did this with a matrix?
 
 ***
 ```{r}
-  guitars[[c(1,5)]]
-  # Same as guitars[[1]][[5]]. Returns 5th element of 1st column.
+	guitars[[c(1,5)]]
+	# Same as guitars[[1]][[5]]. Returns 5th element of 1st column.
 ```
 
 Q. What happens if you try this with a matrix? _It’s an error._   
@@ -192,9 +192,9 @@ Q. What happens if you try this with an ordinary list (a list that isn’t a dat
 * The default changed to `stringsAsFactors = FALSE` in R 4.0 (April 24, 2020).
 * Now it is up to you to convert character vectors to factors if you need to, e.g.,
 ```{r}
-  guitars$type <- factor(guitars$type)
-  guitars$body <- factor(guitars$body)
-  ## guitars$mfr <- factor(guitars$mfr) # Might do this too?
+	guitars$type <- factor(guitars$type)
+	guitars$body <- factor(guitars$body)
+	## guitars$mfr <- factor(guitars$mfr) # Might do this too?
 ```
 
 * If you want the old behavior (doubtful), set `stringsAsFactors = FALSE`.

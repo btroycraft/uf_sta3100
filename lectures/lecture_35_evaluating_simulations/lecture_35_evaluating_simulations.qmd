@@ -42,34 +42,34 @@ Each toss is coded as
 * `0` if the toss results in a tail.
 
 ```{r}
-simtosses <- function(nsim, ntoss, probH = 1/2) { 
-  matrix(sample(0:1, ntoss * nsim, replace = TRUE,
-                prob = c(1 - probH, probH)), 
-         ncol = nsim)
-}
-ntoss <- 100
-nsim <- 10000
-sims <- simtosses(nsim, ntoss)
+	simtosses <- function(nsim, ntoss, probH = 1/2) { 
+		matrix(sample(0:1, ntoss * nsim, replace = TRUE,
+		prob = c(1 - probH, probH)), 
+		ncol = nsim)
+		}
+	ntoss <- 100
+	nsim <- 10000
+	sims <- simtosses(nsim, ntoss)
 ```
 
 Recall this function:
 
 ```{r}
-fmaxrl <- function(x, outcome = NULL) { 
-  xr <- rle(x)
-  if (!is.null(outcome)) {
-    is_outcome <- (xr$values == outcome) 
-    xr$lengths <- xr$lengths[is_outcome]
-  }
-  if (length(xr$lengths) == 0L) 0 else max(xr$lengths) 
-}
+	fmaxrl <- function(x, outcome = NULL) { 
+		xr <- rle(x)
+		if (!is.null(outcome)) {
+		is_outcome <- (xr$values == outcome) 
+		xr$lengths <- xr$lengths[is_outcome]
+		}
+		if (length(xr$lengths) == 0L) 0 else max(xr$lengths) 
+		}
 ```
 
 An estimate of the probability of at least one run of length 6 or more in 100 tosses of a fair coin.
 
 ```{r}
-phat <- mean(apply(sims, 2, fmaxrl) >= 6) 
-phat
+	phat <- mean(apply(sims, 2, fmaxrl) >= 6) 
+	phat
 ```
 
 # How Accurate Are Simulation-Based Estimators?
@@ -150,8 +150,8 @@ $$
 
 `binom.test()`
 ```{r}
-x <- sum(apply(sims, 2, fmaxrl) >= 6)
-binom.test(x, nsim)          # Args are number of successes and number of trials.
+	x <- sum(apply(sims, 2, fmaxrl) >= 6)
+	binom.test(x, nsim)          # Args are number of successes and number of trials.
 ```
 * Does _exact_ test (no normal approx). Default null hypothesis is $p=1/2$.
 * CI does not agree exactly with ours, but very close with $n$ = 10,000.
@@ -160,9 +160,9 @@ binom.test(x, nsim)          # Args are number of successes and number of trials
 
 `prop.test()`
 ```{r}
-x <- sum(apply(sims, 2, fmaxrl) >= 6) 
-prop.test(x, nsim)
-prop.test(x, nsim)$conf.int
+	x <- sum(apply(sims, 2, fmaxrl) >= 6) 
+	prop.test(x, nsim)
+	prop.test(x, nsim)$conf.int
 ```
 
 # Estimating the Mean Maximum Run Length
@@ -178,32 +178,32 @@ $$
 \text{se}(\hat{\mu}) = \frac{\hat{\sigma}}{\sqrt{n}}
 $$
 ```{r}
-x <- apply(sims, 2, fmaxrl) 
-muhat <- mean(x)
-muhat
-sigmahat <- sd(x) 
-sigmahat
-sigmahat / sqrt(nsim)
-muhat + qnorm(c(0.025, 0.975)) * sigmahat / sqrt(nsim)
-t.test(x)
-t.test(x)$conf.int
+	x <- apply(sims, 2, fmaxrl) 
+	muhat <- mean(x)
+	muhat
+	sigmahat <- sd(x) 
+	sigmahat
+	sigmahat / sqrt(nsim)
+	muhat + qnorm(c(0.025, 0.975)) * sigmahat / sqrt(nsim)
+	t.test(x)
+	t.test(x)$conf.int
 ```
 
 # What Happens With a Biased Coin?
 
 ```{r}
-nsim <- 10000
-ntoss <- 100
-pH <- c(0.5, 0.6, 0.7, 0.8, 0.9)
-res <- matrix(nrow = nsim, ncol = length(pH)) 
-colnames(res) <- pH
-for (i in seq_along(pH)) {
-  res[, i] <- apply(simtosses(nsim, ntoss, probH = pH[i]), 2, fmaxrl) 
-}
-muhat <- apply(res, 2, mean) 
-sigmahat <- apply(res, 2, sd) 
-se.muhat <- sigmahat / sqrt(nsim) 
-round(rbind(muhat, se.muhat), 3)
+	nsim <- 10000
+	ntoss <- 100
+	pH <- c(0.5, 0.6, 0.7, 0.8, 0.9)
+	res <- matrix(nrow = nsim, ncol = length(pH)) 
+	colnames(res) <- pH
+	for (i in seq_along(pH)) {
+		res[, i] <- apply(simtosses(nsim, ntoss, probH = pH[i]), 2, fmaxrl) 
+		}
+	muhat <- apply(res, 2, mean) 
+	sigmahat <- apply(res, 2, sd) 
+	se.muhat <- sigmahat / sqrt(nsim) 
+	round(rbind(muhat, se.muhat), 3)
 ```
 
 ***
@@ -211,7 +211,7 @@ round(rbind(muhat, se.muhat), 3)
 **What Should We Expect to Observe?**
 
 ```{r}
-apply(res, 2, quantile, probs = c(0, 0.05, 0.25, 0.5, 0.75, 0.95, 1))
+	apply(res, 2, quantile, probs = c(0, 0.05, 0.25, 0.5, 0.75, 0.95, 1))
 ```
 
 
@@ -219,10 +219,10 @@ apply(res, 2, quantile, probs = c(0, 0.05, 0.25, 0.5, 0.75, 0.95, 1))
 #| fig-cap: "Maximum run lengths in 10,000 simulations of 100 tosses of a biased coin."
 #| fig-alt: "Maximum run lengths in 10,000 simulations of 100 tosses of a biased coin."
 
-opar <- par(mar = c(5.1, 4.1, 1.1, 1.1)) 
-boxplot(res, horizontal = TRUE,
-        xlab = "Maximum Run Length", ylab = "Probability of Heads") 
-par(opar)
+	opar <- par(mar = c(5.1, 4.1, 1.1, 1.1)) 
+	boxplot(res, horizontal = TRUE,
+		xlab = "Maximum Run Length", ylab = "Probability of Heads") 
+	par(opar)
 ```
 
 ***
@@ -231,11 +231,11 @@ par(opar)
 
 With the probability of heads set to 0.9, the probability of getting 100 heads in 100 (independent) tosses of the (biased) coin is pretty small.
 ```{r}
-0.9^100
+	0.9^100
 ```
 
 However, if we repeat the experiment 10,000 times, the probability that we get 100 heads at least once is not so small.
 
 ```{r}
-1 - (1 - 0.9^100)^10000
+	1 - (1 - 0.9^100)^10000
 ```

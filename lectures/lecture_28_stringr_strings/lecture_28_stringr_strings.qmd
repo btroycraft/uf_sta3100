@@ -34,22 +34,22 @@ execute:
 * So create strings with double or single quotes. Double quotes preferred.
 
 ```{r}
-string1 <- "Hello World!" 
-string1
+	string1 <- "Hello World!" 
+	string1
 ```
 
 * You can include literal single or double quotation marks in the string by quoting the entire string with the _other_ quote.
 
 ```{r}
-string2 <- 'I said, "Hello World!"' 
-string2
+	string2 <- 'I said, "Hello World!"' 
+	string2
 ```
 
 * Or make the quotes literal by _escaping_ them with the backslash character.
 
 ```{r}
-string2 <- "I said, \"Hello World!\"" 
-string2
+	string2 <- "I said, \"Hello World!\"" 
+	string2
 ```
 
 * Note that the printed representation in the R console shows escapes and enclosing quotes.
@@ -57,15 +57,15 @@ string2
 * Use `writeLines()` to see the raw string.
 
 ```{r}
-writeLines(string2)
+	writeLines(string2)
 ```
 
 * If you want a literal backslash in your string, escape it with a backslash.
 
 ```{r}
-string3 <- "This string contains \\, a literal backslash character." 
-string3
-writeLines(string3)
+	string3 <- "This string contains \\, a literal backslash character." 
+	string3
+	writeLines(string3)
 ```
 
 **Complete list of special characters**
@@ -74,7 +74,7 @@ writeLines(string3)
 #| echo: false
 #| out-width: 15cm
 
-knitr::include_graphics("special_character.png")
+	knitr::include_graphics("special_character.png")
 ```
 
 
@@ -105,19 +105,19 @@ See [Wikipedia’s List of Unicode Characters](https://en.wikipedia.org/wiki/Lis
 ```{r}
 #| results: asis
 
-ltrs <- c("\U3B3\U3C1\U3AC\U3BC\U3BC\U3B1\U3C4\U3B1", "\U645\U644\U639", "\U27F7",
-          "\U5EA\U5D5\U5D9\U5EA\U5D5\U5D0", "\U5B57\U6BCD")
-writeLines(paste(ltrs, collapse = " "))
-cat(paste(ltrs, collapse = " "))
+	ltrs <- c("\U3B3\U3C1\U3AC\U3BC\U3BC\U3B1\U3C4\U3B1", "\U645\U644\U639", "\U27F7",
+		"\U5EA\U5D5\U5D9\U5EA\U5D5\U5D0", "\U5B57\U6BCD")
+	writeLines(paste(ltrs, collapse = " "))
+	cat(paste(ltrs, collapse = " "))
 ```
 
 
 * [Letterlike Symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Letterlike_Symbols) and [Playing Cards](https://en.wikipedia.org/wiki/List_of_Unicode_characters#Playing_Cards)
 
 ```{r}
-x <- c("\U2115 \U2282 \U2124 \U2282 \U211A \U2282 \U211D \U2282 \U2102",
-       "\U1F0AA\U1F0AB\U1F0AC\U1F0AD\U1F0A1")
-x
+	x <- c("\U2115 \U2282 \U2124 \U2282 \U211A \U2282 \U211D \U2282 \U2102",
+		"\U1F0AA\U1F0AB\U1F0AC\U1F0AD\U1F0A1")
+	x
 ```
 
 # The `stringr` Package
@@ -150,67 +150,69 @@ In these functions `x` represents a single character string or a character vecto
 
 # String Length
 ```{r}
-library("tidyverse")     # Or library("stringr") for just the stringr package
-x <- c("abc", "a.c", "a\\c", "a \\\n\tc") 
-writeLines(x)
-str_length(x)
+	library("tidyverse")     # Or library("stringr") for just the stringr package
+	x <- c("abc", "a.c", "a\\c", "a \\\n\tc") 
+	writeLines(x)
+	str_length(x)
 ```
 
 # Combining / Concatenating Strings
 
 ```{r}
-people <- c("Newman", "Jerry")
-str_c("Hello", people, ".")    # "Hello" and "." are recycled to match length of people.
-str_c("Hello", people, ".", sep = " ")
-str_c("Hello ", people, ".")
-salut <- c("Hello", "Goodbye") ; people <- c("Newman", "Jerry")
-str_c(str_c(salut, people, sep = " "), ".")
+	people <- c("Newman", "Jerry")
+	str_c("Hello", people, ".")    # "Hello" and "." are recycled to match length of people.
+	str_c("Hello", people, ".", sep = " ")
+	str_c("Hello ", people, ".")
+	salut <- c("Hello", "Goodbye") ; people <- c("Newman", "Jerry")
+	str_c(str_c(salut, people, sep = " "), ".")
 ```
 
 If that’s hard to understand, you could use an intermediate result:
 
 ```{r}
-y <- str_c(salut, people, sep = " ") 
-y
-str_c(y, ".")
+	y <- str_c(salut, people, sep = " ") 
+	y
+	str_c(y, ".")
 ```
 
 Or a pipe:
 ```{r}
-str_c(salut, people, sep = " ") |> str_c(".")
+	str_c(salut, people, sep = " ") |>
+		str_c(".")
 ```
 
 
 # Collapsing / Flattening
 ```{r}
-str_c(letters[24:26], collapse = " * ")   # Old way, same as base-R paste() function
-str_flatten(letters[24:26], " * ")                  # New way with str_flatten()
-str_c(c(7, 2, 6), letters[24:26], sep = "*", collapse = " + ")         # Old way
-str_c(c(7, 2, 6), letters[24:26], sep = "*") |> str_flatten(" + ")     # New way
-people <- c("Newman", "Jerry") 
-dialogue <- 
-  str_c(rev(people), ": ", "Hello ", people, ".") |> 
-  str_flatten("\n") 
-writeLines(dialogue)
+	str_c(letters[24:26], collapse = " * ")   # Old way, same as base-R paste() function
+	str_flatten(letters[24:26], " * ")                  # New way with str_flatten()
+	str_c(c(7, 2, 6), letters[24:26], sep = "*", collapse = " + ")         # Old way
+	str_c(c(7, 2, 6), letters[24:26], sep = "*") |>
+		str_flatten(" + ")     # New way
+	people <- c("Newman", "Jerry") 
+	dialogue <- 
+	str_c(rev(people), ": ", "Hello ", people, ".") |> 
+		str_flatten("\n") 
+	writeLines(dialogue)
 ```
 
 # Substrings
 ```{r}
-state.name[1:5]
-str_sub(state.name, 4, 9)[1:5]
-str_sub(state.name, 4, -1)[1:5]
-table(str_sub(state.name, 1, 1))
-table(str_sub(state.name, -1, -1))
-x <- str_c(state.name, " (", state.abb, ")") 
-x[1:5]
-st.nm <- str_sub(x, 1, -6) 
-st.nm[1:5]
-st.ab <- str_sub(x, -3, -2) 
-st.ab[1:5]
-x[1:5]
-str_sub(x, -4, -4) <- "[" 
-str_sub(x, -1, -1) <- "]" 
-x[1:5]
+	state.name[1:5]
+	str_sub(state.name, 4, 9)[1:5]
+	str_sub(state.name, 4, -1)[1:5]
+	table(str_sub(state.name, 1, 1))
+	table(str_sub(state.name, -1, -1))
+	x <- str_c(state.name, " (", state.abb, ")") 
+	x[1:5]
+	st.nm <- str_sub(x, 1, -6) 
+	st.nm[1:5]
+	st.ab <- str_sub(x, -3, -2) 
+	st.ab[1:5]
+	x[1:5]
+	str_sub(x, -4, -4) <- "[" 
+	str_sub(x, -1, -1) <- "]" 
+	x[1:5]
 ```
 
 * See the [from-base vignette](https://cran.r-project.org/web/packages/stringr/vignettes/from-base.html) (`vignette("from-base")`) for other useful `stringr` functions.

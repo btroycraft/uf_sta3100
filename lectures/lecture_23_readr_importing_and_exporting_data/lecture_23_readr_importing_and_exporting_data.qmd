@@ -39,29 +39,29 @@ execute:
 ```{r}
 #| message: false
 
-cat(readLines('guitars.csv'), sep = '\n')
-library(tidyverse)      ## Or library(readr) for the readr package only
+	cat(readLines('guitars.csv'), sep = '\n')
+	library(tidyverse)      ## Or library(readr) for the readr package only
 ```
 
 ***
 
 
 ```{r}
-guitars_df <- read.csv("guitars.csv") 
-summary(guitars_df)
+	guitars_df <- read.csv("guitars.csv") 
+	summary(guitars_df)
 ```
 
 ***
 
 ```{r}
-guitars_tbl <- read_csv("guitars.csv")
-summary(guitars_tbl)
+	guitars_tbl <- read_csv("guitars.csv")
+	summary(guitars_tbl)
 ```
 
 ***
 
 ```{r}
-glimpse(guitars_tbl)
+	glimpse(guitars_tbl)
 ```
 
 # Boston Housing Data
@@ -83,55 +83,58 @@ Housing data for 506 census tracts of Boston from the 1970 census. The data fram
 * `lstat`	percentage of lower status of the population
 * `medv`	median value of owner-occupied homes in USD 1000's
 ```{r}
-houses_df <- read.table("Boston.txt", header = TRUE)
-head(houses_df)
+	houses_df <- read.table("Boston.txt", header = TRUE)
+	head(houses_df)
 ```
 
 ***
 
 ```{r}
-houses_tbl <- read_table("Boston.txt", col_names = TRUE)
-names(houses_tbl) <- gsub('"', "", names(houses_tbl))
-houses_tbl
+	houses_tbl <- read_table("Boston.txt", col_names = TRUE)
+	names(houses_tbl) <- gsub('"', "", names(houses_tbl))
+	houses_tbl
 ```
 
 ***
 
 ```{r}
-glimpse(houses_tbl)
+	glimpse(houses_tbl)
 ```
 
 # UF Academic Programs
 
 ```{r}
-library(readxl)
-uf_progs <- read_excel("ufAcademicPrograms.xlsx")
+	library(readxl)
+	uf_progs <- read_excel("ufAcademicPrograms.xlsx")
 ```
 
 ***
 
 ```{r}
-uf_progs
+	uf_progs
 ```
 
 ***
 
 ```{r}
-glimpse(uf_progs)
+	glimpse(uf_progs)
 ```
 
 ***
 
 Spreadsheet data are often “untidy”. These data exhibit a common problem.
 ```{r}
-uf_progs |> select(College, Program)    # Or uf_progs[, c("College", "Program")]
+	uf_progs |>
+		select(College, Program)    # Or uf_progs[, c("College", "Program")]
 ```
 * Each “college” only appears once.
 
 ***
 
 ```{r}
-uf_progs |> select(College, Program) |> filter(!is.na(College))
+	uf_progs |>
+		select(College, Program) |>
+			filter(!is.na(College))
 ```
 
 ***
@@ -141,41 +144,45 @@ uf_progs |> select(College, Program) |> filter(!is.na(College))
 * Note: you could turn this into a function.
 
 ```{r}
-has_college <- which(!is.na(uf_progs$College)) 
-length(has_college)
-has_college
+	has_college <- which(!is.na(uf_progs$College)) 
+	length(has_college)
+	has_college
 ```
 
 ***
 
 ```{r}
-num_prog_by_college <- diff(c(has_college, 1 + nrow(uf_progs))) 
-num_prog_by_college
-sum(num_prog_by_college) # Sanity check
-nrow(uf_progs)
+	num_prog_by_college <- diff(c(has_college, 1 + nrow(uf_progs))) 
+	num_prog_by_college
+	sum(num_prog_by_college) # Sanity check
+	nrow(uf_progs)
 ```
 
 ***
 
 ```{r}
-## uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_college)
+	## uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_college)
 
-uf_progs <- uf_progs |>
-  mutate(College = rep(College[has_college], times = num_prog_by_college))
+	uf_progs <- uf_progs |>
+		mutate(College = rep(College[has_college], times = num_prog_by_college))
 
-uf_progs |> select(College, Program) |> slice_head(n = 8)
+	uf_progs |>
+		select(College, Program) |>
+			slice_head(n = 8)
 ```
 
 ***
 
 ```{r}
-summarize(uf_progs, n = n(), .by = College)
+	summarize(uf_progs, n = n(), .by = College)
 ```
 
 ***
 
 ```{r}
-uf_progs |> select(College, Program) |> slice(29:32)
+	uf_progs |>
+		select(College, Program) |>
+			slice(29:32)
 ```
 
 # Exporting and Saving Data
@@ -214,8 +221,8 @@ uf_progs |> select(College, Program) |> slice(29:32)
 * By default `write_csv()` and `write.csv()` represent missing values with “NA”.
 
 ```{r}
-write_csv(uf_progs, file = "ufAcademicPrograms2.csv")
-cat(readLines("ufAcademicPrograms2.csv", n = 4), sep = "\n")
+	write_csv(uf_progs, file = "ufAcademicPrograms2.csv")
+	cat(readLines("ufAcademicPrograms2.csv", n = 4), sep = "\n")
 ```
 
 ***
@@ -223,8 +230,8 @@ cat(readLines("ufAcademicPrograms2.csv", n = 4), sep = "\n")
 * It is more common to use an empty field for missing values.
 
 ```{r}
-write_csv(uf_progs, file = "ufAcademicPrograms3.csv", na = "")
-cat(readLines("ufAcademicPrograms3.csv", n = 4), sep = "\n")
+	write_csv(uf_progs, file = "ufAcademicPrograms3.csv", na = "")
+	cat(readLines("ufAcademicPrograms3.csv", n = 4), sep = "\n")
 ```
 
 # FILLING
@@ -246,16 +253,16 @@ Here is a first try at a function to fill a vector in the way that we filled the
 
 ```{r}
 
-fill_vector <- function(x) {
-    has_val <- which(!is.na(x))
-    times_to_repeat <- diff(c(has_val, 1 + length(x))) 
-    rep(x[has_val], times = times_to_repeat)
-}
+	fill_vector <- function(x) {
+		has_val <- which(!is.na(x))
+		times_to_repeat <- diff(c(has_val, 1 + length(x))) 
+		rep(x[has_val], times = times_to_repeat)
+		}
 
-x <- c(1, NA, NA, 2, NA, NA, NA, 3, NA)
-x
+	x <- c(1, NA, NA, 2, NA, NA, NA, 3, NA)
+	x
 
-fill_vector(x)             # Seems to work.
+	fill_vector(x)             # Seems to work.
 ```
 
 ***
@@ -266,40 +273,40 @@ This fills to the right (or down) the vector. What if we want to to fill left (o
 * Will use `rev()` (reverse) function. May be slow for _very_ long vectors.
 * Note: changing `x` inside the function does not change any object named `x` outside the function.
 ```{r}
-fill_vector <- function(x, direction = c("right", "down", "left", "up")) { 
-    direction <- direction[1]
-    if (direction %in% c("left", "up")) x <- rev(x)
-    has_val <- which(!is.na(x))
-    times_to_repeat <- diff(c(has_val, 1 + length(x))) 
-    x <- rep(x[has_val], times = times_to_repeat)
-    if (direction %in% c("left", "up")) x <- rev(x)
-    x
-}
+	fill_vector <- function(x, direction = c("right", "down", "left", "up")) { 
+		direction <- direction[1]
+		if (direction %in% c("left", "up")) x <- rev(x)
+		has_val <- which(!is.na(x))
+		times_to_repeat <- diff(c(has_val, 1 + length(x))) 
+		x <- rep(x[has_val], times = times_to_repeat)
+		if (direction %in% c("left", "up")) x <- rev(x)
+		x
+		}
 ```
 
 ***
 
 ```{r}
-x
-fill_vector(x)                   # Still works as expected.
-y <- c(NA, "a", NA, NA, "b", "c")
-y
-fill_vector(y, direction = "left")
+	x
+	fill_vector(x)                   # Still works as expected.
+	y <- c(NA, "a", NA, NA, "b", "c")
+	y
+	fill_vector(y, direction = "left")
 ```
 
 ***
 
 Let’s apply this to the UF academic programs dataset in a mutate step.
 ```{r}
-library(tidyverse)
-library(readxl)
-uf_progs <- read_excel("ufAcademicPrograms.xlsx")
-uf_progs <- uf_progs |>
-  mutate(College = fill_vector(College))
-uf_progs |>
-  select(College, Program) |>
-  slice_sample(n = 8) |>
-  arrange(College, Program)
+	library(tidyverse)
+	library(readxl)
+	uf_progs <- read_excel("ufAcademicPrograms.xlsx")
+	uf_progs <- uf_progs |>
+		mutate(College = fill_vector(College))
+	uf_progs |>
+		select(College, Program) |>
+			slice_sample(n = 8) |>
+				arrange(College, Program)
 ```
 
 # `tidyr::fill()`
@@ -315,12 +322,12 @@ uf_progs |>
 ***
 
 ```{r}
-uf_progs <- read_excel("ufAcademicPrograms.xlsx")
-uf_progs <- fill(uf_progs, College)
-uf_progs |>
-  select(College, Program) |>
-  slice_sample(n = 12) |>
-  arrange(College, Program)
+	uf_progs <- read_excel("ufAcademicPrograms.xlsx")
+	uf_progs <- fill(uf_progs, College)
+	uf_progs |>
+		select(College, Program) |>
+			slice_sample(n = 12) |>
+				arrange(College, Program)
 ```
 
 # More Checking of the College Column
@@ -332,12 +339,12 @@ In the example of UF's academic programs, we might want to further verify our re
 ```{r}
 #| message: false
 
-library(tidyverse)
-library(readxl)
-uf_progs <- read_excel("ufAcademicPrograms.xlsx")
-has_college <- which(!is.na(uf_progs$College))
-num_prog_by_college <- diff(c(has_college, 1 + nrow(uf_progs)))
-uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_college)
+	library(tidyverse)
+	library(readxl)
+	uf_progs <- read_excel("ufAcademicPrograms.xlsx")
+	has_college <- which(!is.na(uf_progs$College))
+	num_prog_by_college <- diff(c(has_college, 1 + nrow(uf_progs)))
+	uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_college)
 ```
 
 ***
@@ -345,15 +352,17 @@ uf_progs$College <- rep(uf_progs$College[has_college], times = num_prog_by_colle
 * Lets see the first row and check that the college changes when we go from row `has_college[2] - 1` (= 30) to row `has_college[2]` (= 31).
 
 ```{r}
-uf_progs[1, c("College", "Program")]
-uf_progs[has_college[2] + (-1:0), c("College", "Program")]
+	uf_progs[1, c("College", "Program")]
+	uf_progs[has_college[2] + (-1:0), c("College", "Program")]
 ```
 
 ***
 
 * Similarly for the transition from row `has_college[3] - 1` (= 42) to row `has_college[3]` (= 43), this time with `dplyr` verbs instead of base-R indexing.
 ```{r}
-uf_progs |> slice(has_college[3] + (-1:0)) |> select(College, Program)
+	uf_progs |>
+		slice(has_college[3] + (-1:0)) |>
+			select(College, Program)
 ```
 
 ***
@@ -361,15 +370,15 @@ uf_progs |> slice(has_college[3] + (-1:0)) |> select(College, Program)
 * Finally the last transition from row `last(has_college) - 1` (= 182) to row `last(has_college)` (= 183) and finally the last row of the data frame.
   - `last()` is a `dplyr` function.
 ```{r}
-uf_progs[last(has_college) + (-1:0), c("College", "Program")]
-uf_progs[nrow(uf_progs), c("College", "Program")]
+	uf_progs[last(has_college) + (-1:0), c("College", "Program")]
+	uf_progs[nrow(uf_progs), c("College", "Program")]
 ```
 
 ***
 
 **Can We See All These Transitions at Once?**
 ```{r}
-has_college
+	has_college
 ```
 
 * I'm going to create an index vector the rows that will show
@@ -383,19 +392,19 @@ has_college
 ***
 
 ```{r}
-idx <- rbind(has_college - 1, has_college)            # Or idx <- outer(-1:0, has_college, `+`) 
-idx
-idx <- as.vector(idx)
-idx
+	idx <- rbind(has_college - 1, has_college)            # Or idx <- outer(-1:0, has_college, `+`) 
+	idx
+	idx <- as.vector(idx)
+	idx
 ```
 
 ***
 
 ```{r}
-idx <- idx[-1]
-idx
-idx <- c(idx, nrow(uf_progs))
-idx
+	idx <- idx[-1]
+	idx
+	idx <- c(idx, nrow(uf_progs))
+	idx
 ```
 
 That’s it!
@@ -403,8 +412,8 @@ That’s it!
 ***
 
 ```{r}
-uf_progs |>
-  slice(idx) |>
-  select(College, Program) |>
-  print(n = Inf)
+	uf_progs |>
+		slice(idx) |>
+			select(College, Program) |>
+				print(n = Inf)
 ```

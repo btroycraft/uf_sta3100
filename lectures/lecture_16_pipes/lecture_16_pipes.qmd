@@ -58,24 +58,24 @@ This makes them especially pipe-friendly.
 
 **Saving intermediate results**
 ```{r}
-evens <- seq(from = 2, to = 100, by = 2)
-log_evens <- log(evens)
-mean_log_evens <- mean(log_evens)
-gmean_evens <- exp(mean_log_evens)
-gmean_evens
+	evens <- seq(from = 2, to = 100, by = 2)
+	log_evens <- log(evens)
+	mean_log_evens <- mean(log_evens)
+	gmean_evens <- exp(mean_log_evens)
+	gmean_evens
 ```
 
 * Tends to clutter up the workspace.
 ```{r}
-ls()
+	ls()
 ```
 
 ***
 
 **Nested function calls**
 ```{r}
-gmean_evens <- exp(mean(log(seq(from = 2, to = 100, by = 2))))
-gmean_evens
+	gmean_evens <- exp(mean(log(seq(from = 2, to = 100, by = 2))))
+	gmean_evens
 ```
 
 * Have to read the function calls from inside out.
@@ -86,12 +86,12 @@ gmean_evens
 
 * Follow the sequence of actions.
 ```{r}
-gmean_evens <-
-  seq(from = 2, to = 100, by = 2) |>
-    log() |>
-    mean() |>
-    exp()
-gmean_evens
+	gmean_evens <-
+	seq(from = 2, to = 100, by = 2) |>
+		log() |>
+			mean() |>
+				exp()
+	gmean_evens
 ```
 
 * [The `tidyverse` style](https://style.tidyverse.org/) guide recommends that a pipe should always have a space before it and should [usually be followed by a new line](https://style.tidyverse.org/pipes.html), as demonstrated above.
@@ -101,9 +101,9 @@ gmean_evens
 * Of course if we needed to compute geometric means repeatedly, we might want to write a simple function.
 
 ```{r}
-geom_mean <- function(x) exp(mean(log(x)))
-gmean_evens <- geom_mean(seq(from = 2, to = 100, by = 2))
-gmean_evens
+	geom_mean <- function(x) exp(mean(log(x)))
+	gmean_evens <- geom_mean(seq(from = 2, to = 100, by = 2))
+	gmean_evens
 ```
 
 # Which do you prefer?
@@ -112,21 +112,21 @@ gmean_evens
 ```{r}
 #| include: false
 
-mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
-model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
-           "J-100 Xtra", "M-21")
-serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
-type <- rep(c("electric", "acoustic"), times = c(5, 2))
-body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
-w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
-case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
-guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
+	mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
+	model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
+		"J-100 Xtra", "M-21")
+	serial <- c("EJ15230", "60671", "616619", "00235628", "03531746", "90783019", "1452869")
+	type <- rep(c("electric", "acoustic"), times = c(5, 2))
+	body <- rep(c("solid", "hollow", "flat top"), times = c(4, 1, 2))
+	w_case_kg <- c(8.96, 8.60, 9.88, 8.40, 8.10, 6.78, 5.62)
+	case_kg <- c(5.70, 4.98, 5.90, 3.46, 4.92, 4.76, 3.72)
+	guitars <- data.frame(mfr, model, serial, type, body, w_case_kg, case_kg)
 ```
 ```{r}
-guitars2 <- transform(guitars, kg = w_case_kg - case_kg)
-guitars2 <- transform(guitars2, lb = 2.2 * kg)
-guitars2 <- subset(guitars2, select = -c(w_case_kg, case_kg, kg))
-guitars2
+	guitars2 <- transform(guitars, kg = w_case_kg - case_kg)
+	guitars2 <- transform(guitars2, lb = 2.2 * kg)
+	guitars2 <- subset(guitars2, select = -c(w_case_kg, case_kg, kg))
+	guitars2
 ```
 
 ***         
@@ -134,10 +134,10 @@ guitars2
 **Nested function calls**
 
 ```{r}
-guitars2 <- subset(transform(transform(guitars, kg = w_case_kg - case_kg),
-                             lb = 2.2 * kg),
-                   select = -c(w_case_kg, case_kg, kg))
-guitars2
+	guitars2 <- subset(transform(transform(guitars, kg = w_case_kg - case_kg),
+		lb = 2.2 * kg),
+		select = -c(w_case_kg, case_kg, kg))
+	guitars2
 ```
 ***
 
@@ -145,16 +145,16 @@ guitars2
 ```{r}
 #| include: false
 
-library(dplyr)
+	library(dplyr)
 ```
 
 ```{r}
-guitars2 <-
-  guitars |>
-    transform(kg = w_case_kg - case_kg) |>
-    transform(lb = 2.2 * kg) |>
-    subset(select = -c(w_case_kg, case_kg, kg))
-guitars2
+	guitars2 <-
+	guitars |>
+		transform(kg = w_case_kg - case_kg) |>
+			transform(lb = 2.2 * kg) |>
+				subset(select = -c(w_case_kg, case_kg, kg))
+	guitars2
 ```
 
 
@@ -162,24 +162,28 @@ guitars2
 
 How can we do these two calls to `log()` with pipes?
 ```{r}
-x <- 2^(1:4) 
-x
-log(x, 4)        # Same as log(x, base = 4)
-log(4, x)        # Same as log(4, base = x)
+	x <- 2^(1:4) 
+	x
+	log(x, 4)        # Same as log(x, base = 4)
+	log(4, x)        # Same as log(4, base = x)
 ```
 
 ***
 
 * The first one is easy because we are using `x` as the first argument.
 ```{r}
-x |> log(4)    # Same as  x |> log(base = 4)
+	x |>
+		log(4)    # Same as  x |>
+			log(base = 4)
 ```
 * For the second one, we can use the “_” placeholder with a named argument.
 ```{r}
-x |> log(4, base = _)
+	x |>
+		log(4, base = _)
 ```
 * Or use an anonymous function (which must be enclosed in parentheses and followed by a pair of parentheses).
 ```{r}
-# Same as x |> (\(b) log(4, b))()
-x |> (function(b) log(4, b))()    
+	# Same as x |> (\(b) log(4, b))()
+	x |>
+		(function(b) log(4, b))()    
 ```

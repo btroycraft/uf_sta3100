@@ -42,43 +42,43 @@ sample()
 
 **Example: Roll Two Fair Dice**
 ```{r}
-sample(1:6, 2, replace = TRUE)    # Sampling with replacement
+	sample(1:6, 2, replace = TRUE)    # Sampling with replacement
 ```
 Equivalent to
 ```{r}
-sample.int(6, size = 2, replace = TRUE)
+	sample.int(6, size = 2, replace = TRUE)
 ```
 ***
 
 **Roll a Loaded Die 36 Times**
 ```{r}
-p <- c(1, rep(2, 4), 3) # Probability weights 
-p
+	p <- c(1, rep(2, 4), 3) # Probability weights 
+	p
 
-p / sum(p)              # The actual probabilities
+	p / sum(p)              # The actual probabilities
 
-## p<-p/sum(p)
-x <- sample(1:6, 36, replace = TRUE, prob = p) 
-x
+	## p<-p/sum(p)
+	x <- sample(1:6, 36, replace = TRUE, prob = p) 
+	x
 ```
 
 The results are random, but we generally expect to see more 6’s than 1’s.
 ```{r}
-sum(x == 1)
+	sum(x == 1)
 
-sum(x == 6)
+	sum(x == 6)
 
-table(x)
+	table(x)
 ```
 
 Let’s estimate the probability that the number of 6’s exceeds the number of 1’s.
 ```{r}
-x <- replicate(10000, sample(1:6, 36, replace = TRUE, prob = p))   # Repeat 10,000 times 
-dim(x)      # Each column is a replicate (result of 36 rolls)
+	x <- replicate(10000, sample(1:6, 36, replace = TRUE, prob = p))   # Repeat 10,000 times 
+	dim(x)      # Each column is a replicate (result of 36 rolls)
 
-n1 <- apply(x == 1, 2, sum) 
-n6 <- apply(x == 6, 2, sum) 
-mean(n6 > n1)
+	n1 <- apply(x == 1, 2, sum) 
+	n6 <- apply(x == 6, 2, sum) 
+	mean(n6 > n1)
 ```
 
 Question: Can you calculate the exact probability?
@@ -93,14 +93,14 @@ Question: How accurate is our _estimate_ of the probability?
 
 `outer()` is a useful function.
 ```{r}
-outer(1:3, 5:6) # Default is `FUN = "*"`
+	outer(1:3, 5:6) # Default is `FUN = "*"`
 
-outer(1:3, 5:6, "+") # But we can change it.
+	outer(1:3, 5:6, "+") # But we can change it.
 
-cards <- outer(c("C", "D", "H", "S"), c(2:10, c("J","Q","K","A")), paste, sep = "_") 
-cards   # a 4 x 13 character matrix
+	cards <- outer(c("C", "D", "H", "S"), c(2:10, c("J","Q","K","A")), paste, sep = "_") 
+	cards   # a 4 x 13 character matrix
 
-sample(cards, size = 5)    # Sampling without replacement
+	sample(cards, size = 5)    # Sampling without replacement
 ```
 
 **Coin Tossing**
@@ -140,7 +140,7 @@ In frequentist terms, the probability of an event is the proportion of times tha
 
 Draw a random sample of 9 letters with replacement from the first five letters of the English alphabet:
 ```{r}
-sample(LETTERS[1:5], 9, replace = TRUE)
+	sample(LETTERS[1:5], 9, replace = TRUE)
 ```
 
 If you do this repeatedly, you will see that while all five letters _usually_ appear somewhere in the sample, it is not unusual to find at least one letter missing.
@@ -159,12 +159,12 @@ We first need a way to determine when the event has occured in a single replicat
            
 
 ```{r}
-x <- sample(LETTERS[1:5], 9, replace = TRUE) 
-x
+	x <- sample(LETTERS[1:5], 9, replace = TRUE) 
+	x
 
-LETTERS[1:5] %in% x
+	LETTERS[1:5] %in% x
 
-all(LETTERS[1:5] %in% x)
+	all(LETTERS[1:5] %in% x)
 ```
 
 # The `for` Loop
@@ -173,15 +173,15 @@ The `for` loop iterates through the elements of a sequence, repeating the code i
 the body of the loop once for each element in the sequence.
 
 ```{r}
-for (dog in c("Lassie", "Toto", "Rin Tin Tin")) { 
-  writeLines(paste(dog, "is a famous movie dog."))
-}
+	for (dog in c("Lassie", "Toto", "Rin Tin Tin")) { 
+		writeLines(paste(dog, "is a famous movie dog."))
+		}
 ```
 
 * Note: Because R is vectorized, we usually don’t need loops.
 
 ```{r}
-writeLines(paste(c("Lassie", "Toto", "Rin Tin Tin"), "is a famous movie dog."))
+	writeLines(paste(c("Lassie", "Toto", "Rin Tin Tin"), "is a famous movie dog."))
 ```
 
 ***
@@ -189,19 +189,19 @@ writeLines(paste(c("Lassie", "Toto", "Rin Tin Tin"), "is a famous movie dog."))
 # Our First Simulation
 
 ```{r}
-n_successes <- 0L # Initialize counter 
-for (i in 1:100) {
-  x <- sample(LETTERS[1:5], 9, replace = TRUE) 
-  is_success <- all(LETTERS[1:5] %in% x) 
-  n_successes <- n_successes + is_success
-}
-n_successes / 100
+	n_successes <- 0L # Initialize counter 
+	for (i in 1:100) {
+		x <- sample(LETTERS[1:5], 9, replace = TRUE) 
+		is_success <- all(LETTERS[1:5] %in% x) 
+		n_successes <- n_successes + is_success
+		}
+	n_successes / 100
 ```
 
 If we repeat this simulation, we get different answers (try it). So how accurate is our result?
 
 ```{r}
-2 * sqrt(0.5*0.5/100) # An upper bound on the "margin of error" of our estimator.
+	2 * sqrt(0.5*0.5/100) # An upper bound on the "margin of error" of our estimator.
 ```
 
 ***
@@ -213,16 +213,16 @@ Generalizing:
 * What if we wanted to draw a sample of 10 letters instead of 9?
 
 ```{r}
-n_reps <- 1000
-n_ltrs <- 6
-n_sample <- 10
-n_successes <- 0L   # Initialize counter 
-for (i in 1:n_reps) {
-  x <- sample(LETTERS[1:n_ltrs], n_sample, replace = TRUE) 
-  is_success <- all(LETTERS[1:n_ltrs] %in% x)
-  n_successes <- n_successes + is_success
-}
-n_successes / n_reps
+	n_reps <- 1000
+	n_ltrs <- 6
+	n_sample <- 10
+	n_successes <- 0L   # Initialize counter 
+	for (i in 1:n_reps) {
+		x <- sample(LETTERS[1:n_ltrs], n_sample, replace = TRUE) 
+		is_success <- all(LETTERS[1:n_ltrs] %in% x)
+		n_successes <- n_successes + is_success
+		}
+	n_successes / n_reps
 ```
 
 ***
@@ -230,19 +230,19 @@ n_successes / n_reps
 Make It a Function
 
 ```{r}
-my_simulator <- function(n_reps, n_ltrs, n_sample) { 
-  n_successes <- 0L # Initialize counter
-  for (i in 1:n_reps) {
-    x <- sample(LETTERS[1:n_ltrs], n_sample, replace = TRUE) 
-    is_success <- all(LETTERS[1:n_ltrs] %in% x)
-    n_successes <- n_successes + is_success
-  }
-  n_successes / n_reps 
-}
+	my_simulator <- function(n_reps, n_ltrs, n_sample) { 
+		n_successes <- 0L # Initialize counter
+		for (i in 1:n_reps) {
+		x <- sample(LETTERS[1:n_ltrs], n_sample, replace = TRUE) 
+		is_success <- all(LETTERS[1:n_ltrs] %in% x)
+		n_successes <- n_successes + is_success
+		}
+		n_successes / n_reps 
+		}
 
-my_simulator(10000, 5, 9)
+	my_simulator(10000, 5, 9)
 
-2 * sqrt(0.5*0.5/10000)  # An upper bound on the "margin of error" of our estimator.
+	2 * sqrt(0.5*0.5/10000)  # An upper bound on the "margin of error" of our estimator.
 ```
 
 ***
@@ -252,14 +252,14 @@ What is the True Probability?
 You can find the formula [here](https://probabilityandstats.wordpress.com/2010/04/04/a-formula-for-the-occupancy-problem/). Note, however, that I have reversed the roles of n and k (statisticians use n for sample size).
 
 ```{r}
-pr_all_occupied <- function(n, k) {
-  sum((-1)^(0:k) * choose(k, 0:k) * (1 - (0:k)/k)^n)
-}
+	pr_all_occupied <- function(n, k) {
+		sum((-1)^(0:k) * choose(k, 0:k) * (1 - (0:k)/k)^n)
+		}
 ```
 
 For `n_ltrs = 5` and `n_sample = 9` the actual probability is:
 ```{r}
-pr_all_occupied(9, 5)
+	pr_all_occupied(9, 5)
 ```
 
 ***
@@ -277,14 +277,14 @@ To approximate the probability of an event by _simulation_, we:
 
 Run Length Encoding a Sequence of Coin Tosses
 ```{r}
-x <- sample(c("H","T"), 100, replace = TRUE) 
-noquote(x)
-xr <- rle(x) 
-class(xr)
-is.list(xr)
-names(xr)
-xr$lengths
-xr$values
+	x <- sample(c("H","T"), 100, replace = TRUE) 
+	noquote(x)
+	xr <- rle(x) 
+	class(xr)
+	is.list(xr)
+	names(xr)
+	xr$lengths
+	xr$values
 ```
 
 Note: `inverse.rle()` will reconstruct the original sequence from the _run_ length encoding produced by `rle()`.
@@ -294,17 +294,17 @@ Note: `inverse.rle()` will reconstruct the original sequence from the _run_ leng
 
 What is the longest run?
 ```{r}
-max(xr$lengths)
+	max(xr$lengths)
 ```
 
 The longest run of heads?
 ```{r}
-max(xr$lengths[xr$values == "H"])
+	max(xr$lengths[xr$values == "H"])
 ```
 
 Of tails?
 ```{r}
-max(xr$lengths[xr$values == "T"])
+	max(xr$lengths[xr$values == "T"])
 ```
 
 Aside: We can also convert to a data frame and use `group_by()` and `summarize()`. 
@@ -325,19 +325,19 @@ Now we simulate it.
 
 In what proportion of the 10,000 experiments did we observe at least one run of length 6 or more?
 ```{r}
-nsim <- 10000; ntosses <- 100
-maxrl <- vector("integer", length = nsim) # Pre-allocate a vector to hold results. 
-for (i in 1:nsim) {
-  x <- sample(c("H","T"), ntosses, replace = TRUE)   # Toss the coins
-  xr <- rle(x)     # Get run-length encoding.
-  maxrl[i] <- max(xr$lengths)    # Save result for ith replicate.
-}
+	nsim <- 10000; ntosses <- 100
+	maxrl <- vector("integer", length = nsim) # Pre-allocate a vector to hold results. 
+	for (i in 1:nsim) {
+		x <- sample(c("H","T"), ntosses, replace = TRUE)   # Toss the coins
+		xr <- rle(x)     # Get run-length encoding.
+		maxrl[i] <- max(xr$lengths)    # Save result for ith replicate.
+		}
 ```
 
 
 
 ```{r}
-mean(maxrl >= 6)
+	mean(maxrl >= 6)
 ```
 
 Thus we estimate the probability of observing at least one run of length 6 or more in 100 tosses of a fair coin to be `{r} mean(maxrl >= 6)`, or `{r} mean(maxrl >= 6)*100`%.
@@ -359,15 +359,15 @@ Of course the difference is that in 100 tosses we have many more opportunities t
 
 We could use `replicate()` to replace the for loop.
 ```{r}
-rmax_run_len <- function(n) {
-  x <- sample(c("H","T"), n, replace = TRUE) 
-  xr <- rle(x)
-  max(xr$lengths)
-}
+	rmax_run_len <- function(n) {
+		x <- sample(c("H","T"), n, replace = TRUE) 
+		xr <- rle(x)
+		max(xr$lengths)
+		}
 
-nsim <- 10000; ntosses <- 100
-maxrl <- replicate(nsim, rmax_run_len(ntosses)) 
-mean(maxrl >= 6)
+	nsim <- 10000; ntosses <- 100
+	maxrl <- replicate(nsim, rmax_run_len(ntosses)) 
+	mean(maxrl >= 6)
 ```
 
 **The (Estimated) Distribution of the Maximum Run Length**
@@ -382,10 +382,10 @@ density plot" (`type = "h"`) over a histogram.
 #| fig-cap: "The results of 10,000 simulated replications of 100 tosses of a fair coin."
 #| fig-alt: "Plot showing the results of 10,000 simulated replications of 100 tosses of a fair coin."
 
-opar <- par(mar = c(5.1, 4.1, 2.1, 1.1)) 
-plot(table(maxrl)/nsim, type = "h", lwd = 5,
-  xlab = "Maximum Run Length",
-  ylab = "Relative Frequency",
-  main = "Estimated distribution of maximum run length.")
-par(opar)
+	opar <- par(mar = c(5.1, 4.1, 2.1, 1.1)) 
+	plot(table(maxrl)/nsim, type = "h", lwd = 5,
+		xlab = "Maximum Run Length",
+		ylab = "Relative Frequency",
+		main = "Estimated distribution of maximum run length.")
+	par(opar)
 ```

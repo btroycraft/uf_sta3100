@@ -33,7 +33,7 @@ execute:
 ```{r}
 #| message: false
 
-library(tidyverse)
+	library(tidyverse)
 ```
 
 # The Overarching Design Ethos
@@ -76,7 +76,7 @@ library(tidyverse)
   - return a `tibble`
 
 ```{r}
-tibble(x = 1:3, y = c("a", "b", "c"))
+	tibble(x = 1:3, y = c("a", "b", "c"))
 ```
 
 # Core Packages
@@ -106,29 +106,29 @@ tibble(x = 1:3, y = c("a", "b", "c"))
 
 ```{r}
 
-example_tbl <-
-  tibble(
-    group = c("A", "A", "B", "B"),
-    score = c(10, 12, 8, 15)
-  ) |>
-  summarize(avg_score = mean(score), .by = group)
+	example_tbl <-
+	tibble(
+		group = c("A", "A", "B", "B"),
+		score = c(10, 12, 8, 15)
+		) |>
+			summarize(avg_score = mean(score), .by = group)
 
-example_tbl
+	example_tbl
 ```
 
 # A Minimal Example
 
 ```{r}
 
-tibble(
-  fruit = c("apple", "banana", "apple", "pear"),
-  weight = c(3, 2, 4, 5)
-) |>
-  summarize(
-    n = n(),
-    avg_weight = mean(weight),
-    .by = fruit
-  )
+	tibble(
+		fruit = c("apple", "banana", "apple", "pear"),
+		weight = c(3, 2, 4, 5)
+		) |>
+			summarize(
+		n = n(),
+		avg_weight = mean(weight),
+		.by = fruit
+		)
 ```
 
 * This is typical `tidyverse` code:

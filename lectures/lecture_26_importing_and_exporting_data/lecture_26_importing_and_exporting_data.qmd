@@ -31,15 +31,15 @@ Federal Election Commission’s [website](https://www.fec.gov/data/disbursements
 ```{r}
 #| message: false
 
-library(tidyverse)
-santos_file <- "schedule_b-2023-10-27T01_16_01.csv" 
-santos <- read_csv(santos_file)
+	library(tidyverse)
+	santos_file <- "schedule_b-2023-10-27T01_16_01.csv" 
+	santos <- read_csv(santos_file)
 ```
 
 * The warning is suggesting that we run `problems(santos)`. BTW, `vroom()`?
 
 ```{r}
-problems(santos)
+	problems(santos)
 ```
 
 * On row 1148 it appears that a logical (or binary) value was expected in column 50 but the character string "J." was actually found.
@@ -47,7 +47,8 @@ problems(santos)
 * In all cases, the actual values observed suggest that the columns should have been character, not logical.
 
 ```{r}
-santos |> select(17, 18, 50)    # Looking at the columns where problems occurred.
+	santos |>
+		select(17, 18, 50)    # Looking at the columns where problems occurred.
 ```
 
 * Again, character seems like the most likely type for columns named disbursement_type, disbursement_type_description, and payee_middle_name.
@@ -62,9 +63,10 @@ So what happened?
 * We can read all the columns as character and perhaps figure out what happened.
 
 ```{r}
-santos <- read_csv(santos_file, col_types = cols(.default = col_character()))
-table(is.na(santos[[17]]))               # base-R seems easier here.
-santos |> summarize(n = n(), .by = 17)   # dplyr is easy enough here.
+	santos <- read_csv(santos_file, col_types = cols(.default = col_character()))
+	table(is.na(santos[[17]]))               # base-R seems easier here.
+	santos |>
+		summarize(n = n(), .by = 17)   # dplyr is easy enough here.
 ```
 
 * disbursement_type should be character (or maybe factor), but `readr` guessed incorrectly because it saw 1000 missing values.
@@ -72,8 +74,11 @@ santos |> summarize(n = n(), .by = 17)   # dplyr is easy enough here.
 *** 
 
 ```{r}
-santos |> group_by(is.na(pick(18))) |> summarize(n = n())    # A dplyr version.
-santos |> summarize(n = n(), .by = 18)
+	santos |>
+		group_by(is.na(pick(18))) |>
+			summarize(n = n())    # A dplyr version.
+	santos |>
+		summarize(n = n(), .by = 18)
 ```
 
 * disbursement_type_description should be character, but `readr` guessed incorrectly because it saw 1000 missing values.
@@ -81,8 +86,8 @@ santos |> summarize(n = n(), .by = 18)
 ***
 
 ```{r}
-table(is.na(santos[[50]]))
-table(santos[[50]], useNA = "ifany")                         # A base-R version.
+	table(is.na(santos[[50]]))
+	table(santos[[50]], useNA = "ifany")                         # A base-R version.
 ```
 
 * payee_middle_name should be character, but `readr` guessed incorrectly because it saw 1000 missing values.
@@ -97,7 +102,7 @@ table(santos[[50]], useNA = "ifany")                         # A base-R version.
 * In this case we could fix these problems by simply letting read_csv() use all 1558 rows to guess the column types.
 
 ```{r}
-santos <- read_csv(santos_file, guess_max = 2000)
+	santos <- read_csv(santos_file, guess_max = 2000)
 ```
 
 This eliminates the warning, but may not solve all problems.
@@ -105,7 +110,7 @@ This eliminates the warning, but may not solve all problems.
 * Some columns still have all missing values (NA). They default to logical type.
 
 ```{r}
-summary(spec(santos))
+	summary(spec(santos))
 ```
 
 # Taking Control of the Column Types
@@ -182,11 +187,11 @@ There are several ways to do this, but note first that:
 * Aside: Using `lubridate` functions and `summarize()` to verify that all times in `disbursement_date` are `00:00:00`.
 
 ```{r}
-santos |>
-  mutate(hr = hour(disbursement_date),
-         min = minute(disbursement_date),
-         sec = second(disbursement_date)) |>
-  summarize(n = n(), .by = c(hr, min, sec))
+	santos |>
+		mutate(hr = hour(disbursement_date),
+		min = minute(disbursement_date),
+		sec = second(disbursement_date)) |>
+			summarize(n = n(), .by = c(hr, min, sec))
 ```
 
 Now we demonstrate the 3 ways of specifying the column types.
@@ -196,47 +201,50 @@ Now we demonstrate the 3 ways of specifying the column types.
 * With abbreviated types. (Again we have used `col_select` arg for renaming.)
 
 ```{r}
-santos <- 
-  read_csv(santos_file,
-           col_types = cols_only(disbursement_date = col_datetime(),
-                                 recipient_name = col_character(),
-                                 recipient_zip = col_character(),
-                                 disbursement_amount = col_double())
-           ) |>
-  rename(date = disbursement_date,
-         recipient = recipient_name, 
-         zip = recipient_zip,
-         amount = disbursement_amount)
-santos |> slice_head(n = 4)
+	santos <- 
+	read_csv(santos_file,
+		col_types = cols_only(disbursement_date = col_datetime(),
+		recipient_name = col_character(),
+		recipient_zip = col_character(),
+		disbursement_amount = col_double())
+		) |>
+			rename(date = disbursement_date,
+		recipient = recipient_name, 
+		zip = recipient_zip,
+		amount = disbursement_amount)
+	santos |>
+		slice_head(n = 4)
 ```
 
 ***
 
 ```{r}
-santos <- 
-  read_csv(santos_file,
-           col_types = cols_only(disbursement_date = "datetime", 
-                                 recipient_name = "character",
-                                 recipient_zip = "character",
-                                 disbursement_amount = "double"), 
-           col_select = c(date = disbursement_date, 
-                          recipient = recipient_name, 
-                          zip = recipient_zip,
-                          amount = disbursement_amount))
-santos |> slice_head(n = 5)
+	santos <- 
+	read_csv(santos_file,
+		col_types = cols_only(disbursement_date = "datetime", 
+		recipient_name = "character",
+		recipient_zip = "character",
+		disbursement_amount = "double"), 
+		col_select = c(date = disbursement_date, 
+		recipient = recipient_name, 
+		zip = recipient_zip,
+		amount = disbursement_amount))
+	santos |>
+		slice_head(n = 5)
 ```
 
 ***
 
 ```{r}
-santos <- 
-  read_csv(santos_file,
-           col_select = c(date = disbursement_date, 
-                          recipient = recipient_name,
-                          zip = recipient_zip,
-                          amount = disbursement_amount), 
-           col_types = "Tccd")
-santos |> slice_head(n = 7)
+	santos <- 
+	read_csv(santos_file,
+		col_select = c(date = disbursement_date, 
+		recipient = recipient_name,
+		zip = recipient_zip,
+		amount = disbursement_amount), 
+		col_types = "Tccd")
+	santos |>
+		slice_head(n = 7)
 ```
 
 # Coping With All 78 Columns
@@ -261,40 +269,40 @@ Three `readr` Functions
 Working with `readr`’s Guesses
 
 ```{r}
-## santos_cols <- spec_csv(santos_file, guess_max = 2000)
+	## santos_cols <- spec_csv(santos_file, guess_max = 2000)
 
-santos <- read_csv(santos_file, guess_max = 2000) 
-santos_cols <- spec(santos)
-summary(santos_cols)
+	santos <- read_csv(santos_file, guess_max = 2000) 
+	santos_cols <- spec(santos)
+	summary(santos_cols)
 ```
 ***
 
 * The column spec is a named list with class "col_spec".
 
 ```{r}
-typeof(santos_cols)
-attributes(santos_cols)
+	typeof(santos_cols)
+	attributes(santos_cols)
 ```
 
 * `santos_cols$delim` seems simple enough.
 
 ```{r}
-santos_cols$delim
+	santos_cols$delim
 ```
 
 * `santos_cols$default` is a `<collector>`.
 
 ```{r}
-santos_cols$default
+	santos_cols$default
 ```
 
 * `santos_cols$cols` is a named list.
 * Its names are column names.
 
 ```{r}
-typeof(santos_cols$cols)
-santos_cols$cols[c(17,18,50)]
-santos_cols
+	typeof(santos_cols$cols)
+	santos_cols$cols[c(17,18,50)]
+	santos_cols
 ```
 
 ***
@@ -305,9 +313,9 @@ santos_cols
 ```{r}
 #| results: hide
 
-sink("santos_cols.txt")
-print(santos_cols)
-sink()
+	sink("santos_cols.txt")
+	print(santos_cols)
+	sink()
 ```
 
 * This would be safer (don’t overwrite an existing file):
@@ -315,12 +323,12 @@ sink()
 ```{r}
 #| results: hide
 
-file_name <- "santos_cols.txt" 
-if (!file.exists(file_name)) { 
-  sink(file_name) 
-  print(santos_cols)
-  sink() 
-  }
+	file_name <- "santos_cols.txt" 
+	if (!file.exists(file_name)) { 
+		sink(file_name) 
+		print(santos_cols)
+		sink() 
+		}
 ```
 
 * Or this (include a time stamp in the file name):
@@ -328,10 +336,10 @@ if (!file.exists(file_name)) {
 ```{r}
 #| results: hide
 
-file_name <- paste0("santos_cols-", now(), ".txt") 
-sink(file_name)
-print(santos_cols)
-sink()
+	file_name <- paste0("santos_cols-", now(), ".txt") 
+	sink(file_name)
+	print(santos_cols)
+	sink()
 ```
 
 ***
@@ -343,10 +351,10 @@ of that type are removed.
   - In this example, the most common type guessed is character, which is pretty safe as a default type (no information will be lost).
   
 ```{r}
-santos_cols <- cols_condense(santos_cols) 
-santos_cols$default
-summary(santos_cols)
-santos_cols
+	santos_cols <- cols_condense(santos_cols) 
+	santos_cols$default
+	summary(santos_cols)
+	santos_cols
 ```
 
 * Note: `cols_condense()` might not do what you want, especially if there are more empty columns (set to logical) than any other type.
@@ -374,18 +382,18 @@ santos_cols
 After examining the column names and doing some other checking, I decided on the following column specification:
 
 ```{r}
-santos <- read_csv(santos_file,
-                   col_types = cols(.default = col_character(),
-                                    report_year = col_integer(),
-                                    line_number = col_integer(),
-                                    file_number = col_integer(), 
-                                    disbursement_date = col_datetime(format = ""),
-                                    disbursement_amount = col_double(), 
-                                    fec_election_year = col_integer(),
-                                    load_date = col_datetime(format = ""),
-                                    semi_annual_bundled_refund = col_double(),
-                                    two_year_transaction_period = col_integer()))
-summary(spec(santos))
+	santos <- read_csv(santos_file,
+		col_types = cols(.default = col_character(),
+		report_year = col_integer(),
+		line_number = col_integer(),
+		file_number = col_integer(), 
+		disbursement_date = col_datetime(format = ""),
+		disbursement_amount = col_double(), 
+		fec_election_year = col_integer(),
+		load_date = col_datetime(format = ""),
+		semi_annual_bundled_refund = col_double(),
+		two_year_transaction_period = col_integer()))
+	summary(spec(santos))
 ```
 
 * This is not necessarily "the best" choice, e.g.:

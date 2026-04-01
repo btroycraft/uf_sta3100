@@ -30,7 +30,7 @@ execute:
 
 # Constructing an Array
 ```{r}
-  array(1:24, dim = c(3, 4, 2))
+	array(1:24, dim = c(3, 4, 2))
 ```
 
 ## `?iris`  
@@ -61,50 +61,50 @@ execute:
 \newpage
 
 ```{r}
-  dim(iris3)
-  dimnames(iris3)
+	dim(iris3)
+	dimnames(iris3)
 ```
     
 \newpage
 
 ```{r}
-  iris3[1,,"Setosa"]     # Measurements from the first iris setosa
-  iris3[2,,"Setosa"]     # Measurements from the second iris setosa
-  iris3[1,,"Versicolor"] # Measurements from the first iris versicolor
+	iris3[1,,"Setosa"]     # Measurements from the first iris setosa
+	iris3[2,,"Setosa"]     # Measurements from the second iris setosa
+	iris3[1,,"Versicolor"] # Measurements from the first iris versicolor
 ```
 
 \newpage
 
 ```{r}
-  iris3[,"Petal L.","Virginica"]     # Petal lengths of all 50 iris virginica observed
-  iris3[1:2,,"Versicolor"]           # All measurements from 1st two iris versicolor observed
+	iris3[,"Petal L.","Virginica"]     # Petal lengths of all 50 iris virginica observed
+	iris3[1:2,,"Versicolor"]           # All measurements from 1st two iris versicolor observed
 ```
 
 # Aside
 Compare to a data frame containing the same data (more on this later):
 ```{r}
-  iris[1:3,]
-  dim(iris)
-  c( prod(dim(iris3)), prod(dim(iris)) )
+	iris[1:3,]
+	dim(iris)
+	c( prod(dim(iris3)), prod(dim(iris)) )
 ```
 
 \newpage
 
 # `apply()` for Arrays
 ```{r}
-  ## Means for each comb. of measurement (dim 2) and species (dim 3)
-  apply(iris3, c(2,3), mean)
+	## Means for each comb. of measurement (dim 2) and species (dim 3)
+	apply(iris3, c(2,3), mean)
 ```
 ```{r}
-  ## Means for each measurement type (dim 2) (ignoring species)
-  apply(iris3, 2, mean)
+	## Means for each measurement type (dim 2) (ignoring species)
+	apply(iris3, 2, mean)
 ```
 
 \newpage
 
 ```{r}
-  # Std devs for each combination of measurement and species
-  apply(iris3, c(2,3), sd)  
+	# Std devs for each combination of measurement and species
+	apply(iris3, c(2,3), sd)  
 ```
 
 # `sweep()` 
@@ -132,66 +132,66 @@ Compare to a data frame containing the same data (more on this later):
 ```{r}
 #| echo: true
 
-## Means for each comb. of measurement (dim 2) and species (dim 3)
-species_means <- apply(iris3, c(2,3), mean)
+	## Means for each comb. of measurement (dim 2) and species (dim 3)
+	species_means <- apply(iris3, c(2,3), mean)
 
-## Means for each measurement type (dim 2) (ignoring species)
-overall_means <- apply(iris3, 2, mean)
+	## Means for each measurement type (dim 2) (ignoring species)
+	overall_means <- apply(iris3, 2, mean)
 
-sweep(species_means, 1, overall_means, "-")
+	sweep(species_means, 1, overall_means, "-")
 ```
 
 \newpage
 
 # Death and Survival on the Titanic
 ```{r}
-  dim(Titanic)
-  dimnames(Titanic)
+	dim(Titanic)
+	dimnames(Titanic)
 ```
 
 \newpage
 
 ```{r}
-  Titanic["3rd", "Female", "Adult", "Yes"]
-  Titanic["3rd", "Female", "Adult", ]
-  Titanic[, "Female", "Adult", ]
+	Titanic["3rd", "Female", "Adult", "Yes"]
+	Titanic["3rd", "Female", "Adult", ]
+	Titanic[, "Female", "Adult", ]
 ```
 
 \newpage
 
 ```{r}
-  Titanic[, , "Child", ]
-  Titanic[, , "Adult", ]
+	Titanic[, , "Child", ]
+	Titanic[, , "Adult", ]
 ```
 
 \newpage
 
 # Flattening a Multiway Contingency Table
 ```{r}
-  is.table(Titanic)
-  ftable(Titanic, row.vars = "Class", col.vars = c("Age", "Sex", "Survived"))
+	is.table(Titanic)
+	ftable(Titanic, row.vars = "Class", col.vars = c("Age", "Sex", "Survived"))
 ```
 
 \newpage
 
 # Using `apply()`
 ```{r}
-  # Total number of passengers
-  sum(Titanic)
-  ## Marginal table for survival: overall died and survived. Could use `marginSums()`.
-  apply(Titanic, "Survived", sum)
-  ## Marginal percentages died and survived (ignoring class, sex, age)
-  100 * apply(Titanic, "Survived", sum) / sum(Titanic)
+	# Total number of passengers
+	sum(Titanic)
+	## Marginal table for survival: overall died and survived. Could use `marginSums()`.
+	apply(Titanic, "Survived", sum)
+	## Marginal percentages died and survived (ignoring class, sex, age)
+	100 * apply(Titanic, "Survived", sum) / sum(Titanic)
 ```
 
 \newpage
 
 ```{r}
-  apply(Titanic, c("Survived", "Class"), sum)    # Number died and survived by class
+	apply(Titanic, c("Survived", "Class"), sum)    # Number died and survived by class
 ```
 The following calculation shows that of the 2201 passengers, 5.5% were first class passengers who died, 9.2% were first class passengers who survived, etc.
 ```{r}
-  100 * apply(Titanic, c(4, 1), sum) / sum(Titanic)
+	100 * apply(Titanic, c(4, 1), sum) / sum(Titanic)
 ```
 
 \newpage
@@ -206,15 +206,15 @@ What would we really like to know?
 \newpage
 
 ```{r}
-  ## Marginal table for survival and class (ignoring sex and age).
-  surv_class_tot <- apply(Titanic, c("Survived", "Class"), sum)
-  surv_class_tot
+	## Marginal table for survival and class (ignoring sex and age).
+	surv_class_tot <- apply(Titanic, c("Survived", "Class"), sum)
+	surv_class_tot
 ```
 
 ```{r}
-  ## Marginal table for class.
-  class_tot <- apply(Titanic, "Class", sum)
-  class_tot
+	## Marginal table for class.
+	class_tot <- apply(Titanic, "Class", sum)
+	class_tot
 ```
 
 Now we want to divide (`FUN = "/"`) the columns (`MARGIN = 2`) of the first table by values in the second (`STAT = class_tot`). We can use `sweep()` to do this.
@@ -222,22 +222,22 @@ Now we want to divide (`FUN = "/"`) the columns (`MARGIN = 2`) of the first tabl
 \newpage
 
 ```{r}
-  sweep(surv_class_tot, 2, class_tot, "/")
+	sweep(surv_class_tot, 2, class_tot, "/")
 ```
 Can replace `2` by the name of the column dimension, which is “Class” in this case:
 ```{r}
-  round( 100 * sweep(surv_class_tot, "Class", class_tot, "/"), 1 )
+	round( 100 * sweep(surv_class_tot, "Class", class_tot, "/"), 1 )
 ```
 Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passengers survived.
 
 \newpage
 
 ```{r}
-  surv_class_age_tot <- apply(Titanic, c("Survived", "Class", "Age"), sum)
-  
-  class_age_tot <- apply(Titanic, c("Class", "Age"), sum)
-  
-  round(100 * sweep(surv_class_age_tot, c("Class", "Age"), class_age_tot, "/"), 1)
+	surv_class_age_tot <- apply(Titanic, c("Survived", "Class", "Age"), sum)
+	
+	class_age_tot <- apply(Titanic, c("Class", "Age"), sum)
+	
+	round(100 * sweep(surv_class_age_tot, c("Class", "Age"), class_age_tot, "/"), 1)
 ```
 
 \newpage
@@ -247,7 +247,7 @@ Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passe
 * The `apply()` and `sweep()` functions are for general matrices and arrays.
 * The Titanic dataset is a (contingency) “table”.
 ```{r}
-  class(Titanic)
+	class(Titanic)
 ```
 * There are several convenience functions which apply a combination of `apply()` and `sweep()` to multi-way contingency tables to carry out some common tasks with tables:  
   - `marginSums()`
@@ -257,27 +257,27 @@ Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passe
   \newpage
   
 ```{r}
-  ## We did this before with apply().  Here we use `marginSums()`.
-  surv_class_tot <- marginSums(Titanic, c("Survived", "Class"))
-  
-  surv_class_tot 
+	## We did this before with apply().  Here we use `marginSums()`.
+	surv_class_tot <- marginSums(Titanic, c("Survived", "Class"))
+	
+	surv_class_tot 
 ```
 
 ```{r}
-  addmargins(surv_class_tot)    # Glues on row and column totals
+	addmargins(surv_class_tot)    # Glues on row and column totals
 ```
 
 \newpage
 
 * Only the first of the following two sets of proportions is really useful or interesting, so make sure you know how to calculate the right one.
 ```{r}
-  ## Proportion dying and surviving within each class:
-  proportions(surv_class_tot, "Class")
+	## Proportion dying and surviving within each class:
+	proportions(surv_class_tot, "Class")
 ```
 
 ```{r}
-  ## Class proportions among those who died and among those who survived:
-  proportions(surv_class_tot, "Survived")
+	## Class proportions among those who died and among those who survived:
+	proportions(surv_class_tot, "Survived")
 ```
 
 \newpage
@@ -288,8 +288,8 @@ Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passe
 * We convert to percentages and round to one place past the decimal point.
 * We then use `ftable()` to print a flattened version of the resulting table of percentages.
 ```{r}
-  ftable(round(100 * proportions(Titanic, c("Class", "Sex", "Age")), 1),
-    row.vars = c("Sex", "Survived"), col.vars = c("Age", "Class"))
+	ftable(round(100 * proportions(Titanic, c("Class", "Sex", "Age")), 1),
+		row.vars = c("Sex", "Survived"), col.vars = c("Age", "Class"))
 ```
 
 \newpage
@@ -297,6 +297,6 @@ Thus 62.5% of 1st class passengers survived, while only 25.2% of 3rd class passe
 # Chi-Square Test of Independence
 We can use the usual chi-square test to test the null hypothesis of (marginal) independence of passenger class and survival (ignoring sex and age).
 ```{r}
-  surv_class_tot
-  chisq.test(surv_class_tot)
+	surv_class_tot
+	chisq.test(surv_class_tot)
 ```

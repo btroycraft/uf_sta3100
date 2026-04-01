@@ -25,23 +25,23 @@ execute:
 
 By default, `matrix()` converts vectors to matrices in _column-major_ order...
 ```{r}
-  matrix(1:12, nrow = 4)
+	matrix(1:12, nrow = 4)
 ```
 ... but this can be overridden
 ```{r}
-  matrix(1:12, nrow = 4, byrow = TRUE)
+	matrix(1:12, nrow = 4, byrow = TRUE)
 ```
 
 \newpage
 
 # Column-Bind and Row-Bind
 ```{r}
-  X <- matrix(1:8, nrow = 4)
-  X
-  X <- cbind(rep(1, 4), X) 
-  X
-  X <- rbind(X, c(1, 9, 9)) 
-  X
+	X <- matrix(1:8, nrow = 4)
+	X
+	X <- cbind(rep(1, 4), X) 
+	X
+	X <- rbind(X, c(1, 9, 9)) 
+	X
 ```
 
 \newpage
@@ -49,33 +49,33 @@ By default, `matrix()` converts vectors to matrices in _column-major_ order...
 # Q: What is a Matrix in R Anyway?
 Matrices have a `dim` attribute which can be accessed with the `dim()` function.
 ```{r}
-  X <- matrix(1:6, nrow = 2) 
-  X 
-  is.matrix(X)
-  attributes(X)
-  dim(X)
+	X <- matrix(1:6, nrow = 2) 
+	X 
+	is.matrix(X)
+	attributes(X)
+	dim(X)
 ```
 
 
 # And if we change the `dim` attribute?
 ```{r}
-  dim(X) <- c(3,2)
-  dim(X)
-  X
+	dim(X) <- c(3,2)
+	dim(X)
+	X
 ```
 Aside: `The attr()` function provides a general way to assign attributes, e.g., 
 ```{r}
-  attr(X, "dim") <- c(3,2)
+	attr(X, "dim") <- c(3,2)
 ```
 
 \newpage
 
 # What if we remove the `dim` attribute?
 ```{r}
-  dim(X) <- NULL
-  X
-  attributes(X)
-  is.matrix(X)
+	dim(X) <- NULL
+	X
+	attributes(X)
+	is.matrix(X)
 ```
 
 \newpage
@@ -83,67 +83,67 @@ Aside: `The attr()` function provides a general way to assign attributes, e.g.,
 * So, a matrix in R is just a vector with a `dim` attribute
 * Dimension is usually preserved when transforming elements of a matrix.
 ```{r}
-  X <- matrix(1:6, nrow = 2) 
-  X
-  X^2
-  X >= 4
+	X <- matrix(1:6, nrow = 2) 
+	X
+	X^2
+	X >= 4
 ```
 * Matrices can be logical matrices (as above) and character.
 
 # Matrix Arithmetic with Scalars
 ```{r}
-  X <- matrix(1:6, nrow = 2) 
-  X
-  2 * X
-  X + 1
+	X <- matrix(1:6, nrow = 2) 
+	X
+	2 * X
+	X + 1
 ```
 
 # Matrix Multiplication
 ```{r}
-  X
-  Y <- matrix(sample(0:3, 9, replace = TRUE), ncol = 3) 
-  Y
-  X %*% Y
-  Y %*% X
+	X
+	Y <- matrix(sample(0:3, 9, replace = TRUE), ncol = 3) 
+	Y
+	X %*% Y
+	Y %*% X
 ```
 
 \newpage
 
 ### Matrix-Vector Multiplication
 ```{r}
-  X
-  a <- 3:1
-  a
-  X %*% a      # Here the vector a is treated like a column matrix.
+	X
+	a <- 3:1
+	a
+	X %*% a      # Here the vector a is treated like a column matrix.
 ```
 
 \newpage
 
 ```{r}
-  X
-  b <- 3:4
-  b
-  b %*% X      # Here vector b is treated like a row matrix.
+	X
+	b <- 3:4
+	b
+	b %*% X      # Here vector b is treated like a row matrix.
 ```
 
 # Element-Wise Multiplication
 ```{r}
-  X
-  y <- 1:2
-  Y <- matrix(rep(y, times = 3), nrow = 2) 
-  Y
-  Y * X
+	X
+	y <- 1:2
+	Y <- matrix(rep(y, times = 3), nrow = 2) 
+	Y
+	Y * X
 ```
 
 \newpage
 
 Be very careful if you decide to do something like this.
 ```{r}
-  X
-  y
-  
-  y * X            ## What is this doing? (Hint: "recycling" and "column-major")
-  X * y
+	X
+	y
+	
+	y * X            ## What is this doing? (Hint: "recycling" and "column-major")
+	X * y
 ```
 
 \newpage
@@ -151,9 +151,9 @@ Be very careful if you decide to do something like this.
 # `apply()`
 Can _apply_ a function to the rows (dimension 1) or columns (dimension 2) of a matrix.
 ```{r}
-  X
-  apply(X, 1, sum)
-  apply(X, 2, prod)
+	X
+	apply(X, 1, sum)
+	apply(X, 2, prod)
 ```
 See also: `rowSums()`, `colSums()`, `rowMeans()`, `colMeans()`, and `sweep()`.
 
@@ -161,122 +161,122 @@ See also: `rowSums()`, `colSums()`, `rowMeans()`, `colMeans()`, and `sweep()`.
 
 # Named Rows and Columns
 ```{r}
-  X <- matrix(1:6, nrow = 2) 
-  dimnames(X)
-  
-  rownames(X) <- c("a", "b")
-  colnames(X) <- paste0("x", 1:3)       # same as:  paste("x", 1:3, sep = "")
-  
-  X
-  
-  rownames(X)
-  colnames(X)
+	X <- matrix(1:6, nrow = 2) 
+	dimnames(X)
+	
+	rownames(X) <- c("a", "b")
+	colnames(X) <- paste0("x", 1:3)       # same as:  paste("x", 1:3, sep = "")
+	
+	X
+	
+	rownames(X)
+	colnames(X)
 ```
 
 \newpage
 
 # More Naming
 ```{r}
-  ages <- c("bob" = 39, "carol" = 31, "ted" = 31, "alice" = 32) 
-  X <- cbind(1, ages)
-  X
-  
-  colnames(X) <- c("intercept", "age")
-  X
+	ages <- c("bob" = 39, "carol" = 31, "ted" = 31, "alice" = 32) 
+	X <- cbind(1, ages)
+	X
+	
+	colnames(X) <- c("intercept", "age")
+	X
 ```
 
 \newpage
 
 # Adding a Named Column
 ```{r}
-  # X <- cbind(X, sex = c("M","F","M","F"))     # This doesn't work (why?)
-  X <- cbind(X, sex = c(0,1,0,1))
-  X
-  
-  dimnames(X)
+	# X <- cbind(X, sex = c("M","F","M","F"))     # This doesn't work (why?)
+	X <- cbind(X, sex = c(0,1,0,1))
+	X
+	
+	dimnames(X)
 ```
 
 # Naming the Names
 `dimnames(X)` is a _list_ (more on this later) and lists have names too.
 ```{r}
-  names(dimnames(X)) <- c("Subject", "Variable")
-  dimnames(X)
-  X
+	names(dimnames(X)) <- c("Subject", "Variable")
+	dimnames(X)
+	X
 ```
 
 \newpage
 
 # Still More Naming
 ```{r}
-  dimnames(X) <- NULL
-  X
-  
-  dimnames(X) <- list(Subject = c("bob", "carol", "ted", "alice"),
-                      Variable = c("intercept", "age", "sex"))
-  X
+	dimnames(X) <- NULL
+	X
+	
+	dimnames(X) <- list(Subject = c("bob", "carol", "ted", "alice"),
+		Variable = c("intercept", "age", "sex"))
+	X
 ```
 
 \newpage
 
 # Indexing Matrices
 ```{r}
-  X[-c(2,4), c(1,3)]
-  X[c("ted","alice"), c(1,3)]
-  X[c("ted","alice"), c("age","sex")]
+	X[-c(2,4), c(1,3)]
+	X[c("ted","alice"), c(1,3)]
+	X[c("ted","alice"), c("age","sex")]
 ```
 
 \newpage
 
 **An empty index means "include all"**
 ```{r}
-  X[c(1,3), ]
-  X[ , c(1,3)]
+	X[c(1,3), ]
+	X[ , c(1,3)]
 ```
 ```{r}
-  X[c(2,4), 2]              # Expected a 2 x 1 column matrix but get a vector instead.
-  
-  X[c(2,4), 2, drop = FALSE] # Setting drop = FALSE preserves the dimension.
-  
-  X[3,2]                    # Here we get a scalar.
-  
-  X[3,2, drop = FALSE]      # This gives a 1 x 1 matrix
+	X[c(2,4), 2]              # Expected a 2 x 1 column matrix but get a vector instead.
+	
+	X[c(2,4), 2, drop = FALSE] # Setting drop = FALSE preserves the dimension.
+	
+	X[3,2]                    # Here we get a scalar.
+	
+	X[3,2, drop = FALSE]      # This gives a 1 x 1 matrix
 ```
 
 # Indexing with Logic
 ```{r}
-  males <- X[, "sex"] == 0
-  males <- ( X[, "sex"] == 0 )     # Same thing, but maybe this is easier to read?
-  males
-  X[males, ]
+	males <- X[, "sex"] == 0
+	males <- ( X[, "sex"] == 0 )     # Same thing, but maybe this is easier to read?
+	males
+	X[males, ]
 ```
 
 \newpage
 
 # Transpose
 ```{r}
-  X
-  t(X)
+	X
+	t(X)
 ```
 
 # Diagonal
 ```{r}
-  X
-  diag(X)     # Extracts the main diagonal of X (even if X is not a square matrix).
-  diag(1:3)   # Creates a diagonal (square) matrix with diagonal 1,2,3 and 0's elsewhere.
+	X
+	diag(X)     # Extracts the main diagonal of X (even if X is not a square matrix).
+	diag(1:3)   # Creates a diagonal (square) matrix with diagonal 1,2,3 and 0's elsewhere.
 ```
 
 # Inverse
 ```{r}
-  A <- matrix(rnorm(9), nrow = 3)
-  A
-  solve(A)
+	A <- matrix(rnorm(9), nrow = 3)
+	A
+	solve(A)
 ```
 
 \newpage
 
 ```{r}
-  A %*% solve(A)       # Identity matrix + floating point error
-  round(solve(A) %*% A, 10)
+	A %*% solve(A)       # Identity matrix + floating point error
+	round(solve(A) %*% A, 10)
 ```
 
 # Least Squares Regression (the Hard Way)
@@ -293,17 +293,17 @@ How many feature films did the actors make after _Bob and Carol and Ted and Alic
 \newpage
 
 ```{r}
-  y <- c(bob = 12, carol = 7, ted = 30, alice = 16) 
-  y
-  X
+	y <- c(bob = 12, carol = 7, ted = 30, alice = 16) 
+	y
+	X
 ```
 
 The formula for the coefficient estimates in least squares (linear) regression is
 $$ \hat{\beta} = (X'X)^{-1}X'y $$
 where $X′$ represents the transpose of the design matrix $X$.
 ```{r}
-  b <- solve(t(X) %*% X) %*% t(X) %*% y
-  b
+	b <- solve(t(X) %*% X) %*% t(X) %*% y
+	b
 ```
 The fitted regression equation is
 $$
