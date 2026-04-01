@@ -40,6 +40,7 @@ execute:
 * Deleting column of serial numbers to declutter slides.
 ```{r}
 #| echo: true
+
 guitars$serial <- NULL
 
 guitars

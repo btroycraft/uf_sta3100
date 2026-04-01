@@ -44,4 +44,4 @@ execute:
 
 5. Replace all forward slashes ("/") in "a/b/c/d/e" with backslashes ("\\").
 
-6. Install the R package `babynames`, and refer to the dataset `babynames`. What baby name has the most vowels? What name has the highest proportion of vowels?
+6. Install the `babynames` package, and refer to the dataset `babynames`. What baby name has the most vowels? What name has the highest proportion of vowels?

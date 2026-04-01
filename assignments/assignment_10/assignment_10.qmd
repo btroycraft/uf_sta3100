@@ -23,7 +23,7 @@ execute:
 
 ## Problems:
 
-1. Install the `forcats` R package. The dataset `gss_cat` is a sample of data from the General Social Survey, a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
+1. Install the `forcats` package. The dataset `gss_cat` is a sample of data from the General Social Survey, a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
     a) What is the most common `relig` in this survey? What's the least common `partyid`?
     b) Reorder the levels of `marital` in decreasing frequency.
     c) For `rincome`, reorder the levels as "Lt $1000", "$1000 to 2999", "$3000 to 3999", ..., "$20000 - 24999", "$25000 or more". Combine the levels "No answer", "Don't know", "Refused", and "Not applicable" to one level "NA", and put "NA" at the end of the levels.

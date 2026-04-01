@@ -22,64 +22,71 @@ execute:
 
 ## Problems:
 
-1. The following will use the datasets found in the `nycflights13` R package. Refer to Chapter 19 of [r4ds2e](https://r4ds.hadley.nz/) and the `nycflights13` documentation for details.
+1. The following will use the datasets found in the `nycflights13` package. Refer to Chapter 19 of [r4ds2e](https://r4ds.hadley.nz/) and the `nycflights13` package documentation for details.
     a) Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the `weather` data. Can you see any patterns?
     b) Add the latitude and the longitude of the origin and destination airport to `flights`. Is it easier to rename the columns before or after the join?
     c)  Compute the average delay by destination, then join on `airports` and show the spatial distribution of delays. To start, here's an easy way to draw a map of the United States:
     
         ```{r}
           library(ggplot2)
+          library(nycflights13)
           
           airports |>
             semi_join(flights, join_by(faa == dest)) |>
-          ggplot(aes(x = lon, y = lat)) +
-            borders("state") +
-            geom_point() +
-            coord_sf() +
-            theme_light() +
-            theme(
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank()
-            )
+              ggplot(aes(x = lon, y = lat)) +
+                borders("state") +
+                geom_point() +
+                coord_sf() +
+                theme_light() +
+                theme(
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()
+                )
         ```
 
     d) From `flights`, compare `air_time` with the duration between the departure and arrival. Explain your findings. (Hint: consider the location of the airport.)
 
 2.  For each of the following dates, interval and times, show how you'd convert them to a ISO form with a `lubridate` function.
-    
+
     ```{r}
       d1 <- "January 1, 2010"
       d2 <- "2015-Mar-07"
       d3 <- "06-Jun-2017"
+      
       # This is an interval
       d4 <- c("August 19 (2015)", "July 1 (2015)") 
+      
       # Dec 30, 2014
       d5 <- "12/30/14"
+      
       # time 17:05
       t1 <- "1705"
+      
       t2 <- "11:15:10 PM"
     ```
     
 3. Write a function that when you input a birthday (as a date), it outputs how old you are in years.
 
-4.  Consider the `islands` vector discussed in class.
+4.  Consider the built-in `islands` vector.
     a) Construct a boxplot for these data on a log-scale as well as the original scale.
-    b) Construct a dot chart of the island areas. Is a log-transformation needed here?
+    b) Construct a dot chart of the island areas. Is a log-transformation y → log(y) needed here?
 
 5. Consider the `pressure` data frame. There are two columns, `temperature` and `pressure`.
     a) Construct a scatterplot with `pressure` on the vertical axis and `temperature` on the horizontal axis. Are the variables related linearly or nonlinearly?
     b)  The graph of the following function passes through the plotted points reasonably well:
-        $$
-        y=(0.168+0.007x)^{\frac{20}{3}}
-        $$
+
+        ::: {.text-center}
+          y = (0.168 + 0.007x)^20/3^
+        :::  
+
         The differences between the pressure values predicted by the curve and the observed pressure values are called *residuals*. Here is a way to calculate them:
-    
+
         ```{r}
-          residuals <- pressure |>
-            with(pressure - (0.168 + 0.007*temperature)^(20/3))
+          residuals <-
+            pressure |>
+              mutate(pressure - (0.168 + 0.007*temperature)^(20/3)) |>
+              pull()
         ```
-    
         Construct a normal QQ-plot of these residuals and decide whether they are normally distributed or whether they follow a skewed distribution.
-    
-    c) Now, apply the power transformation $y\to y^{\frac{3}{20}}$ to the pressure data values. Plot these transformed values against temperatures. Is a linear or nonlinear relationship evident now?
-    d) Calculated residuals for the difference between the transformed pressure values and those predicted by the straight line $y = 0.168 + 0.007x$. Obtain a normal QQ-plot, and decide whether the residuals follow a normal distribution or not.
+    c) Now, apply the power transformation y → y^3/20^ to the pressure data values. Plot these transformed values against temperatures. Is a linear or nonlinear relationship evident now?
+    d) Calculated residuals for the difference between the transformed pressure values and those predicted by the straight line y = 0.168 + 0.007x. Obtain a normal QQ-plot, and decide whether the residuals follow a normal distribution or not.

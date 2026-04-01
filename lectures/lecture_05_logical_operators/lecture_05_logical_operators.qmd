@@ -47,6 +47,7 @@ execute:
 ### Negation
 ```{r}
 #| label: negation
+
   v
   !v
 ```  
@@ -56,6 +57,7 @@ execute:
 ### And, Or, and All That
 ```{r}
 #| label: aoa
+
   v
   w
   v | w         # "or"
@@ -74,6 +76,7 @@ execute:
   + `summary(x)` displays a similar table when `x` is logical.  
 ```{r}
 #| label: table
+
   x <- (rnorm(10) > 0)
   x
   table(x)
@@ -86,6 +89,7 @@ execute:
   + `any(x)` : TRUE if any of the entries of `x` are TRUE.
 ```{r}
 #| label: all
+
   x <- c(TRUE, TRUE)  ;  y <- c(TRUE, FALSE)  ;  z <- c(FALSE, FALSE)
   all(x)
   all(y)

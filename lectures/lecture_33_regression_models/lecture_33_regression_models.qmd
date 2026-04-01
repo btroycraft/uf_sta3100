@@ -71,6 +71,7 @@ houses |> group_by(quadrant) |> count()
 * There are some pretty crazy outliers in this dataset.
 ```{r}
 #| fig-cap: "Gainesville house prices by square footage."
+#| fig-alt: "Gainesville house prices by square footage."
 
 opar <- par(mar = c(5.1, 4.1, 1.1, 1.1))
 with(houses, plot(sqft, price))
@@ -80,6 +81,7 @@ par(opar)
 
 ```{r}
 #| fig-cap: "Gainesville house prices by square footage."
+#| fig-alt: "Gainesville house prices by square footage."
 
 ggplot(houses, aes(x = sqft, y = price)) + 
   geom_point() +
@@ -93,19 +95,31 @@ ggplot(houses, aes(x = sqft, y = price)) +
 * Some of the prices seem extremely high or low given the size of the house.
 
 ```{r}
-houses <- houses |> 
+#| fig-alt: "Histogram of dollars per square foot for Gainesville houses after excluding extreme values."
+
+houses <- houses |>
   mutate(dpsf = price / sqft,
          dpsf_hi_lo = cut(dpsf, breaks = c(0, 50, 100, 300, 400, Inf),
-                          labels = c("very_low", "low", "med", "high", "very_high")))
-houses |> group_by(dpsf_hi_lo) |> summarize(n = n())
+         labels = c("very_low", "low", "med", "high", "very_high")))
+houses |>
+  group_by(dpsf_hi_lo) |>
+  summarize(n = n())
 
-houses |> filter(dpsf < 400) |>
+houses |>
+  filter(dpsf < 400) |>
   ggplot(aes(x = dpsf)) +
-  geom_histogram(binwidth = 5)    # Intentionally undersmoothing to see gaps.
+    # Intentionally undersmoothing to see gaps
+    geom_histogram(binwidth = 5)
+```
 
-houses |> filter(dpsf < 400) |>
+```{r}
+#| fig-alt: "Density plot of dollars per square foot for Gainesville houses after excluding extreme values."
+
+houses |>
+  filter(dpsf < 400) |>
   ggplot(aes(x = dpsf)) +
-  geom_density(adjust = 0.8)      # Undersmoothing a bit.
+    # Undersmoothing a bit
+    geom_density(adjust = 0.8)
 ```
 
 
@@ -178,6 +192,7 @@ Notice that there is a "formula" method for `plot()` and for many other function
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 opar <- par(mar = c(5.1, 4.1, 0.1, 0.5)) 
 plot(price ~ sqft, data = myhouses) 
@@ -217,6 +232,7 @@ coef(lm_area)
 * Plotting with base-R.
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 opar <- par(mar = c(5.1, 4.1, 0.1, 0.1)) 
 plot(price ~ sqft, data = myhouses)
@@ -227,6 +243,7 @@ par(opar)
 * Plotting with `ggplot2`.
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 ggplot(myhouses, aes(x = sqft, y = price)) + 
   geom_point() +
@@ -380,6 +397,7 @@ Note: "Controlling for" means holding constant. So "controlling for area" means 
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
 
@@ -398,6 +416,7 @@ par(opar)
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 plot3 <- myhouses |> 
   bind_cols(fitted_price = predict(lm_aq)) |> 
@@ -418,6 +437,7 @@ houses_grid
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 plot3b <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
   geom_point() +
@@ -498,6 +518,7 @@ Interpretation is more complicated now. We estimate that mean house price:
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 opar <- par(mar = c(5.1, 5.1, 0.1, 0.1), mgp = c(2.5, 1, 0), las = 0)
 
@@ -519,6 +540,7 @@ houses_grid
 
 ```{r}
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
+#| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 plot4 <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
   geom_point() +

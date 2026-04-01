@@ -38,7 +38,7 @@ execute:
     k) Using data frame `USArrests`, find the across-state average murder rate (`Murder`) in regions where the percentage of the population living in urban areas (`UrbanPop`) exceeds 77%. Compare this with the average murder rate where urban area population is less than 50%.
     l) Use the `plot()` function to show `Murder` vs `Assault`. Identify and explain any relationships you see.
 
-2. Install the package `COUNT`. Then run the following:
+2. Install the `COUNT` package. Then run the following:
 ```{r}
 #| eval: false
   library(COUNT)

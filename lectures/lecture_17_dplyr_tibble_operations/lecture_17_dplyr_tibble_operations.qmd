@@ -23,7 +23,6 @@ execute:
 
 # Guitars Again
 ```{r}
-#| message: false
 
 mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
 model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",
@@ -496,6 +495,8 @@ slice_head(df, n = 10)
 * Using a hint from the help for `geom_segment()` to get a `type = "h"` plot with ggplot2.
 * Could use `+ theme(plot.margin = ...)` to change plot margins, but default `ggplot2` margins are ok.
 ```{r}
+#| fig-alt: "Segment plot of the estimated distribution of maximum run length from the simulation."
+
 ggplot(df, aes(x = maxrl, y = prop)) +
   geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 
   labs(title = "Estimated distribution of maximum run length.",

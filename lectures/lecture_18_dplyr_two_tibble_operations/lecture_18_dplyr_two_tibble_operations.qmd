@@ -53,7 +53,6 @@ Besides the assigned readings, see:
 
 # Guitars Again
 ```{r}
-#| message: false
 
 mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
 model <- c("Stratocaster", "Telecaster", "Firebird V", "Les Paul Standard", "ES175",

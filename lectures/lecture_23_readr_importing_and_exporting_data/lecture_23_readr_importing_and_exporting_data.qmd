@@ -245,7 +245,6 @@ For more complicated functions:
 Here is a first try at a function to fill a vector in the way that we filled the `College` column of the UF academic programs dataset.
 
 ```{r}
-#| message: false
 
 fill_vector <- function(x) {
     has_val <- which(!is.na(x))

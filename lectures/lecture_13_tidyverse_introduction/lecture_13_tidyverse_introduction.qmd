@@ -105,7 +105,6 @@ tibble(x = 1:3, y = c("a", "b", "c"))
   6. **Visualize** with `ggplot2`
 
 ```{r}
-#| message: false
 
 example_tbl <-
   tibble(
@@ -120,7 +119,6 @@ example_tbl
 # A Minimal Example
 
 ```{r}
-#| message: false
 
 tibble(
   fruit = c("apple", "banana", "apple", "pear"),

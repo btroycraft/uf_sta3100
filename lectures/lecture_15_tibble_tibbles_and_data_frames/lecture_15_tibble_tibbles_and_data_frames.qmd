@@ -35,6 +35,7 @@ execute:
 The `tibble` package is loaded by the `tidyverse` meta-package.
 ```{r}
 #| echo: true
+
 library(tibble)   # Not needed if you have run library("tidyverse") instead
 
 mfr <- rep(c("Fender", "Gibson", "Martin"), times = c(2,4,1))
@@ -53,11 +54,13 @@ guitars_tbl <- tibble(mfr, model, serial, type, body, w_case_kg, case_kg)
 
 ```{r}
 #| echo: true
+
 guitars_df
 ```
 ***
 ```{r}
 #| echo: true
+
 guitars_tbl
 ```
 ***
@@ -157,6 +160,7 @@ Behavior:
 **For a `tibble`, drop = FALSE by default:**
 ```{r}
 #| echo: true
+
 guitars_df[, 5]
 guitars_tbl[, 5]
 ```
@@ -165,6 +169,7 @@ guitars_tbl[, 5]
 Even in this case:
 ```{r}
 #| echo: true
+
 guitars_df[1, 5]
 guitars_tbl[1, 5]
 ```
@@ -173,6 +178,7 @@ guitars_tbl[1, 5]
 **Data frames (and lists) allow partial matching of names when using $:**
 ```{r}
 #| echo: true
+
 names(guitars_df)
 guitars_df$mo
 ```
@@ -180,6 +186,7 @@ guitars_df$mo
 Although not with `[[`:
 ```{r}
 #| echo: true
+
 guitars_df[["mo"]]
 ```
 ***
@@ -187,6 +194,7 @@ guitars_df[["mo"]]
 **Tibbles do not:**
 ```{r}
 #| echo: true
+
 names(guitars_tbl)
 guitars_tbl$mo
 ```
@@ -199,12 +207,14 @@ guitars_tbl$mo
 **List Columns Are Easy in Tibbles**
 ```{r}
 #| echo: true
+
 tibble(x = 1:3, y = list(1:5, 1:10, 1:20))
 ```
 
 And not so easy with ordinary data frames:
 ```{r}
 #| echo: true
+
 data.frame(x = 1:3, y = list(1:5, 1:10, 1:20))
 ```
 
@@ -212,6 +222,7 @@ data.frame(x = 1:3, y = list(1:5, 1:10, 1:20))
 Another example:
 ```{r}
 #| echo: true
+
 tibble(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
 data.frame(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
 ```
@@ -220,12 +231,14 @@ data.frame(x = 1:2, y = list(num = 1:2, ltr = letters[1:4]))
 So this what `data.frame()` is doing (and was trying to do in the first example):
 ```{r}
 #| echo: true
+
 data.frame(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
 ```
 
 Tibbles are lazy and surly (in a good way?):
 ```{r}
 #| echo: true
+
 tibble(x = 1:2, y.num = 1:2, y.ltr = letters[1:4])
 ```
 
@@ -237,6 +250,7 @@ Finally, here are two ways to get a list column in an ordinary data frame.
 
 ```{r}
 #| echo: true
+
 data.frame(x = 1:2, y = I(list(num = 1:2, ltr = letters[1:4])))
 ```
 
@@ -244,6 +258,7 @@ data.frame(x = 1:2, y = I(list(num = 1:2, ltr = letters[1:4])))
 
 ```{r}
 #| echo: true
+
 df <- data.frame(x = 1:2)
 df$y <- list(num = 1:2, ltr = letters[1:4])
 df
@@ -266,10 +281,12 @@ You can use non-syntactic names (not recommended), but you must quote them with 
 
 ```{r}
 #| echo: true
+
 _x <- 1:5
 ```
 ```{r}
 #| echo: true
+
 `_x` <- 1:5
 `_x`
 ```
@@ -278,6 +295,7 @@ _x <- 1:5
 
 ```{r}
 #| echo: true
+
 x <- data.frame(`crazy name` = 1)
 x
 
@@ -292,6 +310,7 @@ y$`crazy name`
 **Notice this difference between `tibble`() and as_tibble()**
 ```{r}
 #| echo: true
+
 lst <- list(l = letters[1:3], n = 1:3)
 tibble(lst)
 

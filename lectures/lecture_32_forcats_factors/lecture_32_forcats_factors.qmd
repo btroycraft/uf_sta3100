@@ -39,7 +39,6 @@ Why factors?
   
 **Creating a Factor**
 ```{r}
-#| message: false
 
 x <- sample(rep(c("M","F"), 3), 6)            # x is a character vector 
 x   
@@ -232,6 +231,7 @@ What is the shape of this distribution’s density?
 **Base-R Plot**
 ```{r}
 #| fig-cap: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
+#| fig-alt: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
 
 opar <- par(mar = c(5.1, 4.1, 0.1, 0.1)) 
 curve(dweibull(x, shape = inc_shape, scale = inc_scale),
@@ -250,6 +250,7 @@ library(ggplot2)
 
 ```{r}
 #| fig-cap: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
+#| fig-alt: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
 
 ggplot() +
     geom_function(fun = dweibull, args = list(shape = inc_shape, scale = inc_scale)) +
@@ -260,6 +261,7 @@ ggplot() +
 The second one is better:
 ```{r}
 #| fig-cap: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
+#| fig-alt: "Weibull density with shape parameter 1.2 and scale parameter 100,000."
 
 ggplot() +
     geom_function(fun = dweibull, args = list(shape = inc_shape, scale = inc_scale)) +
@@ -482,11 +484,13 @@ fct_rev(of)
 
 ```{r}
 #| fig-cap: "Blood type of mother."
+#| fig-alt: "Blood type of mother."
 
 ggplot(hcv, aes(x = bloodtype)) + geom_bar()
 ```
 ```{r}
 #| fig-cap: "Blood type of mother."
+#| fig-alt: "Blood type of mother."
 
 ggplot(hcv, aes(x = fct_infreq(bloodtype))) + geom_bar()
 ```
@@ -496,6 +500,7 @@ ggplot(hcv, aes(x = fct_infreq(bloodtype))) + geom_bar()
 
 ```{r}
 #| fig-cap: "HCV genotype carried by mother."
+#| fig-alt: "HCV genotype carried by mother."
 
 ggplot(hcv, aes(x = hcv_genotype)) + 
   labs(x = "Genotype", y = "Frequency") + 
@@ -504,6 +509,7 @@ ggplot(hcv, aes(x = hcv_genotype)) +
 
 ```{r}
 #| fig-cap: "HCV genotype carried by mother."
+#| fig-alt: "HCV genotype carried by mother."
 
 ggplot(hcv, aes(x = fct_infreq(hcv_genotype))) + 
   labs(x = "Genotype", y = "Frequency") + 
@@ -526,6 +532,7 @@ transmission_by_bloodtype
 
 ```{r}
 #| fig-cap: "Vertical tranmission rate by blood type."
+#| fig-alt: "Vertical tranmission rate by blood type."
 
 transmission_by_bloodtype |> 
   ggplot(aes(x = rate, y = bloodtype)) + 
@@ -534,6 +541,7 @@ transmission_by_bloodtype |>
 
 ```{r}
 #| fig-cap: "Vertical tranmission rate by blood type."
+#| fig-alt: "Vertical tranmission rate by blood type."
 
 transmission_by_bloodtype |> 
   ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate))) + 
@@ -546,6 +554,7 @@ transmission_by_bloodtype |>
 
 ```{r}
 #| fig-cap: "Vertical tranmission rate by blood type."
+#| fig-alt: "Vertical tranmission rate by blood type."
 
 transmission_by_bloodtype |> 
   ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate), size = n)) + 
@@ -580,6 +589,7 @@ transmission_by_abo
 
 ```{r}
 #| fig-cap: "Vertical tranmission rate by blood group."
+#| fig-alt: "Vertical tranmission rate by blood group."
 
 transmission_by_abo |> 
   ggplot(aes(x = rate, y = fct_reorder(abo, rate), size = n)) + 

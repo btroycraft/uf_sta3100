@@ -84,6 +84,7 @@ We will use several of these in this course.
 #| fig-height: 5
 #| fig-cap: "Normal density with mean 100 and standard deviation 15."
 #| fig-alt: "Plot of Normal density with mean 100 and standard deviation 15."
+
   
   # Saving pop mean and std dev for reuse
   mu <- 100 ; sigma <- 15
@@ -104,7 +105,6 @@ We will use several of these in this course.
 # Normal Quantiles
 
 ```{r}
-
   # Given an upper tail probability, find the z-value.
   qnorm(0.025, lower.tail = FALSE) 
 
@@ -120,7 +120,6 @@ We will use several of these in this course.
 # Normal Probabilities
 
 ```{r}
-
   # Lower tail probability (area)
   pnorm(125, mean = mu, sd = sigma)   
   # Same after converting to z-score
@@ -158,6 +157,7 @@ We will use several of these in this course.
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Frequency histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15."
+#| fig-alt: "Frequency histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15."
 
   hist(x)                 
 ```
@@ -181,6 +181,7 @@ We will use several of these in this course.
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
+#| fig-alt: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
 
   opar <- par(mar = c(5.1, 4.1, 1.1, 0.1))
   hist(x, freq = FALSE, main = "")
@@ -203,6 +204,7 @@ In this version:
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
+#| fig-alt: "Histogram of 30 observations drawn from a normal distribution with mean 100 and standard deviation 15 with the true density superimposed."
 
   opar <- par(mar = c(5.1, 4.1, 1.1, 0.1))
   
@@ -226,6 +228,7 @@ In this version:
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Kernel density estimator from a sample of 30 normal random variables with mean 100 and standard deviation 15. The true (dashed) and fitted (dotted) normal densities are superimposed for comparison."
+#| fig-alt: "Kernel density estimator from a sample of 30 normal random variables with mean 100 and standard deviation 15. The true (dashed) and fitted (dotted) normal densities are superimposed for comparison."
 
   opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
   dx <- density(x)
@@ -254,6 +257,7 @@ Plot the quantiles of the empirical distribution (i.e., the order statistics) ag
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Normal QQ plot from a sample of 30 normal random variables with mean 100 and standard deviation 15."
+#| fig-alt: "Normal QQ plot from a sample of 30 normal random variables with mean 100 and standard deviation 15."
 
   opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
   qqnorm(x, main = NULL)
@@ -266,7 +270,6 @@ Plot the quantiles of the empirical distribution (i.e., the order statistics) ag
 # Empirical CDF
 
 ```{r}
-
   px <- ecdf(x)
   px
 ```
@@ -276,6 +279,7 @@ Plot the quantiles of the empirical distribution (i.e., the order statistics) ag
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Empirical CDF from a sample of 30 normal random variables with mean 100 and standard deviation 15. True CDR superimposed."
+#| fig-alt: "Empirical CDF from a sample of 30 normal random variables with mean 100 and standard deviation 15. True CDR superimposed."
 
   opar <- par(mar = c(5.1, 4.1, 0.1, 0.1))
   plot(px, main = NULL, verticals = TRUE, cex = 0.75,

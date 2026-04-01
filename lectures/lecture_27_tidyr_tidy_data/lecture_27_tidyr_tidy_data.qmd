@@ -32,7 +32,6 @@ These principles are commonly violated in a variety of ways.
 # Border Crossings Data
 The file `Annual Table.tsv` was obtained from the U.S. Department of Transportation's [Bureau of Transportation Statistics](https://www.bts.gov/).
 ```{r}
-#| message: false
 
 border_tsv <- "Annual Table.csv"
 ```

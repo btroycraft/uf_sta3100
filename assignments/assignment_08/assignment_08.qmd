@@ -21,10 +21,9 @@ execute:
 
 **General Instructions:** For these exercises, we will use the charm city circulator bus ridership dataset, `Charm_City_Circulator_Ridership.csv`. After moving the dataset file to the location of your .qmd, or modifying the working directory to the dataset location, use the following code to read in and transform the dataset to be ready for use in plotting:
 ```{r}
-#| eval: false
-
   library(tidyverse)
   library(lubridate)
+
   circ <- read_csv("Charm_City_Circulator_Ridership.csv")
   
   # convert dates
@@ -63,7 +62,7 @@ execute:
     select(-type) |>
     rename(Average = number)
 ```
-In these questions, try to use `ggplot2` if possible. You may use any of the tibbles created in the code above. Take some time to acquaint yourselves with them before proceeding. Each of the tibbles reflects the bus ridership, but they are structured differently.
+In these questions, use `ggplot2` if possible. You may use any of the tibbles created in the code above. Take some time to acquaint yourselves with them before proceeding. Each of the tibbles reflects the bus ridership, but they are structured differently.
 
 ## Problems:
 
@@ -75,8 +74,6 @@ In these questions, try to use `ggplot2` if possible. You may use any of the tib
 
 3.  Plot average ridership by date. Color the points by route. Use the pallete below. Colors should follow the route name (with `banner` corresponding to "blue"):
     ```{r}
-    #| eval: false
-    
       pal <- c("darkorange", "purple", "darkgreen", "blue")
     ```
 4. Plot average ridership by date in separate panels by route.

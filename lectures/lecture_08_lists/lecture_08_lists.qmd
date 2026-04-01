@@ -194,6 +194,7 @@ or
 #| fig-width: 6
 #| fig-height: 5
 #| fig-cap: "Regression of Miles/(US) Gallon on Weight (1000 lbs)"
+#| fig-alt: "Regression of Miles/(US) Gallon on Weight (1000 lbs)"
 
   opar <- par(mar = c(5.1, 4.1, 1.1, 1.1))
   
