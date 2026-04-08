@@ -143,7 +143,7 @@ What if we now wanted to move the type column back?
 ```{r}
 	guitars |>
 		filter((type == "electric") & (weight < 8)) |>
-			select(-type, -weight)
+		select(-type, -weight)
 
 	## select(filter(guitars, (type == "electric") & (weight < 8)), -type, -weight)
 ```
@@ -247,8 +247,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type) |>
-			summarise(avg_wt = mean(weight)) |>
-				arrange(desc(type))
+		summarise(avg_wt = mean(weight)) |>
+		arrange(desc(type))
 ```
 
 * Note that a `tibble` is returned (ready for more pipes)
@@ -266,7 +266,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type) |>
-			summarise(n = n(), avg_wt = mean(weight))
+		summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
@@ -282,7 +282,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type, body) |>
-			summarise(n = n(), avg_wt = mean(weight))
+		summarise(n = n(), avg_wt = mean(weight))
 ```
 
 ***
@@ -292,8 +292,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type, body) |>
-			summarise(n = n(), avg_wt = mean(weight)) |>
-				group_vars()
+		summarise(n = n(), avg_wt = mean(weight)) |>
+		group_vars()
 ```
 
 ***
@@ -302,7 +302,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type, body) |>
-			summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
+		summarise(n = n(), avg_wt = mean(weight), .groups = "keep")
 ```
 
 ***
@@ -311,8 +311,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		group_by(type, body) |>
-			summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
-				group_vars()
+		summarise(n = n(), avg_wt = mean(weight), .groups = "keep") |>
+		group_vars()
 ```
 
 ***
@@ -328,7 +328,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	guitars |>
 		summarise(n = n(), avg_wt = mean(weight), .by = c(type, body)) |>
-			group_vars()
+		group_vars()
 ```
 
 # Revisiting the Titanic
@@ -355,7 +355,7 @@ guitars[sample(nrow(guitars), 3), ]
 		summarize(n = sum(n))
 	Titanic_tbl |>
 		group_by(Survived) |>
-			summarize(n = sum(n))
+		summarize(n = sum(n))
 ```
 
 ***
@@ -363,8 +363,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Survived) |>
-			summarize(n = sum(n)) |>
-				mutate(prop = n/sum(n))
+		summarize(n = sum(n)) |>
+		mutate(prop = n/sum(n))
 ```
 
 * Why does this work?
@@ -372,8 +372,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Survived) |>
-			summarize(n = sum(n)) |>
-				group_vars()
+		summarize(n = sum(n)) |>
+		group_vars()
 ```
 
 ***
@@ -381,7 +381,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Class, Survived) |>
-			summarize(n = sum(n))
+		summarize(n = sum(n))
 ```
 
 ***
@@ -389,8 +389,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Class, Survived) |>
-			summarize(n = sum(n)) |>
-				mutate(prop = n/sum(n))
+		summarize(n = sum(n)) |>
+		mutate(prop = n/sum(n))
 ```
 
 * This works because `summarize()` has peeled off the last level of grouping (“Survived”), leaving only grouping by "Class" (see next slide). Thus the `sum(n)` in `mutate` is grouped by “Class”.
@@ -402,8 +402,8 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Class, Survived) |>
-			summarize(n = sum(n)) |>
-				group_vars()
+		summarize(n = sum(n)) |>
+		group_vars()
 ```
 
 * Using `summarize()` with the .by optional argument (new in `dplyr` 1.1.0) only uses transient grouping. For this reason, the last example does not work in the same way if we use .by instead of `group_by()` (see next slide).
@@ -415,7 +415,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		summarize(n = sum(n), .by = c(Class, Survived)) |>
-			mutate(prop = n/sum(n))
+		mutate(prop = n/sum(n))
 ```
 
 ***
@@ -424,7 +424,7 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		summarize(n = sum(n), .by = c(Class, Survived)) |>
-			mutate(prop = n/sum(n), .by = Class)
+		mutate(prop = n/sum(n), .by = Class)
 ```
   - Is this easier to understand than the `group_by()` approach?
 
@@ -435,9 +435,9 @@ guitars[sample(nrow(guitars), 3), ]
 ```{r}
 	Titanic_tbl |>
 		group_by(Class, Survived) |>
-			summarize(n = sum(n)) |>
-				ungroup() |>
-					mutate(prop = n/sum(n))
+		summarize(n = sum(n)) |>
+		ungroup() |>
+		mutate(prop = n/sum(n))
 ```  
 
 # Pivoting
@@ -445,9 +445,9 @@ Here’s a way to make the data frame look like a table.
 ```{r}
 	Titanic_tbl |>
 		group_by(Class, Survived) |>
-			summarize(n = sum(n)) |>
-				mutate(prop = n/sum(n)) |>
-					pivot_wider(names_from = Survived, values_from = c(n, prop))
+		summarize(n = sum(n)) |>
+		mutate(prop = n/sum(n)) |>
+		pivot_wider(names_from = Survived, values_from = c(n, prop))
 ```  
 
 ***
@@ -456,8 +456,8 @@ And a variation, pivoting and then adding a single column of proportions.
 ```{r}
 	Titanic_tbl |>
 		summarize(n = sum(n), .by = c(Class, Survived)) |>
-			pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
-				mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
+		pivot_wider(names_from = Survived, names_prefix = "Surv_", values_from = n) |>
+		mutate(prop_Yes = Surv_Yes / (Surv_Yes + Surv_No))
 ``` 
 
 
@@ -474,7 +474,7 @@ There is no `as_tibble()` method for class rle, but this works:
 	library(tidyverse)
 	xr_df <- xr |>
 		unclass() |>
-			as_tibble()
+		as_tibble()
 	
 	xr_df |>
 		summarize(max_run = max(lengths)) # Length of longest run overall.
@@ -491,9 +491,9 @@ Simulation
 		xr <- rle(x)
 		maxrl[i] <- as_tibble(unclass(xr)) |>
 			group_by(values) |>
-				summarise(max_run = max(lengths)) |>
-					filter(values == "H") |>
-						pull(max_run)
+			summarise(max_run = max(lengths)) |>
+			filter(values == "H") |>
+			pull(max_run)
 		#maxrl[i] <- max(xr$lengths)
 		}
 ```
@@ -502,7 +502,7 @@ Now we plot the maximum run length
 	df <- tibble(maxrl) |>
 		# similar to summarize(n = n(), .by = maxrl)
 		count(maxrl) |>
-			mutate(prop = n / sum(n))
+		mutate(prop = n / sum(n))
 	slice_head(df, n = 10)
 ```
 
@@ -512,8 +512,8 @@ Now we plot the maximum run length
 #| fig-alt: "Segment plot of the estimated distribution of maximum run length from the simulation."
 
 	ggplot(df, aes(x = maxrl, y = prop)) +
-		geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) + 
-			labs(title = "Estimated distribution of maximum run length.",
+		geom_segment(aes(yend = 0, xend = maxrl), linewidth = 2) +
+		labs(title = "Estimated distribution of maximum run length.",
 		x = "Maximum Run Length", 
 		y = "Relative Frequency")
 ```

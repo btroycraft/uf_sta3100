@@ -24,7 +24,7 @@ execute:
 # Initial Reading of the Data
 
 The file `schedule_b-2023-10-27T01_16_01.csv` was downloaded from the
-Federal Election Commission’s [website](https://www.fec.gov/data/disbursements/?data_type=processed&two_year_transaction_period=2024&min_date=01%2F01%2F2023&max_date=12%2F31%2F2024). This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period.
+Federal Election Commission’s [website](https://www.fec.gov/data/disbursements/?data_type=processed&two_year_transaction_period=2022&min_date=01%2F01%2F2021&max_date=12%2F31%2F2022). This file contains the disbursements were submitted by the "Devolder-Santos for Congress" campaign committee (committee id C00721365) and processed by the FEC for the 2021-2022 period.
 
 * A warning occurs when the file is read using `readr::read_csv()`.
 
@@ -76,7 +76,7 @@ So what happened?
 ```{r}
 	santos |>
 		group_by(is.na(pick(18))) |>
-			summarize(n = n())    # A dplyr version.
+		summarize(n = n())    # A dplyr version.
 	santos |>
 		summarize(n = n(), .by = 18)
 ```
@@ -313,9 +313,13 @@ Working with `readr`’s Guesses
 ```{r}
 #| results: hide
 
-	sink("santos_cols.txt")
-	print(santos_cols)
-	sink()
+	"schedule_b-2023-10-27T01_16_01.csv" |>
+  		spec_csv() |>
+  		capture.output(file = "santos_cols.txt")
+
+	"schedule_b-2023-10-27T01_16_01.csv" |>
+  		read_csv(col_types = parse("new_file.txt") |> eval())
+
 ```
 
 * This would be safer (don’t overwrite an existing file):
@@ -324,22 +328,121 @@ Working with `readr`’s Guesses
 #| results: hide
 
 	file_name <- "santos_cols.txt" 
-	if (!file.exists(file_name)) { 
-		sink(file_name) 
-		print(santos_cols)
-		sink() 
-		}
+	if(!file.exists(file_name)){ 
+		"schedule_b-2023-10-27T01_16_01.csv" |>
+  			spec_csv() |>
+  			capture.output(file = "santos_cols.txt")
+	}
 ```
 
-* Or this (include a time stamp in the file name):
+* Or this (small loop to add number to the file name if it exists):
 
 ```{r}
 #| results: hide
 
-	file_name <- paste0("santos_cols-", now(), ".txt") 
-	sink(file_name)
-	print(santos_cols)
-	sink()
+	file_name <- "santos_cols.txt"
+	if(file_name |> file.exists()){
+		i <- 1
+		repeat{
+			file_name_new <- file_name |>
+				strsplit("\\.") |>
+				unlist() |>
+				paste0(collapse = paste0(i, "."))
+			if(!file.exists(file_name_new)){
+				"schedule_b-2023-10-27T01_16_01.csv" |>
+  					spec_csv() |>
+  					capture.output(file = file_name_new)
+				break
+			}
+			i <- i+1
+		}
+	}
+```
+
+* This idea can be made into helper functions:
+
+```{r}
+#| results: hide
+
+
+	# define a generic function
+	spec_to_file <- function(x, ...) UseMethod("spec_to_file")
+
+	# method for data frames calling spec()
+	spec_to_file.data.frame <- function(x, file, overwrite = TRUE, ...){
+
+		if(overwrite || !file.exists(file)){
+			return(
+				x |>
+					readr::spec(...) |>
+					capture.output(file)
+			)
+		}
+		if(file.exists(file)){
+			i <- 1
+			repeat{
+				file_new <- file |>
+					strsplit("\\.") |>
+					unlist() |>
+					paste0(collapse = paste0(i, "."))
+				if(!file.exists(file_new)){
+					return(
+						x |>
+							readr::spec(...) |>
+							capture.output(file = file_new)
+					)
+				}
+				i <- i+1
+			}
+		}	
+	}
+
+	# method for string calling spec_csv()
+	spec_to_file.character <- function(x, file, overwrite = TRUE, ...){
+
+		if(overwrite || !file.exists(file)){
+			return(
+				x |>
+					readr::spec_csv(...) |>
+					capture.output(file)
+			)
+		}
+		if(file.exists(file)){
+			i <- 1
+			repeat{
+				file_new <- file |>
+					strsplit("\\.") |>
+					unlist() |>
+					paste0(collapse = paste0(i, "."))
+				if(!file.exists(file_new)){
+					return(
+						x |>
+							readr::spec_csv(...) |>
+							capture.output(file = file_new)
+					)
+				}
+				i <- i+1
+			}
+		}	
+	}
+
+	cols_from_file <- function(file){
+		file_text <-
+			readLines(file) |>
+				paste(collapse = "\n")
+		if(!grepl("cols\\(", file_text)){
+			stop("File must contain the output of a spec() call.")
+		}
+		file_text |>
+			parse(text = _) |>
+			eval()
+	}
+
+	"schedule_b-2023-10-27T01_16_01.csv" |>
+		spec_to_file("santos_col.txt")
+
+	"schedule_b-2023-10-27T01_16_01.csv" |>
+  		read_csv(col_types = cols_from_file("santos_cols.txt"))
 ```
 
 ***
@@ -383,16 +486,17 @@ After examining the column names and doing some other checking, I decided on the
 
 ```{r}
 	santos <- read_csv(santos_file,
-		col_types = cols(.default = col_character(),
-		report_year = col_integer(),
-		line_number = col_integer(),
-		file_number = col_integer(), 
-		disbursement_date = col_datetime(format = ""),
-		disbursement_amount = col_double(), 
-		fec_election_year = col_integer(),
-		load_date = col_datetime(format = ""),
-		semi_annual_bundled_refund = col_double(),
-		two_year_transaction_period = col_integer()))
+		col_types = cols(
+			.default = col_character(),
+			report_year = col_integer(),
+			line_number = col_integer(),
+			file_number = col_integer(), 
+			disbursement_date = col_datetime(format = ""),
+			disbursement_amount = col_double(), 
+			fec_election_year = col_integer(),
+			load_date = col_datetime(format = ""),
+			semi_annual_bundled_refund = col_double(),
+			two_year_transaction_period = col_integer()))
 	summary(spec(santos))
 ```
 

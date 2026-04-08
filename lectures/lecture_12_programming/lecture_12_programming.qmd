@@ -66,14 +66,18 @@ You can also change default values.
 ```{r}
 	k <- 200
 	annuityAmt <- function(n, R, i) {
-		R * ((1 + i) ^ n - 1) + k    # if not defined in the function, R will use the variable in the global environment
+		R * ((1 +
+			i) ^ n - 1) +
+			k    # if not defined in the function, R will use the variable in the global environment
 		}
 	annuityAmt(4, 1000, 0.0528)
 ```
 ```{r}
 	k <- 200
 	annuityAmt <- function(n, R, i) {
-		R * ((1 + i) ^ n - 1) + k
+		R * ((1 +
+			i) ^ n - 1) +
+			k
 		k <- 300     # Change the value of k locally
 		}
 	annuityAmt(4, 1000, 0.0528)
@@ -82,7 +86,9 @@ You can also change default values.
 ```{r}
 	k <- 200
 	annuityAmt <- function(n, R, i) {
-		R * ((1 + i) ^ n - 1) + k
+		R * ((1 +
+			i) ^ n - 1) +
+			k
 		k <<- 300  # Change the value of k globally
 		}
 	annuityAmt(4, 1000, 0.0528)

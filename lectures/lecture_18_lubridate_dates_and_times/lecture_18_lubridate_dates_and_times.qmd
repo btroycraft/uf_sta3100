@@ -166,7 +166,7 @@ execute:
 ```{r}
 	tv |>
 		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "))) |>
-			pull(dt)
+		pull(dt)
 ```
        - Note: `stringr::str_c()` is very similar to `paste0()`.
   
@@ -178,7 +178,7 @@ execute:
 ```{r}
 	tv |>
 		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York")) |>
-			pull(dt)
+		pull(dt)
 ```
 
 * “`After conc. I`” rows leave us with `NA`, which seems reasonable.
@@ -416,10 +416,10 @@ Let’s read the data again and get back into it.
 ```{r}
 	tv <- tv |>
 		mutate(`Time (ET)` = str_replace_all(`Time (ET)`, c("a.m." = "AM", "p.m." = "PM"))) |>
-			mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
+		mutate(dt = ymd_hm(str_c(Day, `Time (ET)`, sep = " "), tz = "America/New_York"))
 	tv |>
 		select(Day, `Time (ET)`, Site, dt) |>
-			slice_head(n = 8)
+		slice_head(n = 8)
 ```
 
 ***
@@ -435,7 +435,7 @@ For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadle
 		separate_wider_regex(Site, c(Site = ".*", " ", Number = "II?"))
 	tv |>
 		select(Day, `Time (ET)`, Site, Number, dt) |>
-			slice_head(n = 7)
+		slice_head(n = 7)
 ```
 
 
@@ -457,9 +457,11 @@ For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadle
 ```{r}
 	tv2 <- tv |>
 		filter(Number == "I") |>
-			select(Site, Number, dt) |>
-				mutate(Number = "II",
-		dt = dt + dhours(2) + dminutes(40))
+		select(Site, Number, dt) |>
+		mutate(Number = "II",
+		dt = dt +
+			dhours(2) +
+			dminutes(40))
 	tv2
 ```
 
@@ -471,9 +473,9 @@ For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadle
 ```{r}
 	tv |>
 		left_join(tv2, by = c("Site", "Number")) |>
-			mutate(dt = coalesce(dt.x, dt.y)) |>
-				select(Site, Number, dt.x, dt.y, dt) |>
-					head(n = 8)
+		mutate(dt = coalesce(dt.x, dt.y)) |>
+		select(Site, Number, dt.x, dt.y, dt) |>
+		head(n = 8)
 ```
 
 ***
@@ -483,8 +485,8 @@ For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadle
 ```{r}
 	tv |>
 		rows_update(tv2, by = c("Site", "Number")) |>
-			select(Site, Number, dt) |>
-				head(n = 8)
+		select(Site, Number, dt) |>
+		head(n = 8)
 ```
 
 ***
@@ -496,8 +498,8 @@ For more details, please see [https://r4ds.hadley.nz/regexps](https://r4ds.hadle
 ```{r}
 	tv <- tv |>
 		rows_update(tv2, by = c("Site", "Number"))  |>
-			select(-Day, -`Time (ET)`) |>
-				rename("Date_Time" = dt)
+		select(-Day, -`Time (ET)`) |>
+		rename("Date_Time" = dt)
 ```
 
 * Have a look at the result on the next slide.

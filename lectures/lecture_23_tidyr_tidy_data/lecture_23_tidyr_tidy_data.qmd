@@ -32,7 +32,6 @@ These principles are commonly violated in a variety of ways.
 # Border Crossings Data
 The file `Annual Table.tsv` was obtained from the U.S. Department of Transportation's [Bureau of Transportation Statistics](https://www.bts.gov/).
 ```{r}
-
 	border_tsv <- "Annual Table.csv"
 ```
 
@@ -80,7 +79,7 @@ Looking at these data, we see that:
 
 We can fix this problem with `tidyr::pivot_longer()`.
 
-* Aside: Interestingly, the xlsx version of the dataset also exhibits the _empty- cells-make-reading-easier_ problem, but we know how to fix that with `tidyr::file()`.
+* Aside: Interestingly, the xlsx version of the dataset also exhibits the _empty- cells-make-reading-easier_ problem, but we know how to fix that with `tidyr::fill()`.
 
 # Pivoting Longer
 
@@ -97,7 +96,7 @@ We can fix this problem with `tidyr::pivot_longer()`.
 ```{r}
 	border |>
 		group_by(is.na(count)) |>
-			summarize(n = n())
+		summarize(n = n())
 ```
 
 * The missing counts could possibly be taken to be zeros, but it is not clear at this stage whether they are
@@ -148,7 +147,7 @@ However, removing the columns `Measure` and `count` used in `names_from` and `va
 ```{r}
 	border <- border |>
 		rename(Port = `Port Name`) |> 
-			janitor::clean_names()
+		janitor::clean_names()
 	names(border)
 ```
 

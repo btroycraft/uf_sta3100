@@ -105,8 +105,8 @@ See [Wikipedia’s List of Unicode Characters](https://en.wikipedia.org/wiki/Lis
 ```{r}
 #| results: asis
 
-	ltrs <- c("\U3B3\U3C1\U3AC\U3BC\U3BC\U3B1\U3C4\U3B1", "\U645\U644\U639", "\U27F7",
-		"\U5EA\U5D5\U5D9\U5EA\U5D5\U5D0", "\U5B57\U6BCD")
+	ltrs <- c("\U3B3\U3C1\U3AC\U3BC\U3BC\U3B1\U3C4\U3B1", "\U62D\U631\U648\U641", "\U27F7",
+		"\U5D0\U5D5\U5EA\U5D9\U5D5\U5EA", "\U5B57\U6BCD")
 	writeLines(paste(ltrs, collapse = " "))
 	cat(paste(ltrs, collapse = " "))
 ```
@@ -190,9 +190,9 @@ Or a pipe:
 	str_c(c(7, 2, 6), letters[24:26], sep = "*") |>
 		str_flatten(" + ")     # New way
 	people <- c("Newman", "Jerry") 
-	dialogue <- 
-	str_c(rev(people), ": ", "Hello ", people, ".") |> 
-		str_flatten("\n") 
+	dialogue <-
+		str_c(rev(people), ": ", "Hello ", people, ".") |> 
+			str_flatten("\n") 
 	writeLines(dialogue)
 ```
 

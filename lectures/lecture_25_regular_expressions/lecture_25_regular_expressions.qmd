@@ -355,7 +355,7 @@ This is probably easier to understand than:
 		consonants = str_count(word, "[^AEIOUaeiou]")) 
 	df |>
 		slice_sample(n = 6, replace = TRUE) |>
-			arrange(word)
+		arrange(word)
 ```
 
 # Extract Matches
@@ -521,7 +521,7 @@ Groups defined by parentheses in the regular expression.
 	## noun <- regex("\\b(a|the) ([^ ]+)\\b", ignore_case = TRUE) # Would be better.
 	sentences_with_noun <- sentences |> 
 		str_subset(noun) |>
-			head(10)
+		head(10)
 ```
 
 * `str_extract()` gives just the matches.
@@ -607,7 +607,7 @@ Groups defined by parentheses in the regular expression.
 ```{r}
 	sentences |> 
 		head(4) |> 
-			str_split(" ")
+		str_split(" ")
 ```
 
 * `str_split()` returns a list because each element of a character vector might contain a different number of pieces.
@@ -616,7 +616,7 @@ Groups defined by parentheses in the regular expression.
 ```{r}
 	sentences |> 
 		head(4) |> 
-			str_split(" ", simplify = TRUE)
+		str_split(" ", simplify = TRUE)
 ```
 
 ***
@@ -626,7 +626,7 @@ Groups defined by parentheses in the regular expression.
 ```{r}
 	sentences |> 
 		head(4) |> 
-			str_split(" ", n = 3, simplify = TRUE)
+		str_split(" ", n = 3, simplify = TRUE)
 ```
 
 *** 
@@ -640,12 +640,12 @@ Groups defined by parentheses in the regular expression.
 	str_split(x, boundary("sentence"))
 ```
 
-* To split into indvidual characters, either use empty string `""` or `boundary(character)`.
+* To split into individual characters, either use empty string `""` or `boundary(character)`.
 
 ```{r}
 	words |>
 		sample(size = 3) |>
-			str_split("")
+		str_split("")
 ```
 
 * The tidyverse package `purrr` provides the function `flatten_chr()`, which we can use to convert the list of character vectors returned by `str_split()` into a single _long_ character vector.
@@ -653,8 +653,8 @@ Groups defined by parentheses in the regular expression.
 ```{r}
 	words |> 
 		str_to_lower() |> 
-			str_split("") |> 
-				flatten_chr() |> 
-					table() |> 
-						sort()
+		str_split("") |> 
+		flatten_chr() |> 
+		table() |> 
+		sort()
 ```

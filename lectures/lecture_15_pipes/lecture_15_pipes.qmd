@@ -87,10 +87,10 @@ This makes them especially pipe-friendly.
 * Follow the sequence of actions.
 ```{r}
 	gmean_evens <-
-	seq(from = 2, to = 100, by = 2) |>
-		log() |>
+		seq(from = 2, to = 100, by = 2) |>
+			log() |>
 			mean() |>
-				exp()
+			exp()
 	gmean_evens
 ```
 
@@ -149,11 +149,10 @@ This makes them especially pipe-friendly.
 ```
 
 ```{r}
-	guitars2 <-
-	guitars |>
-		transform(kg = w_case_kg - case_kg) |>
+	guitars2 <- guitars |>
+			transform(kg = w_case_kg - case_kg) |>
 			transform(lb = 2.2 * kg) |>
-				subset(select = -c(w_case_kg, case_kg, kg))
+			subset(select = -c(w_case_kg, case_kg, kg))
 	guitars2
 ```
 
@@ -174,7 +173,7 @@ How can we do these two calls to `log()` with pipes?
 ```{r}
 	x |>
 		log(4)    # Same as  x |>
-			log(base = 4)
+		log(base = 4)
 ```
 * For the second one, we can use the “_” placeholder with a named argument.
 ```{r}

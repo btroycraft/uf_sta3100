@@ -184,7 +184,7 @@ Scatterplots are drawn using the `plot()` function.  Its basic usage is `plot(x,
 
 Quantile-quantile plots (otherwise known as QQ plots) are a type of scatterplot used to compared the distributions of two groups or to compare a sample with a reference distribution.  
 
-* When the distributions of X and Y match, the points in the QQ plot will lie near the line y=x.  We will see a different straight line if one distribution is a linear transofrmation of the other.  On the other hand, if the two distributions are not the same, we will see systematic patterns in the QQ plot.
+* When the distributions of X and Y match, the points in the QQ plot will lie near the line y=x.  We will see a different straight line if one distribution is a linear transformation of the other.  On the other hand, if the two distributions are not the same, we will see systematic patterns in the QQ plot.
 
 
 ```{r}

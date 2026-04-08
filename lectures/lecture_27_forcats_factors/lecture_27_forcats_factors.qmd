@@ -254,8 +254,8 @@ What is the shape of this distribution’s density?
 
 	ggplot() +
 		geom_function(fun = dweibull, args = list(shape = inc_shape, scale = inc_scale)) +
-			xlim(c(0, qweibull(0.99, shape = inc_shape, scale = inc_scale))) +
-				labs(x = "Household Income", y = "Density")
+		xlim(c(0, qweibull(0.99, shape = inc_shape, scale = inc_scale))) +
+		labs(x = "Household Income", y = "Density")
 ```
 
 The second one is better:
@@ -265,8 +265,8 @@ The second one is better:
 
 	ggplot() +
 		geom_function(fun = dweibull, args = list(shape = inc_shape, scale = inc_scale)) +
-			labs(x = "Household Income", y = "Density") +
-				scale_x_continuous(
+		labs(x = "Household Income", y = "Density") +
+		scale_x_continuous(
 		limits = c(0, qweibull(0.99, shape = inc_shape, scale = inc_scale)),
 		labels = scales::label_comma() 
 		)
@@ -323,7 +323,7 @@ The second one is better:
 	table(income_group)
 ```
 
-* `cut()` returns an un-ordered factor by default.
+* `cut()` returns an unordered factor by default.
 * Can change this with `ordered_result` argument.
 
 ```{r}
@@ -349,7 +349,7 @@ Changing Levels
 Reordering Levels
 
 * `fct_relevel()` : move specified factor level(s) to front (similar to `relevel()` but more general).
-  - has `after` agrument.
+  - has `after` argument.
 * `fct_rev()` : reverse levels of factor. 
   - If only plotting, can use `coord_flip()` in `ggplot2`.
 * `fct_shuffle() `: function that randomly reorders factor levels (not sure why
@@ -391,7 +391,7 @@ we would need this).
 ```{r}
 	hcv |>
 		count(hcv_genotype)   # Same as hcv |>
-			summarize(n = n(), .by = hcv_genotype)
+		summarize(n = n(), .by = hcv_genotype)
 ```
 Could have also used `fct_count(hcv$hcv_genotype)` here.
 
@@ -417,10 +417,10 @@ Could have also used `fct_count(hcv$hcv_genotype)` here.
 ```{r}
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_min(hcv_genotype, 10)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_min(hcv_genotype, 20)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 ```
 
 * `fct_lump_prop()` lumps levels that appear in fewer than `prop` proportion of the observations.
@@ -428,7 +428,7 @@ Could have also used `fct_count(hcv$hcv_genotype)` here.
 ```{r}
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_prop(hcv_genotype, 0.10)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 ```
 
 * `fct_lump_n()` lumps all levels except for the `n` most frequent.
@@ -436,21 +436,21 @@ Could have also used `fct_count(hcv$hcv_genotype)` here.
 ```{r}
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_n(hcv_genotype, 3)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_n(hcv_genotype, 2)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 ```
 
 * “`fct_lump_lowfreq()` lumps together the least frequent levels, ensuring that “other” is still the smallest level.” (This description seems imprecise to
 me.)
-* Here are the bloodtypes in order of frequency of occurence in the dataset.
+* Here are the blood types in order of frequency of occurrence in the dataset.
   - Also previews use of `fct_infreq()` which orders levels by frequency.
 
 ```{r}
 	hcv |>
 		mutate(bloodtype = fct_infreq(bloodtype)) |> 
-			count(bloodtype)
+		count(bloodtype)
 ```
   
 * And here is what `fct_lump_lowfreq()` does with those frequencies.
@@ -458,7 +458,7 @@ me.)
 ```{r}
 	hcv |> 
 		mutate(hcv_genotype = fct_lump_lowfreq(bloodtype)) |> 
-			count(hcv_genotype)
+		count(hcv_genotype)
 ```
 
 # Reordering Levels
@@ -491,13 +491,15 @@ me.)
 #| fig-cap: "Blood type of mother."
 #| fig-alt: "Blood type of mother."
 
-	ggplot(hcv, aes(x = bloodtype)) + geom_bar()
+	ggplot(hcv, aes(x = bloodtype)) +
+		geom_bar()
 ```
 ```{r}
 #| fig-cap: "Blood type of mother."
 #| fig-alt: "Blood type of mother."
 
-	ggplot(hcv, aes(x = fct_infreq(bloodtype))) + geom_bar()
+	ggplot(hcv, aes(x = fct_infreq(bloodtype))) +
+		geom_bar()
 ```
 
 * Here is the same for HCV genotype, this time with nicer axis labels.
@@ -507,18 +509,18 @@ me.)
 #| fig-cap: "HCV genotype carried by mother."
 #| fig-alt: "HCV genotype carried by mother."
 
-	ggplot(hcv, aes(x = hcv_genotype)) + 
-		labs(x = "Genotype", y = "Frequency") + 
-			geom_bar()
+	ggplot(hcv, aes(x = hcv_genotype)) +
+		labs(x = "Genotype", y = "Frequency") +
+		geom_bar()
 ```
 
 ```{r}
 #| fig-cap: "HCV genotype carried by mother."
 #| fig-alt: "HCV genotype carried by mother."
 
-	ggplot(hcv, aes(x = fct_infreq(hcv_genotype))) + 
-		labs(x = "Genotype", y = "Frequency") + 
-			geom_bar()
+	ggplot(hcv, aes(x = fct_infreq(hcv_genotype))) +
+		labs(x = "Genotype", y = "Frequency") +
+		geom_bar()
 ```
 
 ## Reordering Levels by Values of Another Variable
@@ -526,10 +528,10 @@ me.)
 ```{r}
 	transmission_by_bloodtype <- hcv |>
 		group_by(bloodtype, infant_hcv) |>
-			# up to 8 * 2 = 16 rows, 3 cols (bloodtype, infant_hcv, n)
-			summarise(n = n()) |>
-				pivot_wider(names_from = infant_hcv, values_from = n, values_fill = 0L) |>
-					mutate(n = N + Y, rate = Y / n)
+		# up to 8 * 2 = 16 rows, 3 cols (bloodtype, infant_hcv, n)
+		summarise(n = n()) |>
+		pivot_wider(names_from = infant_hcv, values_from = n, values_fill = 0L) |>
+		mutate(n = N + Y, rate = Y / n)
 	transmission_by_bloodtype
 ```
 
@@ -537,21 +539,21 @@ me.)
 * Compare these two plots.
 
 ```{r}
-#| fig-cap: "Vertical tranmission rate by blood type."
-#| fig-alt: "Vertical tranmission rate by blood type."
+#| fig-cap: "Vertical transmission rate by blood type."
+#| fig-alt: "Vertical transmission rate by blood type."
 
 	transmission_by_bloodtype |> 
-		ggplot(aes(x = rate, y = bloodtype)) + 
-			geom_point()
+		ggplot(aes(x = rate, y = bloodtype)) +
+		geom_point()
 ```
 
 ```{r}
-#| fig-cap: "Vertical tranmission rate by blood type."
-#| fig-alt: "Vertical tranmission rate by blood type."
+#| fig-cap: "Vertical transmission rate by blood type."
+#| fig-alt: "Vertical transmission rate by blood type."
 
 	transmission_by_bloodtype |> 
-		ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate))) + 
-			geom_point()
+		ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate))) +
+		geom_point()
 ```
 
 * Another version of the last plot with:
@@ -559,13 +561,13 @@ me.)
   - better labels
 
 ```{r}
-#| fig-cap: "Vertical tranmission rate by blood type."
-#| fig-alt: "Vertical tranmission rate by blood type."
+#| fig-cap: "Vertical transmission rate by blood type."
+#| fig-alt: "Vertical transmission rate by blood type."
 
 	transmission_by_bloodtype |> 
-		ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate), size = n)) + 
-			geom_point() + 
-				labs(x = "Transmission Rate", y = "Bloodtype", size = "Sample Size")
+		ggplot(aes(x = rate, y = fct_reorder(bloodtype, rate), size = n)) +
+		geom_point() +
+		labs(x = "Transmission Rate", y = "Bloodtype", size = "Sample Size")
 ```
 
 ```{r}
@@ -589,19 +591,19 @@ me.)
 ```{r}
 	transmission_by_abo <- hcv |>
 		group_by(abo, infant_hcv) |>
-			# 4 * 2 = 8 rows, 3 columns (abo, infant_hcv, n)
-			summarise(n = n()) |>
-				pivot_wider(names_from = infant_hcv, values_from = n, values_fill = 0L) |>
-					mutate(n = N+Y, rate = Y/n)
+		# 4 * 2 = 8 rows, 3 columns (abo, infant_hcv, n)
+		summarise(n = n()) |>
+		pivot_wider(names_from = infant_hcv, values_from = n, values_fill = 0L) |>
+		mutate(n = N+Y, rate = Y/n)
 	transmission_by_abo
 ```
 
 ```{r}
-#| fig-cap: "Vertical tranmission rate by blood group."
-#| fig-alt: "Vertical tranmission rate by blood group."
+#| fig-cap: "Vertical transmission rate by blood group."
+#| fig-alt: "Vertical transmission rate by blood group."
 
 	transmission_by_abo |> 
-		ggplot(aes(x = rate, y = fct_reorder(abo, rate), size = n)) + 
-			geom_point() + 
-				labs(x = "Transmission Rate", y = "Bloodtype", size = "Sample Size")
+		ggplot(aes(x = rate, y = fct_reorder(abo, rate), size = n)) +
+		geom_point() +
+		labs(x = "Transmission Rate", y = "Bloodtype", size = "Sample Size")
 ```

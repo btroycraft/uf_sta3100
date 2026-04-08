@@ -48,15 +48,15 @@ execute:
 	direction_regex <- ".*?(\\b(?i)((?:north|south)(?:\\h*(?:east|west))?\\b|\\b(?:east|west|[NS][EW]?|[EW]))\\b).*"
 	houses |> 
 		mutate(direction = str_replace(street, direction_regex, "\\1")) |>
-			pull(direction) |>
-				unique()
+		pull(direction) |>
+		unique()
 	houses <- houses |>
 		mutate(direction = ifelse(str_detect(street, direction_regex), street, NA),
 		direction = str_replace(direction, direction_regex, "\\1"), 
 		direction = str_to_upper(direction))
 	houses |>
 		    group_by(direction) |>
-			    count()
+		    count()
 ```
 
 * Now using the direction to add a factor variable for quadrant.
@@ -69,7 +69,7 @@ execute:
 		quadrant = factor(quadrant, levels = c("NE", "NW", "SE", "SW")))
 	houses |>
 		group_by(quadrant) |>
-			count()
+		count()
 ```
 
 # An Egregious Outlier
@@ -88,9 +88,9 @@ execute:
 #| fig-cap: "Gainesville house prices by square footage."
 #| fig-alt: "Gainesville house prices by square footage."
 
-	ggplot(houses, aes(x = sqft, y = price)) + 
+	ggplot(houses, aes(x = sqft, y = price)) +
 		geom_point() +
-			geom_text(aes(label = ifelse(price > 2e6, street, "")), hjust = "inward")
+		geom_text(aes(label = ifelse(price > 2e6, street, "")), hjust = "inward")
 ```
 
 ![A house with incorrect sales data on realtor.com.](WrongPrice.png)
@@ -108,13 +108,13 @@ execute:
 		labels = c("very_low", "low", "med", "high", "very_high")))
 	houses |>
 		group_by(dpsf_hi_lo) |>
-			summarize(n = n())
+		summarize(n = n())
 
 	houses |>
 		filter(dpsf < 400) |>
-			ggplot(aes(x = dpsf)) +
-				# Intentionally undersmoothing to see gaps
-				geom_histogram(binwidth = 5)
+		ggplot(aes(x = dpsf)) +
+		# Intentionally undersmoothing to see gaps
+		geom_histogram(binwidth = 5)
 ```
 
 ```{r}
@@ -122,9 +122,9 @@ execute:
 
 	houses |>
 		filter(dpsf < 400) |>
-			ggplot(aes(x = dpsf)) +
-				# Undersmoothing a bit
-				geom_density(adjust = 0.8)
+		ggplot(aes(x = dpsf)) +
+		# Undersmoothing a bit
+		geom_density(adjust = 0.8)
 ```
 
 
@@ -154,7 +154,7 @@ Altogether, these make up 80 of the 1080 observations.
 ```{r}
 	myhouses <- houses |> 
 		filter(!leave_out) |> 
-			slice_max(date, n = 200)
+		slice_max(date, n = 200)
 ```
 
 # Two-Sample Student's t Test
@@ -166,7 +166,7 @@ Is there a difference in average price between houses in East vs West Gainesvill
 		mutate(EW = fct_collapse(quadrant, E = c("NE","SE"), W = c("NW", "SW")))
 	myhouses |>
 		group_by(EW) |>
-			summarize(n = n(), mean_price = mean(price))
+		summarize(n = n(), mean_price = mean(price))
 	with(myhouses, t.test(price[EW == "W"], price[EW == "E"]))
 ```
 
@@ -252,9 +252,9 @@ The least squares estimates $\hat{\beta}_0=-66,590$ and $\hat{\beta}_1=175$ can 
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-	ggplot(myhouses, aes(x = sqft, y = price)) + 
+	ggplot(myhouses, aes(x = sqft, y = price)) +
 		geom_point() +
-			geom_smooth(method = lm)
+		geom_smooth(method = lm)
 ```
 
 ```{r}
@@ -289,7 +289,9 @@ $$ \mu=\beta_0+\beta_1 x_1+\beta_2 x_2+\beta_3 x_3 $$
 * The _terms_ in the model are added to the RHS of the model formula.
 
 ```{r}
-	lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
+	lm_abb <- lm(price ~ sqft +
+		beds +
+		baths, data = myhouses)
 	summary(lm_abb)
 ```
 
@@ -300,11 +302,15 @@ The update function provides a shorthand for fitting a new model by building on 
 ```
 we could have replaced
 ```{r}
-	lm_abb <- lm(price ~ sqft + beds + baths, data = myhouses)
+	lm_abb <- lm(price ~ sqft +
+		beds +
+		baths, data = myhouses)
 ```
 by
 ```{r}
-	lm_abb <- update(lm_area, . ~ . + beds + baths)
+	lm_abb <- update(lm_area, . ~ . +
+		beds +
+		baths)
 ```
 * In the model formula for `update()`, the periods (".") on the LHS and RHS of the tilde character represent the terms that were already on the LHS and RHS of the model formula for `lm_area`.
 * We can also take away variables.
@@ -324,7 +330,7 @@ Model `lm_abb` says that
 $$ E(\text{price})=\beta_0+\beta_1\cdot\text{sqft}+\beta_2\cdot\text{beds}+\beta_3\cdot\text{baths} $$
 
 * Model `lm_area` is a special case of model `lm_abb` where the coefficients of `beds` ($\beta_2$) and `baths` ($\beta_3$) are both zero.
-* We say that `lm_area` is _nested in_ `lm_abb`; or equiavlently, `lm_abb` _contains_ `lm_area`.
+* We say that `lm_area` is _nested in_ `lm_abb`; or equivalently, `lm_abb` _contains_ `lm_area`.
 * Q : Can the _full model_ `lm_abb` be reduced to the simpler model `lm_area`?
 * i.e., is there strong evidence that `beds` and `baths` help to predict `price` once we have accounted for `sqft`?
 
@@ -426,10 +432,10 @@ Note: "Controlling for" means holding constant. So "controlling for area" means 
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
 	plot3 <- myhouses |> 
-		bind_cols(fitted_price = predict(lm_aq)) |> 
-			ggplot(aes(x = sqft, y = price, color = quadrant)) + 
+			bind_cols(fitted_price = predict(lm_aq)) |> 
+			ggplot(aes(x = sqft, y = price, color = quadrant)) +
 				geom_point() +
-					geom_line(aes(y = fitted_price), linewidth = 1)
+				geom_line(aes(y = fitted_price), linewidth = 1)
 	plot3
 ```
 
@@ -446,8 +452,9 @@ Note: "Controlling for" means holding constant. So "controlling for area" means 
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-	plot3b <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
-		geom_point() +
+	plot3b <-
+		ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) +
+			geom_point() +
 			geom_line(data = houses_grid)
 	plot3b
 ```
@@ -532,9 +539,15 @@ Interpretation is more complicated now. We estimate that mean house price:
 	plot(price ~ sqft, pch = as.integer(quadrant), data = myhouses)
 	ab <- coef(lm_aqi)
 	abline(ab["(Intercept)"], ab["sqft"], lty = 1)
-	abline(ab["(Intercept)"] + ab["quadrantNW"], ab["sqft"] + ab["sqft:quadrantNW"], lty = 2) 
-	abline(ab["(Intercept)"] + ab["quadrantSE"], ab["sqft"] + ab["sqft:quadrantSE"], lty = 3) 
-	abline(ab["(Intercept)"] + ab["quadrantSW"], ab["sqft"] + ab["sqft:quadrantSW"], lty = 4) 
+	abline(ab["(Intercept)"] +
+		ab["quadrantNW"], ab["sqft"] +
+		ab["sqft:quadrantNW"], lty = 2)
+	abline(ab["(Intercept)"] +
+		ab["quadrantSE"], ab["sqft"] +
+		ab["sqft:quadrantSE"], lty = 3)
+	abline(ab["(Intercept)"] +
+		ab["quadrantSW"], ab["sqft"] +
+		ab["sqft:quadrantSW"], lty = 4)
 	legend("topleft", levels(myhouses$quadrant), pch = 1:4, lty = 1:4)
 
 	par(opar)
@@ -549,8 +562,9 @@ Interpretation is more complicated now. We estimate that mean house price:
 #| fig-cap: "Area and selling price for 208 Gainesville houses."
 #| fig-alt: "Area and selling price for 208 Gainesville houses."
 
-	plot4 <- ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) + 
-		geom_point() +
+	plot4 <-
+		ggplot(myhouses, aes(x = sqft, y = price, color = quadrant)) +
+			geom_point() +
 			geom_line(data = houses_grid)
 	plot4
 ```

@@ -180,7 +180,7 @@ Now we can mutate the `line` column with `str_extract_all()`.
 ```{r}
 	df |>
 		pull(fun) |>
-			head(4)
+		head(4)
 ```
 
 * We don’t need the original `line` column anymore.
@@ -226,13 +226,13 @@ Compare:
 ```{r}
 	df |> 
 		summarize(n = n(), .by = fun) |> 
-			arrange(desc(n)) |>
-				print(n = Inf)
+		arrange(desc(n)) |>
+		print(n = Inf)
 
 	df |> 
 		group_by(file) |> 
-			summarize(n = n()) |> 
-				arrange(desc(n))
+		summarize(n = n()) |> 
+		arrange(desc(n))
 
 	df |>
 		filter(str_detect(file, "lecture_19.qmd"))

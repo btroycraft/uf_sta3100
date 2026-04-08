@@ -193,14 +193,14 @@ Besides the assigned readings, see:
 ```{r}
 	colors_df <- colors_df |>
 		transform(model = replace(model, model == "Les Paul", "Les Paul Standard")) |>
-			transform(model = replace(model, model == "J-100", "J-100 Xtra"))
+		transform(model = replace(model, model == "J-100", "J-100 Xtra"))
 ```
 
 * Or with the base-R `ifelse()` function.
 ```{r}
 	colors_df <- colors_df |>
 		transform(model = ifelse(model == "Les Paul", "Les Paul Standard", model)) |>
-			transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
+		transform(model = ifelse(model == "J-100", "J-100 Xtra", model))
 ```
   - `ifelse()` is useful for other kinds of transformations as well, e.g.,
 ```{r}

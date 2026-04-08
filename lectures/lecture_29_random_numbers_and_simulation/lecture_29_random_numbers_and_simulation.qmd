@@ -155,7 +155,7 @@ An alternative approach is to _estimate_ the probability by performing many inde
     
 **Did All the Letters Show Up in My Sample?**
 
-We first need a way to determine when the event has occured in a single replication of the experiment. We use the `%in%` operator and the `all()` function.
+We first need a way to determine when the event has occurred in a single replication of the experiment. We use the `%in%` operator and the `all()` function.
            
 
 ```{r}

@@ -184,10 +184,14 @@ Other classes of objects are built on these basic structures.
 	x <- 10 # Assign ("bind") x to 10
 	y <- x  # Bind y to whatever x is currently bound to.
 	
-	x + 1   # Print the value of x + 1
+	x +
+		1   # Print the value of x +
+		1
 	x       # x is still bound to 10
 	
-	x <- x + 1   # Bind x to the value of x + 1 ("add 1 to x")
+	x <- x +
+		1   # Bind x to the value of x +
+		1 ("add 1 to x")
 	x
 	y       # y is still bound to 10
 ```

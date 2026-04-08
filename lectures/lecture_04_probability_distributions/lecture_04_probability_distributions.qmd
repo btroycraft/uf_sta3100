@@ -190,14 +190,14 @@ We will use several of these in this course.
 ```
 
 -   `freq = FALSE` in `hist()` scales heights of bars to make total area equal to 1.
--   `main = ""` makes the main plot title empty. <!-- * Notice that the y-axis on this plot is set up by `hist()` and isn’t high enough to accomodate the graph of the true density which we have added --> to the plot.
+-   `main = ""` makes the main plot title empty. <!-- * Notice that the y-axis on this plot is set up by `hist()` and isn’t high enough to accommodate the graph of the true density which we have added --> to the plot.
 
 \newpage
 
 In this version:
 
--   we set the y-axis limits to accomodate the heights of both the density curve and the histogram bars.
--   we set the x-axis limits to accomodate all the bars of the histogram and almost all of the density.
+-   we set the y-axis limits to accommodate the heights of both the density curve and the histogram bars.
+-   we set the x-axis limits to accommodate all the bars of the histogram and almost all of the density.
 
 ```{r}
 #| fig-align: center
