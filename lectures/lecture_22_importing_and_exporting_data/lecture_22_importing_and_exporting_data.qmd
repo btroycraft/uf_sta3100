@@ -318,7 +318,7 @@ Working with `readr`’s Guesses
   		capture.output(file = "santos_cols.txt")
 
 	"schedule_b-2023-10-27T01_16_01.csv" |>
-  		read_csv(col_types = parse("new_file.txt") |> eval())
+  		read_csv(col_types = parse("santos_cols.txt") |> eval())
 
 ```
 
@@ -369,64 +369,31 @@ Working with `readr`’s Guesses
 	spec_to_file <- function(x, ...) UseMethod("spec_to_file")
 
 	# method for data frames calling spec()
-	spec_to_file.data.frame <- function(x, file, overwrite = TRUE, ...){
-
+	spec_to_file.data.frame <- function(x, file, overwrite = FALSE, ...){
 		if(overwrite || !file.exists(file)){
 			return(
 				x |>
 					readr::spec(...) |>
-					capture.output(file)
+					capture.output(file = file)
 			)
-		}
-		if(file.exists(file)){
-			i <- 1
-			repeat{
-				file_new <- file |>
-					strsplit("\\.") |>
-					unlist() |>
-					paste0(collapse = paste0(i, "."))
-				if(!file.exists(file_new)){
-					return(
-						x |>
-							readr::spec(...) |>
-							capture.output(file = file_new)
-					)
-				}
-				i <- i+1
-			}
 		}	
 	}
 
 	# method for string calling spec_csv()
-	spec_to_file.character <- function(x, file, overwrite = TRUE, ...){
-
+	spec_to_file.character <- function(x, file, overwrite = FALSE, ...){
 		if(overwrite || !file.exists(file)){
 			return(
 				x |>
 					readr::spec_csv(...) |>
-					capture.output(file)
+					capture.output(file = file)
 			)
-		}
-		if(file.exists(file)){
-			i <- 1
-			repeat{
-				file_new <- file |>
-					strsplit("\\.") |>
-					unlist() |>
-					paste0(collapse = paste0(i, "."))
-				if(!file.exists(file_new)){
-					return(
-						x |>
-							readr::spec_csv(...) |>
-							capture.output(file = file_new)
-					)
-				}
-				i <- i+1
-			}
 		}	
 	}
 
 	cols_from_file <- function(file){
+		if(!file.exists(file)){
+			stop(paste0("The given file '", file, "' does not exist."))
+		}
 		file_text <-
 			readLines(file) |>
 				paste(collapse = "\n")
@@ -439,7 +406,7 @@ Working with `readr`’s Guesses
 	}
 
 	"schedule_b-2023-10-27T01_16_01.csv" |>
-		spec_to_file("santos_col.txt")
+		spec_to_file("santos_cols.txt")
 
 	"schedule_b-2023-10-27T01_16_01.csv" |>
   		read_csv(col_types = cols_from_file("santos_cols.txt"))
